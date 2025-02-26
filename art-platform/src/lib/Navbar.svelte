@@ -1,5 +1,10 @@
 <script lang="ts">
     export let activePage: string = "home";
+    let showDropdown = false;
+
+    function toggleDropdown() {
+        showDropdown = !showDropdown;
+    }
 </script>
 
 <style>
@@ -10,14 +15,11 @@
         padding: 1rem 3rem;
         background: white;
         border-bottom: 1px solid #ddd;
-        
-
     }
 
     .nav-left {
         display: flex;
         align-items: center;
-        
     }
 
     .logo {
@@ -56,20 +58,61 @@
     }
 
     .nav-icons {
+        position: relative;
         display: flex;
         gap: 1rem;
     }
-    .nav-icons img{
+
+    .nav-icons img {
         width: 35px;
         height: 35px;
+        cursor: pointer;
+
     }
 
-    .logo img{
+    .nav-icons button{
+        background-color: white;
+        border: none;
+    }
+
+    .logo img {
         width: 45px;
         height: 50px;
     }
-    input{
+
+    input {
         margin: 0 0.5rem;
+    }
+
+
+    .dropdown {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        background: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        width: 130px;
+        display: flex;
+        flex-direction: column;
+        z-index: 10;
+    }
+
+    .dropdown a {
+        text-decoration: none;
+        padding: 10px;
+        color: black;
+        font-size: 0.9rem;
+        transition: background 0.2s ease-in-out;
+        
+    }
+    
+    .dropdown .link{
+        border-bottom: 1px solid rgb(210, 202, 202);
+    }
+
+    .dropdown a:hover {
+        background: hsl(5, 85%, 90%);
     }
 </style>
 
@@ -85,8 +128,26 @@
     <input type="text" class="search" placeholder="Search for" />
 
     <div class="nav-icons">
-        <img alt=" " src="/rank.png"/>
+        <!-- Rank Icon with Dropdown -->
+        <div style="position: relative;">
+            <button 
+                class="dropdown-btn" 
+                on:click={toggleDropdown} 
+                
+                aria-haspopup="true" 
+                aria-expanded={showDropdown}
+            >
+                <img alt="Ranking Menu" src="/rank.png" />
+            </button>
+            {#if showDropdown}
+                <div class="dropdown">
+                    <a class="link" href="/post-ranking">Post Ranking</a>
+                    <a href="/artist-ranking">Artist Ranking</a>
+                </div>
+            {/if}
+        </div>
+
+        <!-- User Profile Icon -->
         <img alt=" " src="/user-profile.png"/>
-        
     </div>
 </nav>
