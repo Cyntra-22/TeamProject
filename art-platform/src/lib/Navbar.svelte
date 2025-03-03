@@ -142,7 +142,8 @@
             {#if showDropdown}
                 <div class="dropdown">
                     <a class="link" href="/post-ranking">Post Ranking</a>
-                    <a href="/artist-ranking">Artist Ranking</a>
+                    <a class="link" href="/artist-ranking">Artist Ranking</a>
+                    <a href="/review">Write Review</a>
                 </div>
             {/if}
         </div>
