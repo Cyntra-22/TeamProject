@@ -141,7 +141,7 @@
             </button>
             {#if showDropdown}
                 <div class="dropdown">
-                    <a class="link" href="/post-ranking">Post Ranking</a>
+                    <a class="link" href="/post-rank">Post Ranking</a>
                     <a class="link" href="/artist-rank">Artist Ranking</a>
                     <a href="/review">Write Review</a>
                 </div>
