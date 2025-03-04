@@ -18,7 +18,6 @@
 
     .gallery img {
         width: 100%;
-        
         border-radius: 0.7rem;
         object-fit: cover;
         cursor: pointer;

@@ -149,6 +149,6 @@
         </div>
 
         <!-- User Profile Icon -->
-        <img alt=" " src="/user-profile.png"/>
+        <a href="/profile"><img alt=" " src="/user-profile.png"/></a>
     </div>
 </nav>
