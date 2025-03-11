@@ -24,7 +24,7 @@
         background-color: hsl(5, 85%, 50%);
         color: white;
         border: none;
-        padding: 0.5rem 1.7rem;
+        padding: 0.4rem 1.5rem;
         margin-top: 1rem;
         border-radius: 20px;
         cursor: pointer;
@@ -34,7 +34,7 @@
         background-color: white;
         color: hsl(5, 85%, 50%);
         border: none;
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 1rem;
         margin-top: 1rem;
         border-radius: 20px;
         cursor: pointer;
@@ -42,7 +42,8 @@
         font-size: 0.8rem;
     }
     p{
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        color: rgb(103, 101, 101);
         margin: 0;
         padding: 0;
     }
