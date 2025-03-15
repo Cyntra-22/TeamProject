@@ -21,7 +21,7 @@
         
     }
     .pbtn-2{
-        background-color: hsl(5, 85%, 50%);
+        background-color: hsl(5, 85%, 63%);
         color: white;
         border: none;
         padding: 0.4rem 1.5rem;
@@ -32,14 +32,24 @@
     }
     .pbtn-1{
         background-color: white;
-        color: hsl(5, 85%, 50%);
+        color: hsl(5, 85%, 63%);
         border: none;
         padding: 0.4rem 1rem;
         margin-top: 1rem;
         border-radius: 20px;
         cursor: pointer;
-        border: 1px solid hsl(5, 85%, 50%);
+        border: 1px solid hsl(5, 85%, 63%);
         font-size: 0.8rem;
+    }
+
+    .pbtn-2:hover{
+        background-color: hsl(5, 85%, 50%);
+       
+    }
+
+    .pbtn-1:hover{
+        color: hsl(5, 85%, 50%);
+        border: 1px solid hsl(5, 85%, 50%);
     }
     p{
         font-size: 0.8rem;

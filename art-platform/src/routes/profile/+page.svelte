@@ -96,7 +96,7 @@
     }
 
     .pbtn-2{
-        background-color: hsl(5, 85%, 50%);
+        background-color: hsl(5, 85%, 63%);
         color: white;
         border: none;
         padding: 0.3rem 1.5rem;
@@ -104,6 +104,11 @@
         border-radius: 20px;
         cursor: pointer;
         font-size: 0.8rem;
+    }
+
+    .pbtn-2:hover{
+        background-color: hsl(5, 85%, 50%);
+        
     }
 
     .like-count{
