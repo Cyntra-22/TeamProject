@@ -115,12 +115,12 @@
     .info-detail{
         font-size: 0.8rem;
         padding-left: 0.5rem;
-        padding-top: 0.2rem;
+        padding-top: 0.3rem;
     }
 
     .like-count .small-img{
-        width: 20px;
-        height: 20px;
+        width: 25px;
+        height: 25px;
     }
 
     .profile-left-container{
@@ -159,23 +159,23 @@
                 </div>
                 <div class="profile-left-container">
                     <div class="like-count">
-                        <div><img class="small-img" src="/comment.png" alt="comment" /></div>
+                        <div><img class="small-img" src="/phone-logo.jpg" alt="comment" /></div>
                         <div class="info-detail">+66624452270, +66945073029</div>
                     </div>
                     <div class="like-count">
-                        <div><img class="small-img" src="/comment.png" alt="comment" /></div>
+                        <div><img class="small-img" src="/email-logo.jpg" alt="comment" /></div>
                         <div class="info-detail">myopa2345artist@gmail.com</div>
                     </div>
                     <div class="like-count">
-                        <div><img class="small-img" src="/comment.png" alt="comment" /></div>
+                        <div><img class="small-img" src="/location-icon.jpg" alt="comment" /></div>
                         <div class="info-detail">Bangkok, Bangkok City, Thailand</div>
                     </div>
                     <div class="like-count">
-                        <div><img class="small-img" src="/comment.png" alt="comment" /></div>
+                        <div><img class="small-img" src="/facebook-icon.jpg" alt="comment" /></div>
                         <div class="info-detail">Rachel Emma</div>
                     </div>
                     <div class="like-count">
-                        <div><img class="small-img" src="/comment.png" alt="comment" /></div>
+                        <div><img class="small-img" src="/link-logo.jpg" alt="comment" /></div>
                         <div class="info-detail">Rachel Emma</div>
                     </div>
                     <div class="right-header">
