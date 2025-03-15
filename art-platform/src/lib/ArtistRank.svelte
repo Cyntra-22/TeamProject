@@ -39,8 +39,7 @@
             font-size: 1rem;
             padding-top: 0.4rem;
             margin: 0;
-
-           
+    
         }
         h3{
             font-size: 1.8rem;
