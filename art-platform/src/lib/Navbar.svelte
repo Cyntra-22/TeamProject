@@ -1,7 +1,11 @@
 <script lang="ts">
-    export let activePage: string = "home";
+    
     let showDropdown = false;
+    import { page } from "$app/stores";
 
+    $: routeId = $page.route.id ?? "";
+
+    
     function toggleDropdown() {
         showDropdown = !showDropdown;
     }
@@ -120,8 +124,8 @@
     <div class="nav-left">
         <div class="logo"><img alt=" " src="/logo.png" /></div>
         <div class="nav-links">
-            <a href="/" class="{activePage === 'home' ? 'active' : ''}">Home</a>
-            <a href="/create" class="{activePage === 'create' ? 'active' : ''}">Create</a>
+            <a href="/" class:active={routeId === "/"}>Home</a>
+            <a href="/create" class:active={routeId === "/create"}>Create</a>
         </div>
     </div>
 
@@ -135,9 +139,9 @@
                 on:click={toggleDropdown} 
                 
                 aria-haspopup="true" 
-                aria-expanded={showDropdown}
+                aria-expanded={showDropdown} 
             >
-                <img alt="Ranking Menu" src="/rank.png" />
+            <img alt="Ranking Menu" src={(routeId?.startsWith("/post-rank") || routeId?.startsWith("/artist-rank") || routeId?.startsWith("/review")) ? "/rank-active-logo.png" : "/rank.png"} />
             </button>
             {#if showDropdown}
                 <div class="dropdown">
@@ -149,6 +153,8 @@
         </div>
 
         <!-- User Profile Icon -->
-        <a href="/profile"><img alt=" " src="/user-profile.png"/></a>
+        <a href="/profile">
+            <img alt="Profile" src={routeId === "/profile" ? "/profile-active-icon.png" : "/user-profile.png"} />
+        </a>
     </div>
 </nav>
