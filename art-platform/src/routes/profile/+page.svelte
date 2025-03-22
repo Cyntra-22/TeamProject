@@ -160,6 +160,9 @@
                     <h3>Reachel Emma</h3>
                     <p>My work explores the relationship between critical theory and emotional memory.</p>
                     <button class="pbtn-2">+ Follow</button>
+                    <a href="/edit-profile">
+                        <button class="pbtn-2">Edit Profile</button>
+                    </a>
                     
                 </div>
                 <div class="profile-left-container">
