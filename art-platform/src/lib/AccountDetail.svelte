@@ -47,8 +47,7 @@
         font-size: 1rem;
         margin-top: 15px;
         float: right;
-        
-        
+          
     }
 
     .signup-btn:hover {

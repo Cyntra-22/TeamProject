@@ -2,6 +2,7 @@
     import AccountDetail from "$lib/AccountDetail.svelte";
     import ChangePW from "$lib/ChangePW.svelte";
     import EditProfile from "$lib/EditProfile.svelte";
+    import LogOut from "$lib/LogOut.svelte";
 
     let currentComponent = "AccountDetail";
 
@@ -84,9 +85,11 @@
             Edit Profile
             
         </button>
-        <button on:click={() => console.log("Logging out...")}>
+        <button 
+            class={currentComponent === "LogOut" ? "active" : ""} 
+            on:click={() => setComponent("LogOut")}>
             Logout
-        </button>
+    </button>
     </div>
 
     <!-- Dynamic Content -->
@@ -97,6 +100,8 @@
             <ChangePW />
         {:else if currentComponent === "EditProfile"}
             <EditProfile />
+        {:else if currentComponent === "LogOut"}
+            <LogOut />
         {/if}
     </div>
 </div>
