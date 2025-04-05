@@ -22,4 +22,14 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const IDfromToken = async (req, res) => {
+  try {
+    console.log(req.body)
+    const result = await authUsecase.getIDfromToken(req.body);
+    res.status(200).json(result); 
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+module.exports = { register, login, IDfromToken};

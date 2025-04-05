@@ -42,5 +42,15 @@ const login = async (dto) => {
   };
 };
 
-module.exports = { register, login};
+const getIDfromToken = (dto) => {
+  try {
+    const decoded = jwt.verify(dto.token, JWT_SECRET);
+    
+    return decoded.userId;
+  } catch (error) {
+    throw new Error('Invalid or expired token');
+  }
+};
+
+module.exports = { register, login, getIDfromToken };
 
