@@ -24,6 +24,26 @@ class UserRepositoryImpl extends UserRepository {
 
     return new ProfileEntity(userData);  
   }
+
+  async updateUserProfile(data) {
+    const { _id, ...updateFields } = data;
+  
+    Object.keys(updateFields).forEach((key) => {
+      if (updateFields[key] === undefined) {
+        delete updateFields[key];
+      }
+    });
+  
+    const updatedUser = await User.findByIdAndUpdate(
+      _id,
+      { $set: updateFields },
+      { new: true }
+    );
+    if (!updatedUser) return null;
+  
+    return new ProfileEntity(updatedUser);
+  }
+  
 }
 
 module.exports = new UserRepositoryImpl();

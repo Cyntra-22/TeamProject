@@ -42,12 +42,4 @@ const login = async (email, password) => {
   };
 };
 
-const getProfile = async (id) => {
-  const profileEntity = await userRepo.findUserById(id);
-  if (!profileEntity) throw new Error('User not found');
-
-  const { password: _, ...profileWithoutPassword } = profileEntity;
-  return profileWithoutPassword;
-};
-
-module.exports = { register, login, getProfile};
+module.exports = { register, login};
