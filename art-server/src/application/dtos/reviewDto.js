@@ -3,7 +3,6 @@ class ReviewDto {
     this.rating = rating;
     this.description = description;
     this.userId = userId;
-
   }
 }
 

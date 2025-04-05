@@ -12,7 +12,7 @@ class ReviewRepositoryImpl extends ReviewRepository {
 
   async findReviewsByRevieweeId(id)
   {
-    const reviewData = Review.find({revieweeId : id})
+    const reviewData = Review.find({revieweeId : id, recStatus: { $ne: 0 }})
     if (!reviewData || reviewData.length === 0) return null;
 
     return reviewData.map(r => new ReviewEntity(r)); 
@@ -20,7 +20,7 @@ class ReviewRepositoryImpl extends ReviewRepository {
 
   async findRevieweeReviewByReviewerId(reviewerId, revieweeId)
   {
-    const reviewData = Review.findOne({userId : reviewerId, revieweeId})
+    const reviewData = Review.findOne({userId : reviewerId, revieweeId, recStatus: { $ne: 0 }})
     if (!reviewData) return null;
     return new ReviewEntity(reviewData);  
   }
