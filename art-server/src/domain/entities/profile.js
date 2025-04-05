@@ -1,16 +1,16 @@
 class Profile {
-    constructor( _id, email, firstName, lastName, birthdate, phoneNo,linkedin, facebook, role, interests , profileImage) {
-      this.id = _id;
-      this.email = email;
-      this.firstName = firstName;
-      this.lastName = lastName;
-      this.birthdate = birthdate;
-      this.phoneNo = phoneNo;
-      this.linkedin = linkedin;
-      this.facebook = facebook;
-      this.role = role;
-      this.interests = interests;
-      this.profileImage = profileImage;
+    constructor( data ) {
+      this._id = data._id;
+      this.email = data.email;
+      this.firstName = data.firstName;
+      this.lastName = data.lastName;
+      this.birthdate = data.birthdate;
+      this.phoneNo = data.phoneNo;
+      this.linkedin = data.linkedin;
+      this.facebook = data.facebook;
+      this.role = data.role;
+      this.interests = data.interests;
+      this.profileImage = data.profileImage;
     }
   }
   
