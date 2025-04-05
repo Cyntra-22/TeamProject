@@ -5,7 +5,7 @@ const editProfileDto = require('../../application/dtos/editProfileDto');
 const getProfile = async (req, res) => {
     try {
       const dto = new getProfileDto(req.body);
-      const result = await profileUsecase.getProfile(dto.id);
+      const result = await profileUsecase.getProfile(dto);
       res.status(200).json(result); 
     } catch (err) {
       res.status(400).json({ message: err.message });

@@ -22,11 +22,11 @@ const register = async (dto) => {
   return userWithoutPassword;
 };
 
-const login = async (email, password) => {
-  const userEntity = await userRepo.findUserByEmail(email);
+const login = async (dto) => {
+  const userEntity = await userRepo.findUserByEmail(dto.email);
   if (!userEntity) throw new Error('Invalid email or password');
 
-  const isMatch = await bcrypt.compare(password, userEntity.password);
+  const isMatch = await bcrypt.compare(dto.password, userEntity.password);
   if (!isMatch) throw new Error('Invalid email or password');
 
   const token = jwt.sign(
@@ -43,3 +43,4 @@ const login = async (email, password) => {
 };
 
 module.exports = { register, login};
+

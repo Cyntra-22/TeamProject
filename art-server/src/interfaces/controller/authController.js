@@ -15,7 +15,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const dto = new LoginDto(req.body);
-    const result = await authUsecase.login(dto.email, dto.password);
+    const result = await authUsecase.login(dto);
     res.status(200).json(result); 
   } catch (err) {
     res.status(400).json({ message: err.message });
