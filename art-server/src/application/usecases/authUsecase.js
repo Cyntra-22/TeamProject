@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const userRepo = require('../../infra/databases/repositories/userRepositoryImpl');
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -41,4 +42,12 @@ const login = async (email, password) => {
   };
 };
 
-module.exports = { register, login };
+const getProfile = async (id) => {
+  const profileEntity = await userRepo.findUserById(id);
+  if (!profileEntity) throw new Error('User not found');
+
+  const { password: _, ...profileWithoutPassword } = profileEntity;
+  return profileWithoutPassword;
+};
+
+module.exports = { register, login, getProfile};
