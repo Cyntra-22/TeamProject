@@ -8,7 +8,7 @@ const reviewSchema = new mongoose.Schema({
     revieweeId: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     recStatus: {type: Number, default: 1},
     createdWhen: { type: Date, default: Date.now },
-    updatedWhen: { type: Date, default: Date.now }
+    updatedWhen: { type: Date }
   });
   
   const Review = mongoose.model("Review", reviewSchema);
