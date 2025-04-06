@@ -8,6 +8,7 @@ class Post {
         this.likeAmount = likeAmount;
         this.aiTag = aiTag
         this.id = _id;
+        this.likeAmount = likeAmount;
     }
 }
 
