@@ -1,6 +1,8 @@
 const postUsecase = require('../../application/usecases/postUsecase');
 const createPostDto = require('../../application/dtos/createPostDto');
 const editPostDto = require('../../application/dtos/editPostDto');
+const getPostByIdDto = require('../../application/dtos/getPostByIdDto');
+const getPostByNameAndTagDto = require('../../application/dtos/getPostByNameAndTagDto');
 
 const createPost = async (req, res) => {
     try {
@@ -22,4 +24,33 @@ const editPost = async (req, res) => {
     }
 }
 
-module.exports = { createPost, editPost };
+const getPosts = async (req, res) => {
+    try {
+        const posts = await postUsecase.getPosts();
+        res.status(200).json(posts); 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
+const getPostById = async (req, res) => {
+    try {
+        const dto = new getPostByIdDto(req.body);
+        const post = await postUsecase.getPostById(dto);
+        res.status(200).json(post); 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
+const getPostByNameAndTag = async (req, res) => {
+    try {
+        const dto = new getPostByNameAndTagDto(req.body);
+        const post = await postUsecase.getPostByNameAndTag(dto);
+        res.status(200).json(post); 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
+module.exports = { createPost, editPost, getPosts, getPostById, getPostByNameAndTag };

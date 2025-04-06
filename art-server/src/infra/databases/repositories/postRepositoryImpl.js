@@ -26,11 +26,34 @@ class PostRepositoryImpl extends PostRepository {
         return new PostEntity(postData);
     }
   
-    async findPostByNameAndTag(title, tag) {}
+    async findPostByNameAndTag(title = null, tag) {
+
+        if (!title && tag.length === 0 ) return null;
+        const filter = { recStatus: { $ne: 0 } };
+        
+        if (title) {
+            filter.title = { $regex: title, $options: 'i' };
+        }
+        if (tag.length > 0) {
+            filter.taggedTopic = { $all: tag };
+        }
+
+        const postData = await Post.find(filter);
+
+        if (!postData || postData.length === 0) return null;
+        return postData.map(post => new PostEntity(post));
+    }
   
     async findPostByRanking() {}
   
     async findReccomendedPost() {}
+
+    async findAllPosts() {
+        const postData = await Post.find({ recStatus: { $ne: 0 } });
+        if (!postData || postData.length === 0) return null;
+
+        return postData.map(p => new PostEntity(p));
+    }
 }
 
 module.exports = new PostRepositoryImpl();

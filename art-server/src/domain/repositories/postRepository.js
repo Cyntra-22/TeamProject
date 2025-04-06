@@ -8,6 +8,8 @@ class PostRepository {
   async findPostByRanking() {}
 
   async findReccomendedPost() {}
+
+  async findAllPosts() {}
 }
 
 module.exports = PostRepository;

@@ -19,11 +19,27 @@ const editPost = async (dto) => {
     return postEntity;
 };
 
-const getPosts = async () => {};
+const getPosts = async () => {
+    const postEntity = await postRepo.findAllPosts();
+    if (!postEntity) throw new Error("There are no posts yet");
+    return postEntity;
+};
 
-const getPostById = async (id) => {};
+const getPostById = async (id) => {
+    const postEntity = await postRepo.findPostById(id);
+    if (!postEntity) throw new Error("There are no posts yet");
+    return postEntity;
+};
 
-const getPostByNameAndTag = async (title, tag) => {};
+const getPostByNameAndTag = async (dto) => {
+    const title = dto.title;
+    const tag = dto.taggedTopic;
+
+    const postEntity = await postRepo.findPostByNameAndTag(title, tag);
+
+    if (!postEntity) throw new Error("There are no posts yet");
+    return postEntity;
+};
 
 const getReccomendedPost = async () => {};
 
