@@ -1,6 +1,7 @@
 const commentUsecase = require('../../application/usecases/commentUsecase');
 const CommentDto = require('../../application/dtos/commentDto');
 const EditCommentDto = require('../../application/dtos/editCommentDto');
+const DeleteCommentDto = require('../../application/dtos/deleteCommentDto');
 
 const createComment = async (req, res) => {
   try {
@@ -24,8 +25,8 @@ const editComment = async (req, res) => {
 
 const deleteComment = async (req, res) => {
   try {
-    const { id } = req.body;
-    const comment = await commentUsecase.deleteComment(id);
+    const dto = new DeleteCommentDto(req.body)
+    const comment = await commentUsecase.deleteComment(dto);
     res.status(201).json(comment); 
   } catch (err) {
     res.status(400).json({ message: err.message });

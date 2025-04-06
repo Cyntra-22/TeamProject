@@ -7,14 +7,13 @@ const getReviewsByRevieweeId = async (id) => {
 };
 
 const createReview = async (dto) => {
-  const userDummy = "000-000-000-000" //TODO : replace with get user id by token
-  const existingReview = await reviewRepo.findRevieweeReviewByReviewerId(userDummy, dto.revieweeId);
+  const existingReview = await reviewRepo.findRevieweeReviewByReviewerId(dto.userId, dto.revieweeId);
   if (existingReview) throw new Error('You already left a review!');
 
   const reviewEntity = await reviewRepo.upsertReview({
     rating: dto.rating,
     description: dto.description,
-    userId: userDummy,  
+    userId: dto.userId,  
     revieweeId: dto.revieweeId,
     recStatus: 1,
     createdWhen: Date.now,
