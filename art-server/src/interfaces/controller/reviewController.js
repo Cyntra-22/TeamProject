@@ -13,8 +13,8 @@ const createReviewPost = async (req, res) => {
 
 const getAllReviewsByRevieweeId = async (req, res) => {
   try{
-    const { _id } = req.body;
-    const reviews = await reviewUsecase.getReviewByRevieweeId(_id);
+    const { id } = req.body;
+    const reviews = await reviewUsecase.getReviewsByRevieweeId(id);
     res.status(200).json(reviews)
   } catch(err){
     res.status(400).json({ message: err.message });
