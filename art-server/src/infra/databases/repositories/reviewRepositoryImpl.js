@@ -5,8 +5,8 @@ const ReviewEntity = require('../../../domain/entities/review');
 class ReviewRepositoryImpl extends ReviewRepository {
   async upsertReview(reviewData) 
   {
-    const reviewData = new Review(reviewData);
-    const review = await reviewData.save();
+    const reviewdata = new Review(reviewData);
+    const review = await reviewdata.save();
     return new ReviewEntity(review)
   }
 
