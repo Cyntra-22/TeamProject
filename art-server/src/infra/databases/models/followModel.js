@@ -9,6 +9,6 @@ const followerSchema = new mongoose.Schema({
     updatedWhen: { type: Date, default: Date.now }
   });
   
-  const Follower = mongoose.model("Follower", followerSchema);
+  const Follow = mongoose.model("Follow", followerSchema);
   
-  module.exports = Follower;
+  module.exports = Follow;

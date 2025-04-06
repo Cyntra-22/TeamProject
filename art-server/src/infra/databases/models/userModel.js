@@ -7,12 +7,12 @@ const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     birthdate: { type: Date, required: true },
-    phoneNo: { type: String, unique: false },
+    phoneNo: { type: String, unique: true, sparse: true },
     linkedin: { type: String, default: "" },
     facebook: { type: String, default: "" },
     role: { type: String, enum: ["user", "artist"], default: "user" },
     interests: { type: [String], default: [] }, 
-    profileImage: { type: String, default: "" }, // Base64 encoded profile image
+    profileImage: { type: String, default: "" },
     createdWhen: { type: Date, default: Date.now },
     updatedWhen: { type: Date, default: Date.now }
   });

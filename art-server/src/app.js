@@ -5,6 +5,7 @@ const profileRoutes = require('./interfaces/routes/profileRoutes');
 const reviewRoutes = require('./interfaces/routes/reviewRoutes');
 const commentRoutes = require('./interfaces/routes/commentRoutes');
 const postRoutes = require('./interfaces/routes/postRoutes');
+const followRoutes = require('./interfaces/routes/followRoutes');
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.use('/profile', profileRoutes);
 app.use('/review', reviewRoutes);
 app.use('/comment', commentRoutes);
 app.use('/post', postRoutes);
+app.use('/follow', followRoutes);
 
 module.exports = app;
