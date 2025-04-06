@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     birthdate: { type: Date, required: true },
-    phoneNo: { type: String, unique: true },
+    phoneNo: { type: String, unique: false },
     linkedin: { type: String, default: "" },
     facebook: { type: String, default: "" },
     role: { type: String, enum: ["user", "artist"], default: "user" },
