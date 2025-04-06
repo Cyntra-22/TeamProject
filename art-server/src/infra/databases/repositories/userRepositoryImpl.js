@@ -18,7 +18,7 @@ class UserRepositoryImpl extends UserRepository {
     return new UserEntity(savedUser); 
   }
 
-  async q(_id){
+  async findUserById(_id){
     const userData = await User.findOne({ _id });
     if (!userData) return null;
 
