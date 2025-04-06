@@ -24,8 +24,8 @@ const editComment = async (req, res) => {
 
 const deleteComment = async (req, res) => {
   try {
-    const { _id } = req.body;
-    const comment = await commentUsecase.deleteComment(_id);
+    const { id } = req.body;
+    const comment = await commentUsecase.deleteComment(id);
     res.status(201).json(comment); 
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -34,8 +34,8 @@ const deleteComment = async (req, res) => {
 
 const getAllCommentsByCommentId = async (req, res) => {
   try{
-    const { _id } = req.body;
-    const comments = await commentUsecase.getCommentsByCommentId(_id);
+    const { id } = req.body;
+    const comments = await commentUsecase.getCommentsByCommentId(id);
     res.status(200).json(comments)
   } catch(err){
     res.status(400).json({ message: err.message });
@@ -44,13 +44,15 @@ const getAllCommentsByCommentId = async (req, res) => {
 
 const getAllCommentsByPostId = async (req, res) => {
   try{
-    const { _id } = req.body;
-    const comments = await commentUsecase.getCommentsByPostId(_id);
+    const { id } = req.body;
+    const comments = await commentUsecase.getCommentsByPostId(id);
     res.status(200).json(comments)
   } catch(err){
     res.status(400).json({ message: err.message });
   }
 }
+
+
 
 
 module.exports = { createComment, editComment, deleteComment, getAllCommentsByPostId, getAllCommentsByCommentId };

@@ -1,17 +1,21 @@
+const { ObjectId } = require('mongodb');
+
 const CommentRepository = require('../../../domain/repositories/commentRepository')
 const Comment = require('../models/commentModel');
 const CommentEntity = require('../../../domain/entities/comment');
 
+
 class CommentRepositoryImpl extends CommentRepository {
   async upsertComment(commentData) {
-    const { _id, description, postId, userId, commentTopicId, recStatus } = commentData;
+    const { commentId, description, postId, userId, commentTopicId, recStatus } = commentData;
   
     let comment;
-    
-    if (_id) {
+    if (commentId) {
+      
       comment = await Comment.findByIdAndUpdate(
-        _id, 
+        new ObjectId(commentId), 
         { 
+          userId,
           description, 
           recStatus,
           updatedWhen: Date.now(), 
@@ -30,12 +34,11 @@ class CommentRepositoryImpl extends CommentRepository {
       });
       await comment.save();
     }
-  
     return new CommentEntity(comment);
   }
   async findCommentsByPostId(postId)
   {
-    const commentData = Comment.find({postId, recStatus: { $ne: 0 }})
+    const commentData = await Comment.find({postId: new ObjectId(postId), recStatus: 1})
     if (!commentData || commentData.length === 0) return null;
 
     return commentData.map(c => new CommentEntity(c)); 
@@ -43,10 +46,16 @@ class CommentRepositoryImpl extends CommentRepository {
 
   async findCommentsByCommentId(commentId)
   {
-    const commentData = Comment.find({commentTopicId: commentId, recStatus: { $ne: 0 }})
+    const commentData = await Comment.find({commentTopicId: new ObjectId(commentId), recStatus: 1})
     if (!commentData || commentData.length === 0) return null;
 
     return commentData.map(c => new CommentEntity(c)); 
+  }
+
+  async findCommentByCommentId(commentId)
+  {
+    const commentData = await Comment.findOne({_id: new ObjectId(commentId), recStatus: 1})
+    return new CommentEntity(commentData)
   }
 }
 
