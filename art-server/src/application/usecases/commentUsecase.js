@@ -1,14 +1,14 @@
 const commentRepo = require('../../infra/databases/repositories/commentRepositoryImpl');
+const authUsecase = require('./authUsecase')
 
 const createComment = async (dto) => {
-  const userDummy = "000-000-000-000" //TODO : replace with get user id by token
 
   const commentEntity = await commentRepo.upsertComment({
     postId: dto.postId,
     description: dto.description,
-    userId: userDummy,  
+    userId: dto.userId,  
     commentTopicId: dto.commentTopicId,
-    recStatus: dto.recStatus,
+    recStatus: 1,
     createdWhen: Date.now,
     updatedWhen: null
   });
@@ -19,22 +19,33 @@ const createComment = async (dto) => {
 
 const editComment = async (dto) => {
   const updatedComment = await commentRepo.upsertComment({
-    id: dto.commentId,
+    commentId: dto.commentId,
     description: dto.description,
     updatedWhen: Date.now(),
+    postId: dto.postId,
+    commentTopicId: dto.commentTopicId,
+    recStatus: 1
   });
   
   return updatedComment;
 };
 
-const deleteComment = async (commentId) => {
-  const deletedComment = await commentRepo.upsertComment({
-    _id: commentId,
-    recStatus: 0,
-    updatedWhen: Date.now(),
-  });
+const deleteComment = async (id) => {
+  const existingComment = await commentRepo.findCommentByCommentId(id);
+  if (existingComment){
+    const deletedComment = await commentRepo.upsertComment({
+      commentId: id,
+      description: existingComment.description,
+      postId: existingComment.postId,
+      commentTopicId: existingComment.commentTopicId,
+      userId: existingComment.userId,
+      recStatus: 0,
+      updatedWhen: Date.now()
+    });
 
-  return deletedComment;
+    return deletedComment;
+  }
+  throw new Error('There is no existing comment');
 };
 
 const getCommentsByPostId = async (id) => {

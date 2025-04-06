@@ -10,12 +10,12 @@ class FollowRepositoryImpl extends FollowRepository {
     let follow;
   
     if (recStatus === 0) {
-      follow = await Follow.findOneAndDelete({ userId, followerId });
+      follow = await Follow.findOneAndUpdate({ userId, followerId }, {recStatus:0});
   
       if (!follow) {
         throw new Error('Follow record not found');
       }
-      return { message: 'Follow relationship deleted successfully' };
+      return new FollowEntity(follow);
     }
   
     follow = await Follow.findOneAndUpdate(
@@ -31,14 +31,14 @@ class FollowRepositoryImpl extends FollowRepository {
   }
   
   async findFollowersByUserId(id) {
-    const followers = await Follow.find({ userId: id, recStatus: { $ne: 0 } });
+    const followers = await Follow.find({ userId: id, recStatus: 1 });
     if (!followers || followers.length === 0) return null;
     
     return followers
   }
 
   async findFollowingByUserId(followerId) {
-    const following = await Follow.find({ followerId, recStatus: { $ne: 0 } });
+    const following = await Follow.find({ followerId, recStatus: 1 });
     if (!following || following.length === 0) return null;
     
     return following
@@ -48,7 +48,7 @@ class FollowRepositoryImpl extends FollowRepository {
     const follow = await Follow.findOne({ 
       followerId, 
       userId, 
-      recStatus: { $ne: 0 } 
+      recStatus:1 
     });
     
     return follow ? new FollowEntity(follow) : null;

@@ -21,6 +21,7 @@ class PostRepositoryImpl extends PostRepository {
 
     async findPostById(id) {
         const postData = await Post.findById(id);
+        console.log(postData)
         if (!postData) return null;
 
         return new PostEntity(postData);

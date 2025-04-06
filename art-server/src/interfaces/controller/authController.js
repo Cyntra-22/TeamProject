@@ -25,7 +25,6 @@ const login = async (req, res) => {
 
 const IDfromToken = async (req, res) => {
   try {
-    console.log(req.body)
     const result = await authUsecase.getIDfromToken(req.body);
     res.status(200).json(result); 
   } catch (err) {

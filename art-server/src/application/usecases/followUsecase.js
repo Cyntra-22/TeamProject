@@ -32,7 +32,6 @@ const followUser = async (dto) => {
 
 const unfollowUser = async (dto) => {
     const existingFollow = await followRepo.findFollow(dto.followerId, dto.userId);
-    console.log(existingFollow)
   
     if (!existingFollow) {
       throw new Error('You are not following this user');
