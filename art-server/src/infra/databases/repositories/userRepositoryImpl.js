@@ -25,6 +25,13 @@ class UserRepositoryImpl extends UserRepository {
     return new ProfileEntity(userData);  
   }
 
+  async findUserByIdwithPassword(_id){
+    const userData = await User.findOne({ _id });
+    if (!userData) return null;
+
+    return new UserEntity(userData);  
+  }
+
   async updateUserProfile(data) {
     const { _id, ...updateFields } = data;
   
@@ -44,6 +51,25 @@ class UserRepositoryImpl extends UserRepository {
     return new ProfileEntity(updatedUser);
   }
   
+  async changePassword(data) {
+    const { userId, newPassword } = data;
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { 
+        $set: { 
+          password: newPassword,
+          updatedWhen: Date.now()
+        } 
+      },
+      { new: true }
+    );
+    
+    if (!updatedUser) return null;
+    
+    return new UserEntity(updatedUser);
+  }
+
 }
 
 module.exports = new UserRepositoryImpl();
