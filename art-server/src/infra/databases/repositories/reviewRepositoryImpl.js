@@ -3,10 +3,10 @@ const Review = require('../models/reviewModel');
 const ReviewEntity = require('../../../domain/entities/review');
 
 class ReviewRepositoryImpl extends ReviewRepository {
-  async upsertReview(reviewData) 
+  async upsertReview(data) 
   {
-    const reviewdata = new Review(reviewData);
-    const review = await reviewdata.save();
+    const reviewData = new Review(data);
+    const review = await reviewData.save();
     return new ReviewEntity(review)
   }
 
