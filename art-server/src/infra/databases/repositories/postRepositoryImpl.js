@@ -45,9 +45,19 @@ class PostRepositoryImpl extends PostRepository {
         return postData.map(post => new PostEntity(post));
     }
   
-    async findPostByRanking() {}
+    async findPostByRanking() {
+        const postData = await Post.find({ recStatus: { $ne: 0 } }).sort({ likeAmount: -1 }).limit(5);
+        if (!postData || postData.length === 0) return null;
+
+        return postData.map(p => new PostEntity(p));
+    }
   
-    async findReccomendedPost() {}
+    async findReccomendedPost() {
+        const postData = await Post.find({ recStatus: { $ne: 0 } }).sort({ createdWhen: -1 }).limit(10);
+        if (!postData || postData.length === 0) return null;
+
+        return postData.map(p => new PostEntity(p));
+    }
 
     async findAllPosts() {
         const postData = await Post.find({ recStatus: { $ne: 0 } });

@@ -53,4 +53,22 @@ const getPostByNameAndTag = async (req, res) => {
     }
 }
 
-module.exports = { createPost, editPost, getPosts, getPostById, getPostByNameAndTag };
+const getReccomendedPost = async (req, res) => {
+    try {
+        const posts = await postUsecase.getReccomendedPost();
+        res.status(200).json(posts); 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
+const getPostByRanking = async (req, res) => {
+    try {
+        const posts = await postUsecase.getPostByRanking();
+        res.status(200).json(posts); 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
+module.exports = { createPost, editPost, getPosts, getPostById, getPostByNameAndTag, getReccomendedPost, getPostByRanking };
