@@ -42,9 +42,9 @@ const login = async (dto) => {
   };
 };
 
-const getIDfromToken = (dto) => {
+const getIDfromToken = (body) => {
   try {
-    const decoded = jwt.verify(dto.token, JWT_SECRET);
+    const decoded = jwt.verify(body.token, JWT_SECRET);
     
     return decoded.userId;
   } catch (error) {
@@ -52,5 +52,28 @@ const getIDfromToken = (dto) => {
   }
 };
 
-module.exports = { register, login, getIDfromToken };
+const changePassword = async (dto) => {
+  const userEntity = await userRepo.findUserByIdwithPassword(dto.userId);
+  if (!userEntity) throw new Error('User not found');
+  
+  const isMatch = await bcrypt.compare(dto.currentPassword, userEntity.password);
+  if (!isMatch) throw new Error('Current password is incorrect');
+  
+  const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
+  
+  const updatedUser = await userRepo.changePassword({
+    userId: dto.userId,
+    newPassword: hashedPassword
+  });
+  
+  if (!updatedUser) throw new Error('Failed to update password');
+  
+  const { password, ...userWithoutPassword } = updatedUser;
+  return {
+    message: 'Password updated successfully',
+    user: userWithoutPassword
+  };
+};
+
+module.exports = { register, login, getIDfromToken, changePassword };
 

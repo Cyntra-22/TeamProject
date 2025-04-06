@@ -41,8 +41,16 @@ const getPostByNameAndTag = async (dto) => {
     return postEntity;
 };
 
-const getReccomendedPost = async () => {};
+const getReccomendedPost = async () => {
+    const postEntity = await postRepo.findReccomendedPost();
+    if (!postEntity) throw new Error("There are no posts yet");
+    return postEntity;
+};
 
-const getPostByRanking = async () => {};
+const getPostByRanking = async () => {
+    const postEntity = await postRepo.findPostByRanking();
+    if (!postEntity) throw new Error("There are no posts yet");
+    return postEntity;
+};
 
 module.exports = { createPost, editPost, getPosts, getPostById, getPostByNameAndTag, getReccomendedPost, getPostByRanking };

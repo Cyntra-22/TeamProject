@@ -1,5 +1,5 @@
 class Post {
-    constructor({ title, description, taggedTopic, postImage, userId, likeAmount, aiTag, _id }) {
+    constructor({ title, description, taggedTopic, postImage, userId, likeAmount, aiTag, createdWhen, _id }) {
         this.title = title;
         this.description = description;
         this.taggedTopic = taggedTopic || [];
@@ -9,6 +9,7 @@ class Post {
         this.aiTag = aiTag
         this.id = _id;
         this.likeAmount = likeAmount;
+        this.createdWhen = createdWhen;
     }
 }
 

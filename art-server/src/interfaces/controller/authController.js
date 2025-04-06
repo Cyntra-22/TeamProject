@@ -1,6 +1,7 @@
 const authUsecase = require('../../application/usecases/authUsecase');
 const RegisterDto = require('../../application/dtos/registerDto');
 const LoginDto = require('../../application/dtos/loginDto');
+const ChangePasswordDto = require('../../application/dtos/changePasswordDto');
 
 const register = async (req, res) => {
   try {
@@ -31,4 +32,14 @@ const IDfromToken = async (req, res) => {
   }
 };
 
-module.exports = { register, login, IDfromToken};
+const changePassword = async (req, res) => {
+  try {
+    const dto = new ChangePasswordDto(req.body);
+    const result = await authUsecase.changePassword(dto);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+module.exports = { register, login, IDfromToken, changePassword};
