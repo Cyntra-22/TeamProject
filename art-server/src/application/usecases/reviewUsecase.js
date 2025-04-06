@@ -24,4 +24,4 @@ const createReview = async (dto) => {
   return reviewEntity
 }
 
-module.exports = { getReviewByRevieweeId, createReview};
+module.exports = { getReviewsByRevieweeId, createReview};
