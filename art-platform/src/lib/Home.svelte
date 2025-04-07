@@ -4,7 +4,7 @@
 </script>
 
 <style>
-     img {
+    img {
         width: 100%;
         border-radius: 0.7rem;
         object-fit: cover;
@@ -23,10 +23,10 @@
 </style>
 
 {#each images as image, index}
-    <a href ={`/art-detail/${index}`}>
+    <a href ={`/art-detail/${image.id}`}>
         <img 
-            src={image} 
-            alt={`Buddhist Art ${index + 1}`} 
+            src={image.src} 
+            alt={image.title} 
             class="{index === 5 ? 'selected' : ''}" 
         />
     </a>

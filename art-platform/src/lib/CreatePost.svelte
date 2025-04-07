@@ -10,6 +10,7 @@ let isLoading = false;
 let errorMessage = "";
 let userID: string | null = null;
 
+
 onMount(async () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -176,6 +177,8 @@ function resetFileInput() {
     imagePreview = null;  // Clear the image preview
 }
 
+
+   
 </script>
 
 <style>
