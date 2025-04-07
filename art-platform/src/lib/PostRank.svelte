@@ -1,3 +1,12 @@
+<script>
+    export let title = "Phone Wallpaper";
+    export let username = "Rachel Emma";
+    export let tags = "aesthetic, apple, airpods pro, airpods max, iphone, iphone pro";
+    export let likes = "100k";
+    export let imageUrl = "/logo.png";
+    export let profileUrl = "/logo.png";
+    export let trophy = "/gold.png";
+</script>
 <style>
     .review-container{
             border: 1px solid grey;
@@ -72,33 +81,29 @@
 
 <div class="review-container">
     <div class="bit-img">
-        <img src="/logo.png" alt="logo" />
+        <img src={imageUrl} alt={imageUrl} />
     </div>
     <div class="right-container">
         <div>
             <div class="header-container">
                 <div class="left-header">
-                    <img src="/logo.png" alt="profile" />
-                    <h4>Rachel Emma</h4> 
+                    <img src={profileUrl} alt="profile" />
+                    <h4>{username}</h4> 
                 </div>
 
                 <div class="trophy-img">
-                    <img src="/gold.png" alt="profile" />
+                    <img src={trophy} alt="trophy" />
                 </div>
             </div>
             <div>
-                <h4>Phone Wallpaper</h4>
-                <p>aesthetic, apple, airpods pro, airpods max, iphone, iphone pro,</p>
+                <h4>{title}</h4>
+                <p>{tags}</p>
             </div>
         </div>
         <div class="review-content-flex">
             <div class="like-count">
                 <div><img class="small-img" src="/heart-blank.png" alt="heart-blank" /></div>
-                <div class="bold-text">100k</div>
-            </div>
-            <div class="like-count">
-                <div><img class="small-img" src="/comment.png" alt="comment" /></div>
-                <div class="bold-text">10k</div>
+                <div class="bold-text">{likes}</div>
             </div>
         </div>
     </div>
