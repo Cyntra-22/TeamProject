@@ -4,7 +4,7 @@ const authController = require('../controller/authController');
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
-router.get('/tokenID', authController.IDfromToken);
+router.post('/tokenID', authController.IDfromToken);
 router.patch('/passwordchange', authController.changePassword);
 
 module.exports = router;

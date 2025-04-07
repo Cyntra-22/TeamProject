@@ -1,14 +1,62 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import ProfileRight from "$lib/ProfileRight.svelte";
 
     let count = 5;
     let images = [
         "/B2.jpeg", "/B3.jpeg", "/B4.jpeg",
         "/B5.jpeg", "/B6.jpeg", "/B7.jpeg", "/B8.jpeg", "/B1.jpeg"
-        
     ];
-    
+
+    let userID: string | null = null;
+    let profile: any = null;
+
+    onMount(async () => {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            try {
+                // 1. Get userID from token
+                const response = await fetch("http://localhost:8000/auth/tokenID", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ token })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    userID = data;
+                    console.log("User ID:", userID);
+
+                // 2. Fetch profile by userID
+                    const profileRes = await fetch("http://localhost:8000/profile/getById", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ _id: userID })
+                    });
+
+                    if (profileRes.ok) {
+                        profile = await profileRes.json();
+                        console.log("Profile Data:", profile);
+                    } else {
+                        console.error("Failed to fetch profile", profileRes.status);
+                    }
+                } else {
+                    console.error("Failed to fetch user ID", response.status);
+                }
+            } catch (err) {
+                console.error("Error:", err);
+            }
+        } else {
+            console.warn("No token found in localStorage");
+        }
+    });
 </script>
+
 <style>
     .profile-container{
         margin-top: 1rem;
@@ -156,8 +204,8 @@
             <img src="/cover.png" alt="cover image" />
             <div class="profile-right-container">
                 <div class="img-container">
-                    <img src="/logo.png" alt="profile image" />
-                    <h3>Reachel Emma</h3>
+                    <img src={profile?.profileImage || "/logo.png"} alt="profile image" />
+                    <h3>{profile?.firstName} {profile?.lastName}</h3>
                     <p>My work explores the relationship between critical theory and emotional memory.</p>
                     <button class="pbtn-2">+ Follow</button>
                     <a href="/edit-profile">
@@ -172,7 +220,7 @@
                     </div>
                     <div class="like-count">
                         <div><img class="small-img" src="/email-logo.jpg" alt="comment" /></div>
-                        <div class="info-detail">myopa2345artist@gmail.com</div>
+                        <div class="info-detail">{profile?.email}</div>
                     </div>
                     <div class="like-count">
                         <div><img class="small-img" src="/location-icon.jpg" alt="comment" /></div>
@@ -180,11 +228,11 @@
                     </div>
                     <div class="like-count">
                         <div><img class="small-img" src="/facebook-icon.jpg" alt="comment" /></div>
-                        <div class="info-detail">Rachel Emma</div>
+                        <div class="info-detail">{profile?.facebook || "No Facebook profile"}</div>
                     </div>
                     <div class="like-count">
                         <div><img class="small-img" src="/link-logo.jpg" alt="comment" /></div>
-                        <div class="info-detail">Rachel Emma</div>
+                        <div class="info-detail">{profile?.linkedin || "No LinkedIn profile"}a</div>
                     </div>
                     <div class="right-header">
                         <div>
