@@ -42,7 +42,6 @@
                     if (profileRes.ok) {
                         profile = await profileRes.json();
                         console.log("Profile Data:", profile);
-                        goto("/profile");
 
                         // Populate form fields with current profile data
                         email = profile?.email || '';
@@ -90,6 +89,7 @@
             if (res.ok) {
                 const data = await res.json();
                 console.log("Profile updated:", data);
+                goto("/profile");
             } else {
                 console.error("Failed to update profile", res.status);
             }
