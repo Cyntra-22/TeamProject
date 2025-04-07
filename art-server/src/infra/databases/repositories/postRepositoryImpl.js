@@ -46,7 +46,7 @@ class PostRepositoryImpl extends PostRepository {
     }
   
     async findPostByRanking() {
-        const postData = await Post.find({ recStatus: { $ne: 0 } }).sort({ likeAmount: -1 }).limit(5);
+        const postData = await Post.find({ recStatus: { $ne: 0 } }).sort({ likeAmount: -1 }).limit(10);
         if (!postData || postData.length === 0) return null;
 
         return postData.map(p => new PostEntity(p));

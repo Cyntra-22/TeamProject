@@ -1,8 +1,76 @@
 <script lang="ts">
     import PostRank from "$lib/PostRank.svelte";
-   
-    let count = 10;
-  
+    import { onMount } from "svelte";
+
+    let rankedPosts: any[] = [];
+    let postsWithProfiles: any[] = [];
+    let isLoading = true;
+    
+    // Function to fetch profile data for a user
+    async function fetchProfileData(userId: string) {
+        try {
+            const profileRes = await fetch("http://localhost:8000/profile/getById", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ _id: userId })
+            });
+            
+            if (profileRes.ok) {
+                return await profileRes.json();
+            } else {
+                console.error("Failed to fetch profile for user", userId);
+                return null;
+            }
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+            return null;
+        }
+    }
+    
+    // Fetch the ranked posts and their associated profiles
+    onMount(async () => {
+        try {
+            // Fetch ranked posts
+            const response = await fetch("http://localhost:8000/post/getRanking", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            
+            if (response.ok) {
+                rankedPosts = await response.json();
+                console.log("Ranked posts data:", rankedPosts);
+                
+                // Create enhanced posts with profile data
+                const enhancedPosts = await Promise.all(
+                    rankedPosts.map(async (post) => {
+                        // Fetch profile for each post
+                        const profileData = await fetchProfileData(post.userId);
+                        
+                        // Merge post and profile data
+                        return {
+                            ...post,
+                            username: profileData ? `${profileData.firstName} ${profileData.lastName}` : "Unknown User",
+                            profileUrl: profileData?.profileImage || "/default-profile.png"
+                        };
+                    })
+                );
+                
+                postsWithProfiles = enhancedPosts;
+                console.log("Posts with profiles:", postsWithProfiles);
+            } else {
+                console.error("Failed to fetch ranked posts");
+            }
+        } catch (error) {
+            console.error("Error fetching ranked posts:", error);
+        } finally {
+            isLoading = false;
+        }
+    });
+
     function scrollToTop() {
 
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -22,9 +90,6 @@
             margin-bottom: 3rem;
             text-align: center;
         }
-     
-    
-      
 
         .top-btn {
 
@@ -53,8 +118,6 @@
            
         }
             
-        
-    
     </style>
     
     <div class="create-post-container">
@@ -63,9 +126,17 @@
 
         </div> 
         <div class="grid-container">
-            {#each Array(count) as _, i}
-              <PostRank />
-            {/each}      
+            {#each postsWithProfiles as post (post.id)}
+                <PostRank 
+                    title={post.title}
+                    username={post.username}
+                    tags={post.taggedTopic}
+                    likes={post.likeAmount}
+                    imageUrl={post.postImage}
+                    profileUrl={post.profileUrl}
+                    trophy={post.trophy}
+                />
+            {/each}
           </div>
        <button class="top-btn" on:click={scrollToTop}><img src="/topButton.png" alt="top button"></button>
    
