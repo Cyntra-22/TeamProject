@@ -1,5 +1,55 @@
+
 <script lang="ts">
-</script>
+    import { userInfo } from "$lib/loginUserInfo";
+    import { goto } from '$app/navigation';
+    interface LoginCredentials {
+      email: string;
+      password: string;
+    }
+    
+    async function handleLogin(event: Event) {
+        event.preventDefault();
+
+        const form = event.target as HTMLFormElement;
+        const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+        const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+
+        const user: LoginCredentials = {
+            email,
+            password,
+        };
+
+        try {
+            const response = await fetch("http://localhost:8000/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("login data here ", data);
+                
+                userInfo.set({
+                    id: data.id,
+                    name: data.name,
+                    email: data.email,
+                    isLoggedIn: true,
+                });
+
+                goto('/profile');
+            } else {
+                const errorData = await response.json();
+                alert(errorData.detail);
+            }
+        } catch (error) {
+            console.error("Unexpected error:", error);
+        }
+    }
+  </script>
+
 <style>
 
     .container {
@@ -91,10 +141,9 @@
 </style>
 
 <div class="container">
-   
     <div class="login-box">
         <h2>Welcome to Art World</h2>
-        <form >
+        <form on:submit={handleLogin}>
             <label for="email">Email</label>
             <input type="email" id="email" placeholder="Email" required>
 
@@ -105,11 +154,11 @@
                 <a href="/">Forgot your password?</a>
             </div>
 
-            <button type="submit">Log in</button>
-            <p class="forgot-password1">Not Account Yet? <a href="/login" style="font-size:small">Sign up </a></p>
+            <button type="submit">
+                <span>Log in</span>
+                <div class="spinner" id="loginSpinner"></div>
+            </button>
+            <p class="forgot-password1">Not Account Yet? <a href="/signup" style="font-size:small">Sign up </a></p>
         </form>
-        
-        
-
     </div>
 </div>
