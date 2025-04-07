@@ -15,13 +15,5 @@
 </style>
 
 <div class="gallery">
-    {#each images as image, index}
-	<a href={`/art-detail/${index}`}>
-		<img 
-			src={image} 
-			alt={`Buddhist Art ${index + 1}`}
-			class="{index === 5 ? 'selected' : ''}" 
-		/>
-	</a>
-{/each}
+   <Home/>
 </div>
