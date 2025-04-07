@@ -1,11 +1,41 @@
 <script lang="ts">
+import { onMount } from "svelte";
 let title = "";
 let description = "";
 let tags = "";
 let file: File | null = null;
 let uploadError = false;  // State to manage error status
 let imagePreview: string | null = null;  // State to store the image preview URL
+let isLoading = false;
+let errorMessage = "";
+let userID: string | null = null;
 
+onMount(async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        try {
+            const response = await fetch("http://localhost:8000/auth/tokenID", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ token })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                userID = data
+                console.log("User ID:", userID);
+            } else {
+                console.error("Failed to fetch user ID", response.status);
+            }
+        } catch (err) {
+            console.error("Error fetching user ID:", err);
+        }
+    } else {
+        console.warn("No token found in localStorage");
+    }
+});
 // Valid image formats (add more formats as needed)
 const validImageFormats = ["image/jpeg", "image/png", "image/gif"];
 
@@ -63,8 +93,80 @@ function handleKeyPress(event: KeyboardEvent) {
     }
 }
 
-function publishPost() {
-    console.log("Publishing Post", { title, description, tags, file });
+// Helper function to convert file to base64
+function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
+    });
+}
+
+async function publishPost() {
+    if (!title || !description || !file) {
+        alert("Please fill out all fields and upload an image");
+        return;
+    }
+    
+    isLoading = true;
+    errorMessage = "";
+    
+    try {
+        // Process tags - assuming they're entered as comma-separated values
+        const taggedTopic = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+        
+        // Convert file to base64
+        const base64Image = await fileToBase64(file);
+
+        const userId = userID;
+
+        // Create post data object with base64 image
+        const postData = {
+            title,
+            description,
+            taggedTopic,
+            postImage: base64Image,
+            userId
+        };
+        
+        console.log("postData: ", postData);
+
+        // Send the POST request with JSON data
+        const response = await fetch("http://localhost:8000/post/create", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(postData)
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Post created successfully:", data);
+            
+            // Reset form after successful post
+            title = "";
+            description = "";
+            tags = "";
+            file = null;
+            imagePreview = null;
+            
+            // Show success message or redirect
+            alert("Post created successfully!");
+            // Optionally redirect to the post or posts page
+            // window.location.href = "/posts";
+        } else {
+            const errorData = await response.json();
+            errorMessage = errorData.message || "Failed to create post";
+            console.error("Error creating post:", errorData);
+        }
+    } catch (error) {
+        console.error("Unexpected error:", error);
+        errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    } finally {
+        isLoading = false;
+    }
 }
 
 // Function to reset the file input in case of error
