@@ -38,7 +38,7 @@
                     email: data.email,
                     isLoggedIn: true,
                 });
-
+                localStorage.setItem("token", data.token);
                 goto('/profile');
             } else {
                 const errorData = await response.json();
