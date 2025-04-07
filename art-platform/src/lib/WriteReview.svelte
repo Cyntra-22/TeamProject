@@ -1,3 +1,9 @@
+<script lang="ts">
+    export let author: string;
+    export let date: string;
+    export let stars: number;
+    export let content: string;
+</script>
 <style>
     .review-container{
             border: 1px solid grey;
@@ -40,17 +46,17 @@
                 </div>
            
                 <div>
-                    <h4>Rachel Emma</h4>
-                    <p>18 AUG 2023</p>
+                    <h4>{author}</h4>
+                    <p>{date}</p>
                 </div>
             </div>
-            <div>****</div>
+            <div>{"★".repeat(stars)}</div>
         </div>      
         
     </div>
     
     <div>
-        <p>"Captivating and Thoughtful"This artwork beautifully blends vibrant colors and intricate details, evoking strong emotions. The composition is harmonious, though adding more depth to the background could enhance it further. A remarkable display of creativity and skill!</p>
+        <p>{content}</p>
     </div>
    
     
