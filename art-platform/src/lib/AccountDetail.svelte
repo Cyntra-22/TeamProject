@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { goto } from '@sveltejs/kit/navigation';
+    import { goto } from '$app/navigation';
 
     let userID: string | null = null;
     let profile: any = null;
