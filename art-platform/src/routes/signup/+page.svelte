@@ -53,15 +53,13 @@ async function registerUser(user: User) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(user),
-            // If you want to include cookies, add this line:
-            // credentials: 'include'
         });
         
         if (response.ok) {
             const data = await response.json();
             console.log("User created:", data);
             alert("Sign-up successful! Welcome to Art World.");
-            window.location.href = "/login";
+            window.location.href = `/category?userId=${data.id}`;;
         } else {
             const errorData = await response.json();
             console.error("Error creating user:", errorData.detail);

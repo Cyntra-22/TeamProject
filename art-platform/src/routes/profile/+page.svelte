@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { page } from '$app/stores'; // Import page store for URL params
     import ProfileRight from "$lib/ProfileRight.svelte";
 
     let count = 5;
@@ -10,13 +11,15 @@
 
     let userID: string | null = null;
     let profile: any = null;
+    let isOwnProfile: boolean = false;
 
     onMount(async () => {
         const token = localStorage.getItem("token");
+        const urlProfileId = $page.url.searchParams.get('id'); // Get profile ID from URL
 
         if (token) {
             try {
-                // 1. Get userID from token
+                // 1. Get current user ID from token
                 const response = await fetch("http://localhost:8000/auth/tokenID", {
                     method: "POST",
                     headers: {
@@ -26,11 +29,20 @@
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    userID = data;
-                    console.log("User ID:", userID);
+                    const currentUserId = await response.json();
+                    
+                    // Determine which profile to fetch
+                    if (urlProfileId) {
+                        userID = urlProfileId;
+                        isOwnProfile = currentUserId === urlProfileId;
+                    } else {
+                        userID = currentUserId;
+                        isOwnProfile = true;
+                    }
+                    
+                    console.log("Fetching profile for ID:", userID, "Is own profile:", isOwnProfile);
 
-                // 2. Fetch profile by userID
+                    // 2. Fetch profile by userID (either from URL or current user)
                     const profileRes = await fetch("http://localhost:8000/profile/getById", {
                         method: "POST",
                         headers: {
@@ -193,9 +205,6 @@
     h2{
         font-size: 2rem;
     }
-
-
-    
 </style>
 
 <div class="profile-container">
@@ -207,11 +216,14 @@
                     <img src={profile?.profileImage || "/logo.png"} alt="profile image" />
                     <h3>{profile?.firstName} {profile?.lastName}</h3>
                     <p>My work explores the relationship between critical theory and emotional memory.</p>
-                    <button class="pbtn-2">+ Follow</button>
-                    <a href="/edit-profile">
-                        <button class="pbtn-2">Edit Profile</button>
-                    </a>
                     
+                    {#if isOwnProfile}
+                        <a href="/edit-profile">
+                            <button class="pbtn-2">Edit Profile</button>
+                        </a>
+                    {:else}
+                        <button class="pbtn-2">+ Follow</button>
+                    {/if}
                 </div>
                 <div class="profile-left-container">
                     <div class="like-count">
@@ -232,7 +244,7 @@
                     </div>
                     <div class="like-count">
                         <div><img class="small-img" src="/link-logo.jpg" alt="comment" /></div>
-                        <div class="info-detail">{profile?.linkedin || "No LinkedIn profile"}a</div>
+                        <div class="info-detail">{profile?.linkedin || "No LinkedIn profile"}</div>
                     </div>
                     <div class="right-header">
                         <div>
@@ -264,6 +276,4 @@
             <ProfileRight />
         {/each}    
     </div>
-    
 </div>
-
