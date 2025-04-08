@@ -191,7 +191,7 @@
 
                             if (artistPostsRes.ok) {
                                 artistPosts = await artistPostsRes.json();
-                                console.log("Artist Posts:", artistPosts);
+                                //console.log("Artist Posts:", artistPosts);
                             } else {
                                 console.error("Failed to fetch artist posts", artistPostsRes.status);
                             }
