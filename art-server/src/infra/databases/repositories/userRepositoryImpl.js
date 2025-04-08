@@ -70,6 +70,27 @@ class UserRepositoryImpl extends UserRepository {
     return new UserEntity(updatedUser);
   }
 
+  async getArtists(limit = 10, skip = 0) {
+    const artistUsers = await User.find({ role: 'artist' })
+      .select('_id firstName lastName profileImage')
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1 });
+    
+    if (!artistUsers || artistUsers.length === 0) {
+      return [];
+    }
+    
+    return artistUsers.map(artist => {
+      return {
+        _id: artist._id,
+        firstName: artist.firstName,
+        lastName: artist.lastName,
+        profileImage: artist.profileImage
+      };
+    });
+  }
+
 }
 
 module.exports = new UserRepositoryImpl();

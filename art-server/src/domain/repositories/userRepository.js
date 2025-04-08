@@ -8,6 +8,8 @@ class UserRepository {
   async updateUserProfile(data){}
 
   async changePassword(data){}
+
+  async getArtist(){}
 }
 
 module.exports = UserRepository;

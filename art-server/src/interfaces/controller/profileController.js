@@ -22,4 +22,21 @@ const editProfile = async (req, res) => {
   }
 };
 
-module.exports = { getProfile, editProfile };
+const getArtists = async (req, res) => {
+  try {
+    const { limit, page } = req.query;
+    
+    const dto = { 
+      limit: limit ? parseInt(limit) : 10,
+      page: page ? parseInt(page) : 1
+    };
+    
+    const result = await profileUsecase.getArtists(dto);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+
+module.exports = { getProfile, editProfile, getArtists };

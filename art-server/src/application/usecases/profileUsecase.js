@@ -19,4 +19,12 @@ const editProfile = async (dto) => {
     return updatedProfile;
 };
 
-module.exports = {getProfile, editProfile};
+const getArtists = async (dto) => {
+  const { limit = 10, page = 1 } = dto;
+  const skip = (page - 1) * limit;
+  
+  const artists = await userRepo.getArtists(limit, skip);
+  return artists;
+};
+
+module.exports = {getProfile, editProfile, getArtists};

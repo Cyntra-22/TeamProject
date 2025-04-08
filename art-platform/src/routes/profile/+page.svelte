@@ -664,8 +664,6 @@
         </div>
     </div>
     <div class="more-profile-container">
-        {#each Array(count) as _, i}
-            <ProfileRight />
-        {/each}    
+        <ProfileRight />
     </div>
 </div>
