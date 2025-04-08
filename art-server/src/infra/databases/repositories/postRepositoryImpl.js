@@ -23,7 +23,6 @@ class PostRepositoryImpl extends PostRepository {
 
     async findPostById(id) {
         const postData = await Post.findById(id);
-        console.log(postData);
         if (!postData) return null;
 
         return new PostEntity(postData);
@@ -80,7 +79,6 @@ class PostRepositoryImpl extends PostRepository {
 
     async findPostByUserId(userId) {
         try {
-            console.log("userId", userId);
             // Convert string userId to ObjectId
             const objectIdUserId = mongoose.Types.ObjectId.createFromHexString(userId);
             const postData = await Post.find({

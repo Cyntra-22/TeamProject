@@ -279,10 +279,27 @@
         showConfirmDelete = true;
     }
 
-    function deletePost() {
-        showConfirmDelete = false;
-        // Here you would add code to delete the post via API
-        alert("Post deleted!");
+    const deletePost = async () =>{
+        try {
+            const response = await fetch(`http://localhost:8000/post/deletePost`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ _id: postId })
+            });
+
+            if (response.ok) {
+                console.log("Post deleted successfully");
+                window.location.href = "/";
+            } else {
+                console.error("Failed to delete post:", await response.text());
+            }
+        } catch (error) {
+            console.error("Error deleting post:", error);
+        } finally {
+            showConfirmDelete = false;
+        }
     }
 </script>
 
@@ -495,6 +512,14 @@
         font-size: 1.2rem;
         color: #666;
     }
+
+    .unselectable {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: default;
+    }
 </style>
 
 <span class="back" on:click={back}>←</span>
@@ -516,7 +541,7 @@
 				<img src={profileImageUrl} alt="profile" />
                 <span>{username}</span>
 
-				<div class="icons" style="position: relative;">
+				<div class="icons unselectable" style="position: relative;">
 					<span on:click={toggleLike} style="cursor: pointer;">
 						{liked ? '❤️' : '🤍'} {likes}
 					</span>

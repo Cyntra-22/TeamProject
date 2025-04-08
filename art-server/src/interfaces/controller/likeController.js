@@ -24,7 +24,6 @@ const unlikePost = async (req, res) => {
 const getLikesByPost = async (req, res) => {
     try {
         const likes = await likeUsecase.getLikesByPost(req.body);
-        console.log(likes);
         res.status(200).json(likes); 
     } catch (err) {
         res.status(400).json({ message: err.message });
