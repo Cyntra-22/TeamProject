@@ -16,7 +16,7 @@
     let currentUserId: string | null = null;
     let isOwner = false;
     let comments: any[] = [];
-
+    
 	let liked = false;
 	let likes = 0;
 
@@ -168,7 +168,7 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ 
-                    id: postId
+                    postId: postId
                 })
             });
             
@@ -195,6 +195,8 @@
 
         // Get current user ID from token
         currentUserId = await getCurrentUserId();
+
+        comments = await fetchComments();
 
 		if (postId) {
 			try {
@@ -239,24 +241,7 @@
                         if (currentUserId) {
                             await checkLikeStatus();
                         }
-                        comments = await fetchComments();
 
-                        // Create enhanced comment with profile data
-                        const enhancedPosts = await Promise.all(
-                            comments.map(async (comment) => {
-                                // Fetch profile for each comment
-                                const profileData = await fetchProfileData(comment.userId);
-                                
-                                // Merge comment and profile data
-                                return {
-                                    ...comment,
-                                    username: profileData ? `${profileData.firstName} ${profileData.lastName}` : "Unknown User",
-                                    profileUrl: profileData?.profileImage || "/default-profile.png"
-                                };
-                            })
-                        );
-                        comments = enhancedPosts;
-                        console.log("Comments with profiles:", comments);
 					}
 				} else {
 					console.error("Failed to fetch post details");
@@ -866,7 +851,7 @@
 			
 				<h4>{comments.length} Comment{comments.length > 1 ? 's' : ''}</h4>
 				{#each comments as comment}
-					<p><i>{comment.username}</i> - {comment.description}</p>
+					<p><i>{comment.name}</i> - {comment.text}</p>
 				{/each}
 			</div>
 
