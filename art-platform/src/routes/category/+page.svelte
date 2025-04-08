@@ -38,9 +38,7 @@
                     const result = await response.json();
                     console.log("Role updated successfully:", result);
                     alert(`Your role has been set to: ${selectedRole}`);
-                    
-                    // Redirect to homepage or dashboard after successful role update
-                    window.location.href = "/login";
+                    window.location.href = `/user-interest?userId=${userId}`;
                 } else {
                     const errorData = await response.json();
                     console.error("Error updating role:", errorData);
@@ -106,6 +104,7 @@
 
     .category button{
         background-color: white;
+        cursor: pointer;
     }
 
     .button-container button:hover {

@@ -126,7 +126,7 @@
 
         </div> 
         <div class="grid-container">
-            {#each postsWithProfiles as post (post.id)}
+            {#each postsWithProfiles as post, index (post.id)}
                 <PostRank 
                     title={post.title}
                     username={post.username}
@@ -134,7 +134,12 @@
                     likes={post.likeAmount}
                     imageUrl={post.postImage}
                     profileUrl={post.profileUrl}
-                    trophy={post.trophy}
+                    trophy={
+                        index === 0 ? "/gold.png" :
+                        index === 1 ? "/silver.png" :
+                        index === 2 ? "/bronze.png" :
+                        ""
+                    }
                 />
             {/each}
           </div>

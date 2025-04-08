@@ -91,9 +91,11 @@
                     <h4>{username}</h4> 
                 </div>
 
-                <div class="trophy-img">
-                    <img src={trophy} alt="trophy" />
-                </div>
+                {#if trophy}
+                    <div class="trophy-img">
+                        <img src={trophy} alt={trophy} />
+                    </div>
+                {/if}
             </div>
             <div>
                 <h4>{title}</h4>

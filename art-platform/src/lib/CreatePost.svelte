@@ -334,7 +334,7 @@ function resetFileInput() {
         >
             {#if file}
                 <div class="image-preview">
-                    <img src={imagePreview} alt="Image Preview"  />
+                    <img src={imagePreview} alt="Preview of uploaded artwork"  />
                 </div>
             {:else}
                 <span>Choose a file or drag and drop it here</span>
