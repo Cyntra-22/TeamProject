@@ -17,6 +17,7 @@
     let following: any[] = [];
     let followerProfiles: any[] = [];
     let followingProfiles: any[] = [];
+    let isFollowingUser: boolean = false;
 
     onMount(async () => {
         const token = localStorage.getItem("token");
@@ -72,6 +73,12 @@
                         if (followersRes.ok) {
                             followers = await followersRes.json();
                             console.log("Followers:", followers);
+                            
+                            // Check if current user is following this profile
+                            if (!isOwnProfile) {
+                                isFollowingUser = followers.some(follower => follower.followerId === currentUserId);
+                                console.log("Is current user following this profile:", isFollowingUser);
+                            }
                             
                             // Fetch profile details for each follower
                             followerProfiles = await Promise.all(
@@ -179,8 +186,6 @@
         }
     });
 
-    let isFollowed: boolean = false;
-
     async function toggleFollow() {
         if (!userID) return;
         
@@ -202,9 +207,50 @@
             if (currentUserRes.ok) {
                 const currentUserId = await currentUserRes.json();
                 
-                // Implement follow/unfollow logic here with your API
-                // For now, we'll just toggle the state
-                isFollowed = !isFollowed;
+                const followData = {
+                    userId: userID,
+                    followerId: currentUserId
+                };
+
+                
+                if (!isFollowingUser) {
+                    // Follow user
+                    const followRes = await fetch("http://localhost:8000/follow/follows", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ...followData,
+                            recstatus: 1
+                        })
+                    });
+                    
+                    if (followRes.ok) {
+                        console.log("Successfully followed user");
+                        isFollowingUser = true;
+                    } else {
+                        console.error("Failed to follow user", followRes.status);
+                    }
+                } else {
+                    // Unfollow user
+                    const unfollowRes = await fetch("http://localhost:8000/follow/unfollow", {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            ...followData,
+                        })
+                    });
+                    
+                    if (unfollowRes.ok) {
+                        console.log("Successfully unfollowed user");
+                        isFollowingUser = false;
+                    } else {
+                        console.error("Failed to unfollow user", unfollowRes.status);
+                    }
+                }
                 
                 // Refresh followers list after follow/unfollow
                 const followersRes = await fetch("http://localhost:8000/follow/followers", {
@@ -507,7 +553,7 @@
                     </a>
                     {:else}
                         <button class="pbtn-2" on:click={toggleFollow}>
-                            {isFollowed ? "Followed" : "+ Follow"}
+                            {isFollowingUser ? "Following" : "+ Follow"}
                         </button>
                     {/if}
                     
