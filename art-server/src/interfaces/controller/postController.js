@@ -71,4 +71,23 @@ const getPostByRanking = async (req, res) => {
     }
 }
 
-module.exports = { createPost, editPost, getPosts, getPostById, getPostByNameAndTag, getReccomendedPost, getPostByRanking };
+const deletePost = async (req, res) => {
+    try {
+        const dto = new getPostByIdDto(req.body);
+        const post = await postUsecase.deletePost(dto);
+        res.status(200).json(post); 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
+const getPostByUserId = async (req, res) => {
+    try {
+        const posts = await postUsecase.getPostByUserId(req.body.userId);
+        res.status(200).json(posts); 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
+module.exports = { createPost, editPost, getPosts, getPostById, getPostByNameAndTag, getReccomendedPost, getPostByRanking, deletePost, getPostByUserId };

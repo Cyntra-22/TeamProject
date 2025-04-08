@@ -9,5 +9,7 @@ router.post('/getPostById', postController.getPostById);
 router.get('/getPostByNameAndTag', postController.getPostByNameAndTag);
 router.get('/getReccomended', postController.getReccomendedPost);
 router.get('/getRanking', postController.getPostByRanking);
+router.delete('/delete', postController.deletePost);
+router.post('/getPostByUserId', postController.getPostByUserId);
 
 module.exports = router;

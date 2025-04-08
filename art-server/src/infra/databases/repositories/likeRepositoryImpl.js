@@ -16,7 +16,7 @@ class LikeRepositoryImpl extends LikeRepository {
         }
 
         post.userLikes.push(userId);
-        post.likeAmount = (post.likeAmount || 0) + 1;
+        post.likeAmount = (post.likeAmount) + 1;
 
         await post.save();
 
@@ -37,7 +37,7 @@ class LikeRepositoryImpl extends LikeRepository {
         }
 
         post.userLikes.splice(likeIndex, 1);
-        post.likeAmount = (post.likeAmount || 0) - 1;
+        post.likeAmount = (post.likeAmount) - 1;
         
         await post.save();
 

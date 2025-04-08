@@ -53,4 +53,16 @@ const getPostByRanking = async () => {
     return postEntity;
 };
 
-module.exports = { createPost, editPost, getPosts, getPostById, getPostByNameAndTag, getReccomendedPost, getPostByRanking };
+const deletePost = async (id) => {
+    const postEntity = await postRepo.deletePost(id);
+    if (!postEntity) throw new Error("There are no posts yet");
+    return postEntity;
+};
+
+const getPostByUserId = async (userId) => {
+    const postEntity = await postRepo.findPostByUserId(userId);
+    if (!postEntity) throw new Error("There are no posts yet");
+    return postEntity;
+};
+
+module.exports = { createPost, editPost, getPosts, getPostById, getPostByNameAndTag, getReccomendedPost, getPostByRanking, deletePost, getPostByUserId };

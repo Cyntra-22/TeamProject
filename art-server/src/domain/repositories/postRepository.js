@@ -10,6 +10,10 @@ class PostRepository {
   async findReccomendedPost() {}
 
   async findAllPosts() {}
+
+  async deletePost(id) {}
+
+  async findPostByUserId(userId) {}
 }
 
 module.exports = PostRepository;
