@@ -1,6 +1,31 @@
 <script>
-  import {images} from './images.js';
-    
+    import {images} from './images.js';
+    import {onMount} from 'svelte';
+
+    let posts = [];
+    let isLoading = true;
+
+    // Fetch the ranked posts and their associated profiles
+    onMount(async () => {
+        try {
+            // Fetch ranked posts
+            const response = await fetch("http://localhost:8000/post/getPosts", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            
+            if (response.ok) {
+                posts = await response.json();
+                console.log("Posts Home data:", posts);
+            }
+        } catch (error) {
+            console.error("Error fetching posts:", error);
+        } finally {
+            isLoading = false;
+        }
+    });
 </script>
 
 <style>
