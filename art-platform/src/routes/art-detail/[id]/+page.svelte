@@ -11,9 +11,12 @@
     let profileData: any = null;
     let currentUserId: string | null = null;
     let isOwner = false;
-
+    let comments: any[] = [];
+    
 	let liked = false;
 	let likes = 0;
+
+
 
     // Function to fetch profile data for a user
     async function fetchProfileData(userId: string) {
@@ -99,6 +102,34 @@
         }
     }
 
+    // Function to fetch comments for the post
+    async function fetchComments() {
+        try {
+            const response = await fetch(`http://localhost:8000/comment/getByPostId`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ 
+                    postId: postId
+                })
+            });
+            
+            if (response.ok) {
+                const fetchedComments = await response.json();
+                console.log("Fetched comments:", fetchedComments);
+                return fetchedComments;
+            } else {
+                console.error("Failed to fetch comments");
+                return [];
+            }
+        } catch (error) {
+            console.error("Error fetching comments:", error);
+            return [];
+        }
+    }
+
+
 	onMount(async () => {
 		// Get the post ID from URL using window.location (without page store)
 		const pathParts = window.location.pathname.split('/');
@@ -107,6 +138,8 @@
 
         // Get current user ID from token
         currentUserId = await getCurrentUserId();
+
+        comments = await fetchComments();
 
 		if (postId) {
 			try {
@@ -258,7 +291,6 @@
 	}
 
 	let newComment = '';
-    let comments = [{ name: 'John', text: 'Hello' }];
 
 	function addComment() {
 		if (newComment.trim() !== '') {
@@ -584,7 +616,7 @@
 			<div class="scroll-area">
 				<h3>{selectedImage.title}</h3>
 				<p style="color: gray;">
-					{postData.taggedTopic ? postData.taggedTopic.join(', ') : 'aesthetic, apple, airpods pro, airpods max, iphone, iphone pro'}
+					{postData.taggedTopic ? postData.taggedTopic.join(', ') : 'No tags'}
 				</p>
 			
 				<h4>{comments.length} Comment{comments.length > 1 ? 's' : ''}</h4>
