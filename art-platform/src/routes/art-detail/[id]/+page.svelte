@@ -4,6 +4,7 @@
 
 	export let data; // This receives data from +page.ts
 
+    // Edit post variables
 	let postId: string;
 	let postData: any = null;
 	let isLoading = true;
@@ -15,6 +16,59 @@
     
 	let liked = false;
 	let likes = 0;
+
+    // Pop Up Form 
+    let showEditModal = false;
+    let editTitle = '';
+    let editDescription = '';
+    let editTaggedTopicString = '';
+    let newImageFile: File | null = null;
+
+
+    $: if (showEditModal && postData) {
+    editTitle = postData.title;
+    editDescription = postData.description;
+    editTaggedTopicString = (postData.taggedTopic || []).join(', ');
+    }
+
+    async function submitEditForm() {
+    const updatedPost = {
+        _id: postId,
+        title: editTitle,
+        description: editDescription,
+        taggedTopic: editTaggedTopicString.split(',').map(tag => tag.trim()),
+    };
+
+    try {
+        const res = await fetch("http://localhost:8000/post/update", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedPost)
+        });
+
+        if (res.ok) {
+        console.log("Post updated!");
+        postData.title = updatedPost.title;
+        postData.description = updatedPost.description;
+        postData.taggedTopic = updatedPost.taggedTopic;
+
+        selectedImage.title = updatedPost.title;
+        showEditModal = false;
+        } else {
+        console.error("Update failed:", await res.text());
+        }
+    } catch (error) {
+        console.error("Error updating post:", error);
+    }
+    }
+    function handleImageUpload(event: Event) {
+        const target = event.target as HTMLInputElement;
+        if (target?.files && target.files.length > 0) {
+            newImageFile = target.files[0];
+        }
+    }
 
 
 
@@ -552,7 +606,70 @@
         user-select: none;
         cursor: default;
     }
+
+ 
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: transparent;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #888;
+    }
+
+    .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .modal-form input,
+    .modal-form textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+    }
+
+    .modal-form button {
+        background-color: hsl(5, 85%, 63%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        align-self: flex-end;
+    }
+
+    .modal-form button:hover {
+        background-color: #15803d;
+    }
 </style>
+
+
 
 <span class="back" on:click={back}>←</span>
 
@@ -598,9 +715,53 @@
 						{#if showOptions}
 							<div class="tooltip-menu">
 								<button on:click={confirmDelete}>Remove Post</button>
-								<button on:click={() => goto('/create')}>Edit Post</button>
+								<button on:click={() => showEditModal = true}>Edit Post</button>
 							</div>
+                            
 						{/if}
+                        {#if showEditModal}
+                            <div class="modal-overlay">
+                                <div class="modal-content">
+                                <button class="modal-close" on:click={() => showEditModal = false}>✖</button>
+                                <h2>Edit Post</h2>
+
+                                <form on:submit|preventDefault={submitEditForm} class="modal-form" enctype="multipart/form-data">
+                                    <label>
+                                      Title:
+                                      <input type="text" bind:value={editTitle} required />
+                                    </label>
+                                  
+                                    <label>
+                                      Description:
+                                      <textarea bind:value={editDescription} rows="4"></textarea>
+                                    </label>
+                                  
+                                    <label>
+                                      Tagged Topics:
+                                      <input type="text" bind:value={editTaggedTopicString} placeholder="e.g. tech, nature" />
+                                    </label>
+                                  
+                                    <label>
+                                      Current Image:
+                                      {#if postData?.image}
+                                        <img src={postData.image} alt="Current" class="preview-img" />
+                                      {:else}
+                                        <p>No image available.</p>
+                                      {/if}
+                                    </label>
+                                  
+                                    <label>
+                                      Upload New Image:
+                                      <input type="file" accept="image/*" on:change={handleImageUpload} />
+                                    </label>
+                                  
+                                    <button type="submit">Save Changes</button>
+                                  </form>
+                                  
+                                </div>
+                            </div>
+                            {/if}
+
 
 						{#if showConfirmDelete}
 							<div class="confirm-box">
