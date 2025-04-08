@@ -2,7 +2,8 @@
     import { onMount } from 'svelte';
     import { page } from '$app/stores'; // Import page store for URL params
     import ProfileRight from "$lib/ProfileRight.svelte";
-   
+    $: username = $page.params.username;
+
     let count = 5;
     let images = [
         "/B2.jpeg", "/B3.jpeg", "/B4.jpeg",
@@ -13,13 +14,9 @@
     let profile: any = null;
     let isOwnProfile: boolean = false;
 
-    const defaultUserID = "defaultUser123";
-
-   
-    let username = $page.params.username; 
-
     onMount(async () => {
         const token = localStorage.getItem("token");
+        const urlProfileId = $page.url.searchParams.get('id'); // Get profile ID from URL
 
         if (token) {
             try {
@@ -36,15 +33,15 @@
                     const currentUserId = await response.json();
                     
                     // Determine which profile to fetch
-                    if (username) {
-                        userID = username; // Use the username from the URL for profile fetch
-                        isOwnProfile = currentUserId === username;
+                    if (urlProfileId) {
+                        userID = urlProfileId;
+                        isOwnProfile = currentUserId === urlProfileId;
                     } else {
                         userID = currentUserId;
                         isOwnProfile = true;
                     }
                     
-                    console.log("Fetching profile for username:", userID, "Is own profile:", isOwnProfile);
+                    console.log("Fetching profile for ID:", userID, "Is own profile:", isOwnProfile);
 
                     // 2. Fetch profile by userID (either from URL or current user)
                     const profileRes = await fetch("http://localhost:8000/profile/getById", {
@@ -69,15 +66,16 @@
             }
         } else {
             console.warn("No token found in localStorage");
-            userID = defaultUserID;
         }
     });
 
     let isFollowed: boolean = false;
 
     function toggleFollow() {
+        
         isFollowed = !isFollowed;
     }
+
 
     let showFollowersModal = false;
     let showFollowingModal = false;
@@ -100,6 +98,8 @@
         { firstName: "David", lastName: "Lee", profileImage: "/logo.png" },
         { firstName: "Ella", lastName: "Nguyen", profileImage: "/logo.png" }
     ];
+
+
 
 </script>
 
@@ -428,115 +428,4 @@
             <ProfileRight />
         {/each}    
     </div>
-</div>
-
-<div class="profile-container">
-    <div class="leftside-container">
-        <div class="right-above-container">
-            <img src="/cover.png" alt="cover image" />
-            <div class="profile-right-container">
-                <div class="img-container">
-                    <img src={profile?.profileImage || "/logo.png"} alt="profile image" />
-                    <h3>{profile?.firstName} {profile?.lastName}</h3>
-                    <p>My work explores the relationship between critical theory and emotional memory.</p>
-                    
-                    {#if isOwnProfile}
-                        <a href="/edit-profile">
-                            <button class="pbtn-2">Edit Profile</button>
-                        </a>
-                    {:else}
-                        <button class="pbtn-2" on:click={toggleFollow}>
-                            {isFollowed ? "Followed" : "+ Follow"}
-                        </button>
-                        <div class="follow-stats">
-                            <span on:click={() => showFollowersModal = true}>
-                                <strong>{followers.length}</strong> Followers
-                            </span> • 
-                            <span on:click={() => showFollowingModal = true}>
-                                <strong>{following.length}</strong> Following
-                            </span>
-                        </div>
-                    {/if}
-                </div>
-                {#if showFollowersModal}
-                    <div class="modal-backdrop" on:click={() => showFollowersModal = false}></div>
-                    <div class="modal-box">
-                        <h3>Followers</h3>
-                        <div class="modal-content">
-                        {#each followers as person}
-                            <a href={`/profile/${person.firstName}`} class="modal-user" on:click|stopPropagation>
-                            <img src={person.profileImage} alt="profile" />
-                            <span>{person.firstName} {person.lastName}</span>
-                            </a>
-                        {/each}
-                        </div>
-                    </div>
-                {/if}
-
-                {#if showFollowingModal}
-                    <div class="modal-backdrop" on:click={() => showFollowingModal = false}></div>
-                    <div class="modal-box">
-                        <h3>Following</h3>
-                        <div class="modal-content">
-                        {#each following as person}
-                            <a href={`/profile/${person.firstName}`} class="modal-user" on:click|stopPropagation>
-                            <img src={person.profileImage} alt="profile" />
-                            <span>{person.firstName} {person.lastName}</span>
-                            </a>
-                        {/each}
-                        </div>
-                    </div>
-                {/if}
-
-                <div class="profile-left-container">
-                    <div class="like-count">
-                        <div><img class="small-img" src="/phone-logo.jpg" alt="comment" /></div>
-                        <div class="info-detail">+66624452270, +66945073029</div>
-                    </div>
-                    <div class="like-count">
-                        <div><img class="small-img" src="/email-logo.jpg" alt="comment" /></div>
-                        <div class="info-detail">6501132@gmail.com</div>
-                    </div>
-                    <div class="like-count">
-                        <div><img class="small-img" src="/location-icon.jpg" alt="comment" /></div>
-                        <div class="info-detail">Bangkok, Bangkok City, Thailand</div>
-                    </div>
-                    <div class="like-count">
-                        <div><img class="small-img" src="/facebook-icon.jpg" alt="comment" /></div>
-                        <div class="info-detail">{profile?.facebook || "No Facebook profile"}</div>
-                    </div>
-                    <div class="like-count">
-                        <div><img class="small-img" src="/link-logo.jpg" alt="comment" /></div>
-                        <div class="info-detail">{profile?.linkedin || "No LinkedIn profile"}</div>
-                    </div>
-                    <div class="right-header">
-                        <div>
-                            <h2>4.5</h2>
-                        </div>
-                        <div class="review-small-container">
-                            <p class="star">****</p>
-                            <p>324 <a href="/review"><span class="review-border">reviews</span></a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="right-below-container">
-            <h3>Explore My Collections</h3>
-            <div class="collection">
-                {#each images as image, index}
-                    <img 
-                        src={image} 
-                        alt="Buddhist Art {index + 1}" 
-                        class="{index === 3 ? 'selected' : ''}" 
-                    />
-                {/each}
-            </div>
-        </div>
-    </div>
-    <div class="more-profile-container">
-        {#each Array(count) as _, i}
-            <ProfileRight />
-        {/each}    
-    </div>
-</div>
+</div> how to fix to go to that user profile page
