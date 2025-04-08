@@ -53,7 +53,7 @@ class PostRepositoryImpl extends PostRepository {
     }
   
     async findReccomendedPost() {
-        const postData = await Post.find({ recStatus: { $ne: 0 } }).sort({ createdWhen: -1 }).limit(10);
+        const postData = await Post.find({ recStatus: { $ne: 0 } }).sort({ createdWhen: -1 });
         if (!postData || postData.length === 0) return null;
 
         return postData.map(p => new PostEntity(p));
