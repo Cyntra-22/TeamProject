@@ -18,6 +18,7 @@
     let followerProfiles: any[] = [];
     let followingProfiles: any[] = [];
     let isFollowingUser: boolean = false;
+    let isArtist: boolean = false; // New variable to track if user is an artist
 
     onMount(async () => {
         const token = localStorage.getItem("token");
@@ -60,6 +61,10 @@
                     if (profileRes.ok) {
                         profile = await profileRes.json();
                         console.log("Profile Data:", profile);
+                        
+                        // Check if user is an artist
+                        isArtist = profile.role === "artist"; // Assuming profile has a userType field
+                        console.log("Is artist:", isArtist);
                         
                         // 3. Fetch followers
                         const followersRes = await fetch("http://localhost:8000/follow/followers", {
@@ -629,6 +634,9 @@
                         <div><img class="small-img" src="/link-logo.jpg" alt="comment" /></div>
                         <div class="info-detail">{profile?.linkedin || "No LinkedIn profile"}</div>
                     </div>
+                    
+                    <!-- Only show review section if the user is an artist -->
+                    {#if isArtist}
                     <div class="right-header">
                         <div>
                             <h2>4.5</h2>
@@ -642,6 +650,7 @@
                             {/if} </p>
                         </div>
                     </div>
+                    {/if}
                 </div>
             </div>
         </div>

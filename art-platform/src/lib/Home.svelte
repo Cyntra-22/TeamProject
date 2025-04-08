@@ -1,15 +1,15 @@
-<script>
+<script lang="ts">
     import {images} from './images.js';
     import {onMount} from 'svelte';
 
-    let posts = [];
+    let posts: any[] = [];
     let isLoading = true;
 
     // Fetch the ranked posts and their associated profiles
     onMount(async () => {
         try {
             // Fetch ranked posts
-            const response = await fetch("http://localhost:8000/post/getPosts", {
+            const response = await fetch("http://localhost:8000/post/getReccomended", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -19,6 +19,7 @@
             if (response.ok) {
                 posts = await response.json();
                 console.log("Posts Home data:", posts);
+                return posts;
             }
         } catch (error) {
             console.error("Error fetching posts:", error);
@@ -47,11 +48,11 @@
     }
 </style>
 
-{#each images as image, index}
-    <a href ={`/art-detail/${image.id}`}>
+{#each posts as post, index (post.id)}
+    <a href ={`/art-detail/${post.id}`}>
         <img 
-            src={image.src} 
-            alt={image.title} 
+            src={post.postImage} 
+            alt={post.title} 
             class="{index === 5 ? 'selected' : ''}" 
         />
     </a>
