@@ -59,7 +59,7 @@ async function registerUser(user: User) {
             const data = await response.json();
             console.log("User created:", data);
             alert("Sign-up successful! Welcome to Art World.");
-            window.location.href = `/category?userId=${data.id}`;;
+            window.location.href = `/category?userId=${data.id}`;
         } else {
             const errorData = await response.json();
             console.error("Error creating user:", errorData.detail);
