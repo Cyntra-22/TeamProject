@@ -20,6 +20,8 @@
     let isFollowingUser: boolean = false;
     let isArtist: boolean = false; // New variable to track if user is an artist
     let artistPosts: any[] = [];
+    let rating: any | null = null;
+    let reviewAmount: any | null = null;
 
     onMount(async () => {
         const token = localStorage.getItem("token");
@@ -194,6 +196,26 @@
                                 console.log("Artist Posts:", artistPosts);
                             } else {
                                 console.error("Failed to fetch artist posts", artistPostsRes.status);
+                            }
+                            
+                            const res = await fetch("http://localhost:8000/review/getAllReviewsByRevieweeId", {
+                                method: "POST",
+                                headers: {
+                                "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({id: userID})
+                            });
+                            if (res.ok) {
+                                const reviewData = await res.json();
+                                let tempRating = 0;
+                                for (const review of reviewData){
+                                    tempRating += review.rating
+                                }
+                                rating = tempRating / reviewData.length
+                                reviewAmount = reviewData.length
+                            }
+                            else{
+                                rating = -1
                             }
                         }
                     } else {
@@ -656,19 +678,25 @@
                     
                     <!-- Only show review section if the user is an artist -->
                     {#if isArtist}
+                    {#if rating >= 0}
                     <div class="right-header">
                         <div>
-                            <h2>4.5</h2>
+                            <h2>{rating}</h2>
                         </div>
                         <div class="review-small-container">
-                            <p class="star">****</p>
-                            <p>324 {#if userID}
+                            <p class="star">{"*".repeat(Math.floor(rating))}</p>
+                            <p>{reviewAmount} {#if userID}
                                 <a href={`/review/${userID}`}><span class="review-border">reviews</span></a>
                             {:else}
                                 <span class="review-border">reviews</span>
                             {/if} </p>
                         </div>
                     </div>
+                    {:else}
+                    <div class="right-header">
+                        No review yet
+                    </div>
+                    {/if}
                     {/if}
                 </div>
             </div>
