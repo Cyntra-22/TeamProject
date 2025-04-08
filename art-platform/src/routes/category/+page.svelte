@@ -1,26 +1,71 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+    import { page } from '$app/stores';
+    
     let selectedRole: string | null = null;
+    let userId: string | null = null;
+    let isProcessing: boolean = false;
+
+    onMount(() => {
+        // Get user ID from URL parameter
+        userId = $page.url.searchParams.get('userId');
+        console.log("User ID from URL:", userId);
+    });
 
     function selectRole(role: string) {
         selectedRole = role;
     }
 
-    function continueAction() {
-        if (selectedRole) {
-            alert(`You selected: ${selectedRole}`);
-            // Perform navigation or further action
+    async function continueAction() {
+        if (selectedRole && userId) {
+            isProcessing = true;
+            try {
+                // Only updating the role field
+                const updateData = {
+                    _id: userId,
+                    role: selectedRole
+                };
+
+                const response = await fetch("http://localhost:8000/profile/edit", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updateData),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log("Role updated successfully:", result);
+                    alert(`Your role has been set to: ${selectedRole}`);
+                    
+                    // Redirect to homepage or dashboard after successful role update
+                    window.location.href = "/login";
+                } else {
+                    const errorData = await response.json();
+                    console.error("Error updating role:", errorData);
+                    alert(`Error updating role: ${errorData.detail || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error("Unexpected error:", error);
+                alert("Unexpected error while updating role. Please try again.");
+            } finally {
+                isProcessing = false;
+            }
+        } else if (!userId) {
+            alert("User ID not found. Please sign up again.");
+            window.location.href = "/signup";
         }
     }
 </script>
-<style>
 
+<style>
     .container {
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: 12rem auto;
     }
-
 
     .login-box {
         background-color: #fff;
@@ -35,8 +80,6 @@
         margin-bottom: 2rem;
         color: #333;
     }
-
-    
 
     .button-container button {
         padding: 0.5rem 5rem;
@@ -61,9 +104,9 @@
         padding: 1rem;
     }
 
-   .category button{
+    .category button{
         background-color: white;
-   }
+    }
 
     .button-container button:hover {
         background-color: hsl(5, 67%, 52%);
@@ -74,6 +117,7 @@
         height: 100px;
         padding: 0px;
     }
+    
     p{
         padding: 0;
         margin: 0;
@@ -85,10 +129,13 @@
     }
 
     .button-container button:disabled {
-        background-color: hsl(5, 85%, 63%);
+        background-color: #cccccc;
         cursor: not-allowed;
     }
 
+    .processing {
+        opacity: 0.7;
+    }
 </style>
 
 <div class="container">
@@ -101,6 +148,7 @@
                 type="button"
                 on:click={() => selectRole('artist')}
                 on:keydown={(e) => e.key === "Enter" && selectRole('artist')}
+                disabled={isProcessing}
             >
                 <img alt="artist profile" src="/artist-profile.png" />
                 <p>Artist</p>
@@ -111,6 +159,7 @@
                 type="button"
                 on:click={() => selectRole('user')}
                 on:keydown={(e) => e.key === "Enter" && selectRole('user')}
+                disabled={isProcessing}
             >
                 <img alt="user profile" src="/user-profile.png" />
                 <p>User</p>
@@ -118,8 +167,13 @@
         </div>
 
         <div class="button-container">
-            <button type="submit" on:click={continueAction} disabled={!selectedRole}>
-                Continue
+            <button 
+                type="submit" 
+                on:click={continueAction} 
+                disabled={!selectedRole || isProcessing} 
+                class:processing={isProcessing}
+            >
+                {isProcessing ? 'Processing...' : 'Continue'}
             </button>
         </div>
     </div>
