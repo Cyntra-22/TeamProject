@@ -1,12 +1,40 @@
 <script lang="ts">
-    let title = "";
-    let description = "";
-    let tags = "";
+    import { onMount } from "svelte";
     let file: File | null = null;
-    let uploadError = false;  // State to manage error status
-    let imagePreview: string | null = null;  // State to store the image preview URL
+    let uploadError = false;
+    let imagePreview: string | null = null;
+    let isLoading = false;
+    let errorMessage = "";
+    let userID: string | null = null;
     
-    // Valid image formats (add more formats as needed)
+    onMount(async () => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const response = await fetch("http://localhost:8000/auth/tokenID", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ token })
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    userID = data;
+                    console.log("User ID:", userID);
+                } else {
+                    console.error("Failed to fetch user ID", response.status);
+                }
+            } catch (err) {
+                console.error("Error fetching user ID:", err);
+            }
+        } else {
+            console.warn("No token found in localStorage");
+        }
+    });
+    
+    // Valid image formats
     const validImageFormats = ["image/jpeg", "image/png", "image/gif"];
     
     function handleFileUpload(event: Event) {
@@ -15,18 +43,18 @@
             const selectedFile = target.files[0];
             if (validImageFormats.includes(selectedFile.type)) {
                 file = selectedFile;
-                uploadError = false;  // Reset error state if file is valid
+                uploadError = false;
     
                 // Create a preview URL for the image
                 const reader = new FileReader();
                 reader.onload = () => {
-                    imagePreview = reader.result as string;  // Store image preview
+                    imagePreview = reader.result as string;
                 };
-                reader.readAsDataURL(selectedFile);  // Read the file as a data URL
+                reader.readAsDataURL(selectedFile);
             } else {
-                uploadError = true;  // Set error state if file is invalid
-                file = null;  // Clear the file in case of error
-                imagePreview = null;  // Clear the preview
+                uploadError = true;
+                file = null;
+                imagePreview = null;
             }
         }
     }
@@ -37,18 +65,18 @@
             const droppedFile = event.dataTransfer.files[0];
             if (validImageFormats.includes(droppedFile.type)) {
                 file = droppedFile;
-                uploadError = false;  // Reset error state if file is valid
+                uploadError = false;
     
                 // Create a preview URL for the image
                 const reader = new FileReader();
                 reader.onload = () => {
-                    imagePreview = reader.result as string;  // Store image preview
+                    imagePreview = reader.result as string;
                 };
-                reader.readAsDataURL(droppedFile);  // Read the file as a data URL
+                reader.readAsDataURL(droppedFile);
             } else {
-                uploadError = true;  // Set error state if file is invalid
-                file = null;  // Clear the file in case of error
-                imagePreview = null;  // Clear the preview
+                uploadError = true;
+                file = null;
+                imagePreview = null;
             }
         }
     }
@@ -63,36 +91,96 @@
         }
     }
     
-    function publishPost() {
-        console.log("Publishing Post", { title, description, tags, file });
+    // Helper function to convert file to base64
+    function fileToBase64(file: File): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = error => reject(error);
+        });
+    }
+    
+    async function uploadProfilePicture() {
+        if (!file) {
+            alert("Please select a profile image");
+            return;
+        }
+        
+        isLoading = true;
+        errorMessage = "";
+        
+        try {
+            // Convert file to base64
+            const base64Image = await fileToBase64(file);
+    
+            // Create profile update data with only the profileImage field
+            const profileData = {
+                _id: userID,
+                profileImage: base64Image
+            };
+            
+            console.log("Updating profile picture");
+    
+            // Send the PATCH request with JSON data to your endpoint
+            const response = await fetch("http://localhost:8000/profile/edit", {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}` // Add token if required
+                },
+                body: JSON.stringify(profileData)
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Profile picture updated successfully:", data);
+                
+                // Show success message
+                alert("Profile picture updated successfully!");
+            } else {
+                const errorData = await response.json();
+                errorMessage = errorData.message || "Failed to update profile picture";
+                console.error("Error updating profile picture:", errorData);
+            }
+        } catch (error) {
+            console.error("Unexpected error:", error);
+            errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+        } finally {
+            isLoading = false;
+        }
     }
     
     // Function to reset the file input in case of error
     function resetFileInput() {
         file = null;
         uploadError = false;
-        imagePreview = null;  // Clear the image preview
+        imagePreview = null;
     }
     
+    function cancelUpload() {
+        file = null;
+        imagePreview = null;
+    }
     </script>
     
     <style>
-        .create-post-container {
+        .upload-container {
+            width: 50%;
+            margin: 0 auto;
             padding: 2rem;
             background: white;
-            width: 100%;
-            
+            border-radius: 1rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-    
-        .form-container {
-            display: flex;
-            gap: 2rem;
         
+        .content-container {
+            padding-left: 2.5rem;
         }
     
         .upload-box {
             width: 250px;
-            height: 350px;
+            height: 250px;
             border: 2px dashed #ccc;
             border-radius: 10px;
             display: flex;
@@ -104,7 +192,7 @@
             color: #666;
             cursor: pointer;
             position: relative;
-            padding-left: 3rem;
+            margin-bottom: 1.5rem;
         }
     
         .upload-box:hover {
@@ -119,32 +207,59 @@
             cursor: pointer;
         }
     
-       
-    
-        input {
-            width: 90%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 0.7rem;
-            font-size: 1rem;
-            margin: 1rem 0;
-        }
-    
         .image-preview {
             max-width: 100%;
-            max-height: auto;
-          
+            max-height: 100%;
         }
     
         .image-preview img {
             width: 100%;
-            height: auto;
-            object-fit: contain;
+            height: 100%;
+            object-fit: cover;
             border-radius: 8px;
         }
     
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
     
-        /* Add some styles for the error popup */
+        .pbtn-2 {
+            background-color: hsl(5, 85%, 63%);
+            color: white;
+            border: none;
+            padding: 0.5rem 2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+    
+        .pbtn-2:hover {
+            background-color: hsl(5, 85%, 50%);
+        }
+    
+        .pbtn-1 {
+            background-color: white;
+            color: hsl(5, 85%, 63%);
+            border: none;
+            padding: 0.4rem 2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            border: 1px solid hsl(5, 85%, 63%);
+            font-size: 0.8rem;
+        }
+    
+        .pbtn-1:hover {
+            color: hsl(5, 85%, 50%);
+            border: 1px solid hsl(5, 85%, 50%);
+        }
+    
+        .text {
+            margin: 1rem 0;
+            font-size: 0.8rem;
+        }
+    
         .error-popup {
             position: fixed;
             top: 0;
@@ -155,7 +270,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: hsl(5, 85%, 50%);
+            z-index: 1000;
         }
     
         .error-box {
@@ -165,6 +280,7 @@
             text-align: center;
             max-width: 400px;
             width: 100%;
+            color: hsl(5, 85%, 50%);
         }
     
         .error-box button {
@@ -177,115 +293,64 @@
             cursor: pointer;
         }
     
-        .error-box button:hover {
-            background-color: hsl(5, 85%, 50%);
-            color: white;
+        .title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
         }
-
-        .pbtn-2{
-            background-color: hsl(5, 85%, 63%);
-            color: white;
-            border: none;
-            padding: 0.5rem 2rem;
-            margin-top: 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.8rem;
-    }
-
-        .pbtn-2:hover{
-            background-color: hsl(5, 85%, 50%);
-            
-        }
-
-        .pbtn-1{
-            background-color: white;
-            color: hsl(5, 85%, 63%);
-            border: none;
-            padding: 0.4rem 2rem;
-            margin-top: 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            border: 1px solid hsl(5, 85%, 63%);
-            font-size: 0.8rem;
-        }
-
-        .pbtn-1:hover{
-            color: hsl(5, 85%, 50%);
-            border: 1px solid hsl(5, 85%, 50%);
-        }
-
-        .text{
-            margin: 1rem;
-            font-size: 0.8rem;
-        }
-
-        .logout-box{
-            width: 50%;
-            margin: 0 auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .content-container{
-        padding-left: 2.5rem;
-    }
-    
     </style>
     
-    <div class="create-post-container logout-box">
+    <div class="upload-container">
         <div class="content-container">
-            <div class="form-container ">
-                <!-- File Upload Area -->
-                <div 
-                    class="upload-box" 
-                    on:drop={handleDrop} 
-                    on:dragover={allowDrop}
-                    on:keydown={handleKeyPress}
-                    role="button" 
-                    tabindex="0"
-                    aria-label="Upload file by clicking or dragging and dropping"
-                >
-                    {#if file}
-                        <div class="image-preview">
-                            <img src={imagePreview} alt="Image Preview"  />
-                        </div>
-                    {:else}
-                        <span>Choose a file or drag and drop it here</span>
-                    {/if}
-        
-                    <input 
-                        type="file" 
-                        id="fileInput"
-                        on:change={handleFileUpload}
-                        accept="image/*"
-                        aria-hidden="true"
-                    />
-                </div>
-    
-               
-            </div>
-           
-        
-            <!-- Error Popup -->
-            {#if uploadError}
-                <div class="error-popup">
-                    <div class="error-box">
-                        <div>Invalid file format! Please upload a valid image.</div>
-                        <button on:click={resetFileInput}>Upload Again</button>
-                    </div>
-                </div>
-            {/if}
-            <button type="submit" class="pbtn-2">Cancel</button>
-            <button type="submit" class="pbtn-1">Upload</button>
+            <div class="title">Update Profile Picture</div>
             
-            <div class="text">Accepted file types: .jpg, .jpeg, .png, .gif </div>
+            <div 
+                class="upload-box" 
+                on:drop={handleDrop} 
+                on:dragover={allowDrop}
+                on:keydown={handleKeyPress}
+                role="button" 
+                tabindex="0"
+                aria-label="Upload profile picture by clicking or dragging and dropping"
+            >
+                {#if imagePreview}
+                    <div class="image-preview">
+                        <img src={imagePreview} alt="Profile picture preview" />
+                    </div>
+                {:else}
+                    <span>Choose a profile picture or drag and drop it here</span>
+                {/if}
+    
+                <input 
+                    type="file" 
+                    id="fileInput"
+                    on:change={handleFileUpload}
+                    accept="image/*"
+                    aria-hidden="true"
+                />
+            </div>
+            
+            <div class="button-container">
+                <button type="button" class="pbtn-1" on:click={cancelUpload}>Cancel</button>
+                <button type="button" class="pbtn-2" on:click={uploadProfilePicture} disabled={isLoading || !file}>
+                    {isLoading ? 'Uploading...' : 'Save'}
+                </button>
+            </div>
+            
+            <div class="text">Accepted file types: .jpg, .jpeg, .png, .gif</div>
+            
+            {#if errorMessage}
+                <div class="text" style="color: hsl(5, 85%, 50%);">{errorMessage}</div>
+            {/if}
         </div>
         
-        
+        <!-- Error Popup -->
+        {#if uploadError}
+            <div class="error-popup">
+                <div class="error-box">
+                    <div>Invalid file format! Please upload a valid image.</div>
+                    <button on:click={resetFileInput}>Try Again</button>
+                </div>
+            </div>
+        {/if}
     </div>
-    
-    
-    
