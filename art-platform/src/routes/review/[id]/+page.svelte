@@ -2,6 +2,7 @@
     import WriteReview from "$lib/WriteReview.svelte";
     import { showToast } from '$lib/toast';
     import { page } from '$app/stores';
+    import { onMount } from 'svelte';
 
     let showReviewModal = false;
     let note = "";
@@ -15,8 +16,6 @@
     };
 
     let reviews: Review[] = [];
-
-
   
     function writeReview() {
       showReviewModal = true;
@@ -56,9 +55,16 @@
                     },
                     body: JSON.stringify(reviewPayload)
                 });
-          console.log(await res.json())
+          if (res.ok)
+          {
+            showToast("info", "Review added!");
+          }
+          else
+          {
+            showToast("error", "Review already added!")
+          }
         } else {
-          // server error
+          showToast("error", "Internal server error")
         }
       } else {
         showToast("error", "Unauthorized")
@@ -73,6 +79,44 @@
     function setStars(n: number) {
         selectedStars = n;
     }
+
+    onMount(async () => {
+  const res = await fetch("http://localhost:8000/review/getAllReviewsByRevieweeId", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({id: $page.params.id})
+  });
+
+  if (res.ok) {
+    showToast("info", "Fetched all reviews successfully!");
+    const reviewData = await res.json();
+
+    reviews = await Promise.all(
+      reviewData.map(async (review: any) => {
+        const profileRes = await fetch("http://localhost:8000/profile/getById", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ _id: review.userId })
+        });
+
+        const userProfile = profileRes.ok ? await profileRes.json() : null;
+        
+        return {
+          author: userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "Unknown User",
+          date: review.createdWhen,
+          stars: review.rating,
+          content: review.description
+        };
+      })
+    );    
+  } else {
+    showToast("error", "Failed to fetch reviews");
+  }
+});
 
 
     
