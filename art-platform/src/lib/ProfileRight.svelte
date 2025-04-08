@@ -9,15 +9,38 @@
         lastName: string;
         profileImage: string;
         bio?: string;
-        isFollowing?: boolean;
     }
 
     let artists: Artist[] = [];
     let isLoading = true;
     let error: string | null = null;
+    let currentUserId: string | null = null;
 
     onMount(async () => {
         try {
+            // First, get the current user's token ID
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            
+            if (!token) {
+                throw new Error('No authentication token found');
+            }
+            
+            // Get user ID from token
+            const tokenResponse = await fetch("http://localhost:8000/auth/tokenID", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ token })
+            });
+            
+            if (!tokenResponse.ok) {
+                throw new Error(`Token validation failed! Status: ${tokenResponse.status}`);
+            }
+            
+            const tokenData = await tokenResponse.json();
+            
+            // Now fetch artists
             const response = await fetch('http://localhost:8000/profile/getArtist');
             
             if (!response.ok) {
@@ -25,14 +48,19 @@
             }
             
             const data = await response.json();
-            const uniqueArtists = Array.isArray(data) ? 
-                [...new Map(data.map(item => [item._id, item])).values()] : 
-                [data];
             
-            artists = uniqueArtists.slice(0, 7).map(artist => ({
+            // Filter out current user and ensure unique artists
+            const filteredArtists = Array.isArray(data) ? 
+                data.filter(artist => artist._id !== tokenData) : 
+                (data._id !== tokenData ? [data] : []);
+                
+            // Create a unique list of artists
+            const uniqueArtists = [...new Map(filteredArtists.map(item => [item._id, item])).values()];
+            
+            // Limit to specified count
+            artists = uniqueArtists.slice(0, count).map(artist => ({
                 ...artist,
                 bio: artist.bio || "My work explores the relationship.",
-                isFollowing: false
             }));
             
             isLoading = false;
@@ -46,11 +74,6 @@
             console.error("Error fetching artists:", err);
         }
     });
-
-    function toggleFollow(index: number) {
-        artists[index].isFollowing = !artists[index].isFollowing;
-        artists = [...artists];
-    }
     
     function navigateAndReload(id: string) {
         window.location.href = `/profile?id=${id}`;
