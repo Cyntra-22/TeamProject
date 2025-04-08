@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
+
     let selectedRole: string | null = null;
 
     function selectRole(role: string) {
@@ -8,6 +10,7 @@
     function continueAction() {
         if (selectedRole) {
             alert(`You selected: ${selectedRole}`);
+            goto('/user-interest');
             // Perform navigation or further action
         }
     }
@@ -63,6 +66,7 @@
 
    .category button{
         background-color: white;
+        cursor: pointer;
    }
 
     .button-container button:hover {

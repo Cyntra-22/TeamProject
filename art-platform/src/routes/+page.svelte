@@ -1,6 +1,7 @@
 <script lang="ts">
     import Home from "$lib/Home.svelte";
     import { images } from '$lib/images';
+    
  
 </script>
 
@@ -11,9 +12,9 @@
         gap: 1rem;
         padding: 1rem;
     }
-
 </style>
 
 <div class="gallery">
-   <Home/>
+    <Home/>
 </div>
+<!--         <div class="header-container"> -->
