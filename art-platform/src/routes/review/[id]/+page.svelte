@@ -1,5 +1,7 @@
 <script lang="ts">
     import WriteReview from "$lib/WriteReview.svelte";
+    import { showToast } from '$lib/toast';
+    import { page } from '$app/stores';
 
     let showReviewModal = false;
     let note = "";
@@ -26,21 +28,43 @@
       selectedStars = 0;
     }
   
-    function submitReview() {
-        const newReview: Review = {
-            author: "Guest User", 
-            date: new Date().toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-            }), 
-            stars: selectedStars,
-            content: note
-        };
-
-        reviews = [...reviews, newReview]; 
-        closeReview();
+    async function submitReview() {
+      const token = localStorage.getItem("token");
+      if (token)
+      {
+        const userId = await fetch("http://localhost:8000/auth/tokenID", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ token })
+                });
+        
+        if (userId.ok){
+          const sessionUserId = await userId.json()
+          const reviewPayload = {
+            rating: selectedStars,
+            description: note,
+            userId: sessionUserId,
+            revieweeId: $page.params.id
+          }
+          
+          const res = await fetch("http://localhost:8000/review/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(reviewPayload)
+                });
+          console.log(await res.json())
+        } else {
+          // server error
         }
+      } else {
+        showToast("error", "Unauthorized")
+      }
+        closeReview();
+      }
   
     function scrollToTop() {
       window.scrollTo({ top: 0, behavior: "smooth" });
