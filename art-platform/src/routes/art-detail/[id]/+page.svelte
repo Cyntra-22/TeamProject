@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-    import { page } from '$app/stores';
-    import { showToast } from '$lib/toast';
-    import { get } from 'svelte/store';
 
 	export let data; // This receives data from +page.ts
 
@@ -16,7 +13,7 @@
     let currentUserId: string | null = null;
     let isOwner = false;
     let comments: any[] = [];
-    
+
 	let liked = false;
 	let likes = 0;
 
@@ -168,7 +165,7 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ 
-                    postId: postId
+                    id: postId
                 })
             });
             
@@ -195,8 +192,6 @@
 
         // Get current user ID from token
         currentUserId = await getCurrentUserId();
-
-        comments = await fetchComments();
 
 		if (postId) {
 			try {
@@ -241,7 +236,24 @@
                         if (currentUserId) {
                             await checkLikeStatus();
                         }
+                        comments = await fetchComments();
 
+                        // Create enhanced comment with profile data
+                        const enhancedPosts = await Promise.all(
+                            comments.map(async (comment) => {
+                                // Fetch profile for each comment
+                                const profileData = await fetchProfileData(comment.userId);
+                                
+                                // Merge comment and profile data
+                                return {
+                                    ...comment,
+                                    username: profileData ? `${profileData.firstName} ${profileData.lastName}` : "Unknown User",
+                                    profileUrl: profileData?.profileImage || "/default-profile.png"
+                                };
+                            })
+                        );
+                        comments = enhancedPosts;
+                        console.log("Comments with profiles:", comments);
 					}
 				} else {
 					console.error("Failed to fetch post details");
@@ -250,7 +262,6 @@
 				console.error("Error fetching post details:", error);
 			} finally {
 				isLoading = false;
-                getComments()
 			}
 		}
 	});
@@ -349,75 +360,10 @@
 	}
 
 	let newComment = '';
-    let comments : any[] = [];
 
-    async function getComments() {
-        const postId = $page.params.id;
-        const res = await fetch("http://localhost:8000/comment/getByPostId", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ id : postId })
-                });
-        if (res.ok) {
-            const commentData = await res.json();
-            comments = await Promise.all(
-                commentData.map(async (comment: any) => {
-                const profileRes = await fetch("http://localhost:8000/profile/getById", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({ _id: comment.userId }) 
-                });
-                const userProfile = profileRes.ok ? await profileRes.json() : null;
-        
-                    return {
-                        name: userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "Unknown User",
-                        text: comment.description
-                    };
-                })
-            );    
-        } else {
-            showToast("error", "Failed to fetch comments");
-        }
-    }
-
-	async function addComment() {
+	function addComment() {
 		if (newComment.trim() !== '') {
-			const postId = $page.params.id;
-            const token = localStorage.getItem("token");
-
-            if (token) {
-                const sessionIdResponse = await fetch("http://localhost:8000/auth/tokenID", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ token })
-                });
-                const userId = await sessionIdResponse.json()
-                const res = await fetch("http://localhost:8000/comment/create", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        postId : postId,
-                        description : newComment,
-                        commentTopicId : null,
-                        userId : userId
-                    })
-                });
-                if (res.ok){
-                    showToast("info", "Comment added!")
-                    await getComments()
-                }
-                else{
-                    showToast("error", "Internal server error")
-                }
-            } else {
-                showToast("error", "Unauthorized")
-            }
+			comments = [...comments, { name: 'You', text: newComment }];
 			newComment = '';
 		}
 	}
@@ -851,7 +797,7 @@
 			
 				<h4>{comments.length} Comment{comments.length > 1 ? 's' : ''}</h4>
 				{#each comments as comment}
-					<p><i>{comment.name}</i> - {comment.text}</p>
+					<p><i>{comment.username}</i> - {comment.description}</p>
 				{/each}
 			</div>
 
