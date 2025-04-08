@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+    import { page } from '$app/stores';
+    import { showToast } from '$lib/toast';
+    import { get } from 'svelte/store';
 
 	export let data; // This receives data from +page.ts
 
@@ -160,6 +163,7 @@
 				console.error("Error fetching post details:", error);
 			} finally {
 				isLoading = false;
+                getComments()
 			}
 		}
 	});
@@ -258,11 +262,75 @@
 	}
 
 	let newComment = '';
-    let comments = [{ name: 'John', text: 'Hello' }];
+    let comments : any[] = [];
 
-	function addComment() {
+    async function getComments() {
+        const postId = $page.params.id;
+        const res = await fetch("http://localhost:8000/comment/getByPostId", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id : postId })
+                });
+        if (res.ok) {
+            const commentData = await res.json();
+            comments = await Promise.all(
+                commentData.map(async (comment: any) => {
+                const profileRes = await fetch("http://localhost:8000/profile/getById", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({ _id: comment.userId }) 
+                });
+                const userProfile = profileRes.ok ? await profileRes.json() : null;
+        
+                    return {
+                        name: userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "Unknown User",
+                        text: comment.description
+                    };
+                })
+            );    
+        } else {
+            showToast("error", "Failed to fetch comments");
+        }
+    }
+
+	async function addComment() {
 		if (newComment.trim() !== '') {
-			comments = [...comments, { name: 'You', text: newComment }];
+			const postId = $page.params.id;
+            const token = localStorage.getItem("token");
+
+            if (token) {
+                const sessionIdResponse = await fetch("http://localhost:8000/auth/tokenID", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ token })
+                });
+                const userId = await sessionIdResponse.json()
+                const res = await fetch("http://localhost:8000/comment/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        postId : postId,
+                        description : newComment,
+                        commentTopicId : null,
+                        userId : userId
+                    })
+                });
+                if (res.ok){
+                    showToast("info", "Comment added!")
+                    await getComments()
+                }
+                else{
+                    showToast("error", "Internal server error")
+                }
+            } else {
+                showToast("error", "Unauthorized")
+            }
 			newComment = '';
 		}
 	}
