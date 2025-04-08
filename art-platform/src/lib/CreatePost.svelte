@@ -37,6 +37,7 @@ onMount(async () => {
         console.warn("No token found in localStorage");
     }
 });
+
 // Valid image formats (add more formats as needed)
 const validImageFormats = ["image/jpeg", "image/png", "image/gif"];
 
