@@ -281,7 +281,7 @@
 
     const deletePost = async () =>{
         try {
-            const response = await fetch(`http://localhost:8000/post/deletePost`, {
+            const response = await fetch(`http://localhost:8000/post/delete`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
