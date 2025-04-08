@@ -4,7 +4,7 @@ const followController = require('../controller/followController');
 
 router.post('/follows', followController.follow);
 router.delete('/unfollow', followController.unfollow);
-router.get('/followers', followController.getFollowers);
-router.get('/following', followController.getFollowing);
+router.post('/followers', followController.getFollowers);
+router.post('/following', followController.getFollowing);
 
 module.exports = router;

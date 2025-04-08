@@ -13,6 +13,10 @@
     let userID: string | null = null;
     let profile: any = null;
     let isOwnProfile: boolean = false;
+    let followers: any[] = [];
+    let following: any[] = [];
+    let followerProfiles: any[] = [];
+    let followingProfiles: any[] = [];
 
     onMount(async () => {
         const token = localStorage.getItem("token");
@@ -55,6 +59,112 @@
                     if (profileRes.ok) {
                         profile = await profileRes.json();
                         console.log("Profile Data:", profile);
+                        
+                        // 3. Fetch followers
+                        const followersRes = await fetch("http://localhost:8000/follow/followers", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ userId: userID })
+                        });
+
+                        if (followersRes.ok) {
+                            followers = await followersRes.json();
+                            console.log("Followers:", followers);
+                            
+                            // Fetch profile details for each follower
+                            followerProfiles = await Promise.all(
+                                followers.map(async (follower) => {
+                                    try {
+                                        const followerProfileRes = await fetch("http://localhost:8000/profile/getById", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json"
+                                            },
+                                            body: JSON.stringify({ _id: follower.followerId })
+                                        });
+                                        
+                                        if (followerProfileRes.ok) {
+                                            const followerProfile = await followerProfileRes.json();
+                                            return {
+                                                ...followerProfile,
+                                                _id: follower.followerId
+                                            };
+                                        }
+                                        return {
+                                            firstName: "Unknown",
+                                            lastName: "User",
+                                            profileImage: "/logo.png",
+                                            _id: follower.followerId
+                                        };
+                                    } catch (err) {
+                                        console.error("Error fetching follower profile:", err);
+                                        return {
+                                            firstName: "Unknown",
+                                            lastName: "User",
+                                            profileImage: "/logo.png",
+                                            _id: follower.followerId
+                                        };
+                                    }
+                                })
+                            );
+                        } else {
+                            console.error("Failed to fetch followers", followersRes.status);
+                        }
+
+                        // 4. Fetch following
+                        const followingRes = await fetch("http://localhost:8000/follow/following", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ userId: userID })
+                        });
+
+                        if (followingRes.ok) {
+                            following = await followingRes.json();
+                            console.log("Following:", following);
+                            
+                            // Fetch profile details for each following
+                            followingProfiles = await Promise.all(
+                                following.map(async (following) => {
+                                    try {
+                                        const followingProfileRes = await fetch("http://localhost:8000/profile/getById", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/json"
+                                            },
+                                            body: JSON.stringify({ _id: following.userId })
+                                        });
+                                        
+                                        if (followingProfileRes.ok) {
+                                            const followingProfile = await followingProfileRes.json();
+                                            return {
+                                                ...followingProfile,
+                                                _id: following.userId
+                                            };
+                                        }
+                                        return {
+                                            firstName: "Unknown",
+                                            lastName: "User",
+                                            profileImage: "/logo.png",
+                                            _id: following.userId
+                                        };
+                                    } catch (err) {
+                                        console.error("Error fetching following profile:", err);
+                                        return {
+                                            firstName: "Unknown",
+                                            lastName: "User",
+                                            profileImage: "/logo.png",
+                                            _id: following.userId
+                                        };
+                                    }
+                                })
+                            );
+                        } else {
+                            console.error("Failed to fetch following", followingRes.status);
+                        }
                     } else {
                         console.error("Failed to fetch profile", profileRes.status);
                     }
@@ -71,36 +181,92 @@
 
     let isFollowed: boolean = false;
 
-    function toggleFollow() {
+    async function toggleFollow() {
+        if (!userID) return;
         
-        isFollowed = !isFollowed;
-    }
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("No token found, cannot follow/unfollow");
+                return;
+            }
 
+            const currentUserRes = await fetch("http://localhost:8000/auth/tokenID", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ token })
+            });
+
+            if (currentUserRes.ok) {
+                const currentUserId = await currentUserRes.json();
+                
+                // Implement follow/unfollow logic here with your API
+                // For now, we'll just toggle the state
+                isFollowed = !isFollowed;
+                
+                // Refresh followers list after follow/unfollow
+                const followersRes = await fetch("http://localhost:8000/follow/followers", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ userId: userID })
+                });
+
+                if (followersRes.ok) {
+                    followers = await followersRes.json();
+                    
+                    // Refresh follower profiles
+                    followerProfiles = await Promise.all(
+                        followers.map(async (follower) => {
+                            try {
+                                const followerProfileRes = await fetch("http://localhost:8000/profile/getById", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({ _id: follower.followerId })
+                                });
+                                
+                                if (followerProfileRes.ok) {
+                                    const followerProfile = await followerProfileRes.json();
+                                    return {
+                                        ...followerProfile,
+                                        _id: follower.followerId
+                                    };
+                                }
+                                return {
+                                    firstName: "Unknown",
+                                    lastName: "User",
+                                    profileImage: "/logo.png",
+                                    _id: follower.followerId
+                                };
+                            } catch (err) {
+                                console.error("Error fetching follower profile:", err);
+                                return {
+                                    firstName: "Unknown",
+                                    lastName: "User",
+                                    profileImage: "/logo.png",
+                                    _id: follower.followerId
+                                };
+                            }
+                        })
+                    );
+                }
+            }
+        } catch (err) {
+            console.error("Error toggling follow:", err);
+        }
+    }
 
     let showFollowersModal = false;
     let showFollowingModal = false;
 
-    let followers = [
-        { firstName: "Alice", lastName: "Chan", profileImage: "/logo.png" },
-        { firstName: "Bob", lastName: "Smith", profileImage: "/logo.png" },
-        { firstName: "Cara", lastName: "Mendez", profileImage: "/logo.png" },
-        { firstName: "Bob", lastName: "Smith", profileImage: "/logo.png" },
-        { firstName: "Cara", lastName: "Mendez", profileImage: "/logo.png" },
-        { firstName: "Bob", lastName: "Smith", profileImage: "/logo.png" },
-        { firstName: "Cara", lastName: "Mendez", profileImage: "/logo.png" },
-        { firstName: "Bob", lastName: "Smith", profileImage: "/logo.png" },
-        { firstName: "Cara", lastName: "Mendez", profileImage: "/logo.png" },
-        { firstName: "Bob", lastName: "Smith", profileImage: "/logo.png" },
-        { firstName: "Cara", lastName: "Mendez", profileImage: "/logo.png" }
-    ];
-
-    let following = [
-        { firstName: "David", lastName: "Lee", profileImage: "/logo.png" },
-        { firstName: "Ella", lastName: "Nguyen", profileImage: "/logo.png" }
-    ];
-
-
-
+    function navigateToProfile(userId: string) {
+        window.location.href = `/profile?id=${userId}`;
+    }
 </script>
 
 <style>
@@ -273,15 +439,15 @@
         border-radius: 1rem;
         z-index: 1000;
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
+    }
 
-        .modal-content {
+    .modal-content {
         display: flex;
         flex-direction: column;
         gap: 0.7rem;
-        }
+    }
 
-        .modal-user {
+    .modal-user {
         display: flex;
         align-items: center;
         gap: 0.7rem;
@@ -290,92 +456,111 @@
         padding: 0.5rem;
         border-radius: 0.5rem;
         transition: background 0.2s;
-        }
+        cursor: pointer;
+    }
 
-        .modal-user:hover {
+    .modal-user:hover {
         background-color: #f0f0f0;
-        }
+    }
 
-        .modal-user img {
+    .modal-user img {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        }
+        object-fit: cover;
+    }
 
-        .modal-backdrop {
+    .modal-backdrop {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
         background-color: rgba(0, 0, 0, 0.4);
         z-index: 999;
-        }
+    }
 
-        .modal-box h3{
-            border-bottom: 1px solid hsl(5, 85%, 63%);
-            padding-bottom: 0.5rem;
-        }
+    .modal-box h3{
+        border-bottom: 1px solid hsl(5, 85%, 63%);
+        padding-bottom: 0.5rem;
+    }
 
-
+    .loading {
+        text-align: center;
+        padding: 1rem;
+        color: #666;
+    }
 </style>
 
 <div class="profile-container">
     <div class="leftside-container">
         <div class="right-above-container">
+            <!-- svelte-ignore a11y_img_redundant_alt -->
             <img src="/cover.png" alt="cover image" />
             <div class="profile-right-container">
                 <div class="img-container">
+                    <!-- svelte-ignore a11y_img_redundant_alt -->
                     <img src={profile?.profileImage || "/logo.png"} alt="profile image" />
                     <h3>{profile?.firstName} {profile?.lastName}</h3>
                     <p>My work explores the relationship between critical theory and emotional memory.</p>
                     
                     {#if isOwnProfile}
-                        <a href="/edit-profile">
-                            <button class="pbtn-2">Edit Profile</button>
-                        </a>
+                    <a href="/edit-profile">
+                        <button class="pbtn-2">Edit Profile</button>
+                    </a>
                     {:else}
                         <button class="pbtn-2" on:click={toggleFollow}>
                             {isFollowed ? "Followed" : "+ Follow"}
                         </button>
-                        <div class="follow-stats">
-                            <span on:click={() => showFollowersModal = true}>
-                                <strong>{followers.length}</strong> Followers
-                            </span> • 
-                            <span on:click={() => showFollowingModal = true}>
-                                <strong>{following.length}</strong> Following
-                            </span>
-                        </div>
                     {/if}
+                    
+                    <div class="follow-stats">
+                        <span on:click={() => showFollowersModal = true}>
+                            <strong>{followers.length}</strong> Followers
+                        </span> • 
+                        <span on:click={() => showFollowingModal = true}>
+                            <strong>{following.length}</strong> Following
+                        </span>
+                    </div>
                 </div>
                 {#if showFollowersModal}
                     <div class="modal-backdrop" on:click={() => showFollowersModal = false}></div>
                     <div class="modal-box">
                         <h3>Followers</h3>
                         <div class="modal-content">
-                        {#each followers as person}
-                            <a href={`/profile/${person.firstName}`} class="modal-user" on:click|stopPropagation>
-                            <img src={person.profileImage} alt="profile" />
-                            <span>{person.firstName} {person.lastName}</span>
-                            </a>
-                        {/each}
+                        {#if followers.length === 0}
+                            <p>No followers yet</p>
+                        {:else if followerProfiles.length === 0}
+                            <p class="loading">Loading...</p>
+                        {:else}
+                            {#each followerProfiles as follower}
+                                <div class="modal-user" on:click|stopPropagation={() => navigateToProfile(follower._id)}>
+                                <img src={follower.profileImage || "/logo.png"} alt="profile" />
+                                <span>{follower.firstName} {follower.lastName}</span>
+                                </div>
+                            {/each}
+                        {/if}
                         </div>
                     </div>
-                    {/if}
+                {/if}
 
-                    {#if showFollowingModal}
+                {#if showFollowingModal}
                     <div class="modal-backdrop" on:click={() => showFollowingModal = false}></div>
                     <div class="modal-box">
                         <h3>Following</h3>
                         <div class="modal-content">
-                        {#each following as person}
-                            <a href={`/profile/${person.firstName}`} class="modal-user" on:click|stopPropagation>
-                            <img src={person.profileImage} alt="profile" />
-                            <span>{person.firstName} {person.lastName}</span>
-                            </a>
-                        {/each}
+                        {#if following.length === 0}
+                            <p>Not following anyone yet</p>
+                        {:else if followingProfiles.length === 0}
+                            <p class="loading">Loading...</p>
+                        {:else}
+                            {#each followingProfiles as follow}
+                                <div class="modal-user" on:click|stopPropagation={() => navigateToProfile(follow._id)}>
+                                <img src={follow.profileImage || "/logo.png"} alt="profile" />
+                                <span>{follow.firstName} {follow.lastName}</span>
+                                </div>
+                            {/each}
+                        {/if}
                         </div>
                     </div>
-                    {/if}
-
-
+                {/if}
 
                 <div class="profile-left-container">
                     <div class="like-count">
@@ -428,4 +613,4 @@
             <ProfileRight />
         {/each}    
     </div>
-</div> how to fix to go to that user profile page
+</div>
