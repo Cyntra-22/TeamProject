@@ -19,6 +19,7 @@
     let followingProfiles: any[] = [];
     let isFollowingUser: boolean = false;
     let isArtist: boolean = false; // New variable to track if user is an artist
+    let artistPosts: any[] = [];
 
     onMount(async () => {
         const token = localStorage.getItem("token");
@@ -176,6 +177,24 @@
                             );
                         } else {
                             console.error("Failed to fetch following", followingRes.status);
+                        }
+
+                        // 5. Fetch artist posts if the user is an artist
+                        if (isArtist) {
+                            const artistPostsRes = await fetch("http://localhost:8000/post/getPostByUserId", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ userId: userID })
+                            });
+
+                            if (artistPostsRes.ok) {
+                                artistPosts = await artistPostsRes.json();
+                                console.log("Artist Posts:", artistPosts);
+                            } else {
+                                console.error("Failed to fetch artist posts", artistPostsRes.status);
+                            }
                         }
                     } else {
                         console.error("Failed to fetch profile", profileRes.status);
@@ -654,18 +673,22 @@
                 </div>
             </div>
         </div>
-        <div class="right-below-container">
-            <h3>Explore My Collections</h3>
-            <div class="collection">
-                {#each images as image, index}
-                    <img 
-                        src={image} 
-                        alt="Buddhist Art {index + 1}" 
-                        class="{index === 3 ? 'selected' : ''}" 
-                    />
-                {/each}
+        {#if isArtist}
+            <div class="right-below-container">
+                <h3>Explore My Collections</h3>
+                <div class="collection">
+                    {#each artistPosts as post, index (post.id)}
+                        <a href ={`/art-detail/${post.id}`}>
+                            <img 
+                            src={post.postImage} 
+                            alt="{post.title}" 
+                            class="{index === 3 ? 'selected' : ''}" 
+                            />
+                        </a>
+                    {/each}
+                </div>
             </div>
-        </div>
+        {/if}
     </div>
     <div class="more-profile-container">
         <ProfileRight />
