@@ -643,7 +643,11 @@
                         </div>
                         <div class="review-small-container">
                             <p class="star">****</p>
-                            <p>324 <a href="/review"><span class="review-border">reviews</span></a></p>
+                            <p>324 {#if userID}
+                                <a href={`/review/${userID}`}><span class="review-border">reviews</span></a>
+                            {:else}
+                                <span class="review-border">reviews</span>
+                            {/if} </p>
                         </div>
                     </div>
                     {/if}

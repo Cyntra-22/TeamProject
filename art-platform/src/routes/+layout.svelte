@@ -1,5 +1,6 @@
 <script lang="ts">
     import Navbar from "$lib/Navbar.svelte";
+    import Toast from "$lib/ToastMsg.svelte";
     import { page } from "$app/stores";
 
 </script>
@@ -28,6 +29,8 @@
 {#if $page.url.pathname !== '/login' && $page.url.pathname !== '/signup'} 
     <Navbar />
 {/if}
+
+<Toast />
 
 <div class="main-container">
         <slot/>

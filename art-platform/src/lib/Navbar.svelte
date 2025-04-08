@@ -1,7 +1,10 @@
 <script lang="ts">
-    
-    let showDropdown = false;
     import { page } from "$app/stores";
+    import { onMount } from "svelte";
+
+    let showDropdown = false;
+    let userID: string | null = null;
+    let isArtist: boolean = false;
 
     $: routeId = $page.route.id ?? "";
 
@@ -14,6 +17,48 @@
     function toggleSearchModal() {
         showSearchModal = !showSearchModal;
     }
+
+    onMount(async () => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const response = await fetch("http://localhost:8000/auth/tokenID", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ token })
+                });
+
+                if (response.ok) {
+                    const userID = await response.json();
+
+                    const userProfile = await fetch("http://localhost:8000/profile/getById", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ _id: userID })
+                    });
+
+                    if (userProfile.ok) {
+                        const userData = await userProfile.json();
+                        isArtist = userData.role === "artist";
+
+                    } else {
+                        console.error("Failed to fetch user profile", userProfile.status);
+                    }
+
+                } else {
+                    console.error("Failed to fetch user ID", response.status);
+                }
+            } catch (err) {
+                console.error("Error fetching user ID:", err);
+            }
+        } else {
+            console.warn("No token found in localStorage");
+        }
+    });
 
     const forYouItems = [
         { title: 'Digital Artwork', img: '/B1.jpeg' },
@@ -266,7 +311,9 @@
         <div class="logo"><img alt=" " src="/logo.png" /></div>
         <div class="nav-links">
             <a href="/" class:active={routeId === "/"}>Home</a>
-            <a href="/create" class:active={routeId === "/create"}>Create</a>
+            {#if isArtist}
+                <a href="/create" class:active={routeId === "/create"}>Create</a>
+            {/if}
         </div>
     </div>
 
