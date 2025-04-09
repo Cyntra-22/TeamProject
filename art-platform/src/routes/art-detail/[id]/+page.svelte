@@ -354,7 +354,6 @@
 
     async function editComment(comment: any) {
         if (comment.access) {
-            console.log(comment)
             commentIdToEdit = comment.commentId;
             commentToEdit = comment;
             editedText = comment.text;
@@ -364,7 +363,6 @@
     }
 
     async function saveEdit() {
-        console.log(commentIdToEdit)
         if (editedText.trim() !== '' && commentIdToEdit) {
             try {
                 const response = await fetch("http://localhost:8000/comment/edit", {
@@ -403,50 +401,24 @@
     }
 
     async function deleteComment(comment: any) {
-        const postId = $page.params.id;
-        const res = await fetch("http://localhost:8000/comment/getByPostId", {
-            method: "POST",
+        const deleteResponse = await fetch("http://localhost:8000/comment/delete", {
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ id: postId })
+            body: JSON.stringify({
+                commentId : comment.commentId,
+                userId : comment.userId
+            })
         });
         
-        if (res.ok) {
-            const commentData = await res.json();
-            const originalComment = commentData.find((c: any) => 
-                c.description === comment.text && 
-                comment.name.includes(c.firstName) 
-            );
-            
-            if (originalComment) {
-                try {
-                    const deleteResponse = await fetch("http://localhost:8000/comment/delete", {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            _id: originalComment._id
-                        })
-                    });
-                    
-                    if (deleteResponse.ok) {
-                        showToast("info", "Comment deleted successfully");
-                        await getComments(); 
-                    } else {
-                        showToast("error", "Failed to delete comment");
-                    }
-                } catch (error) {
-                    console.error("Error deleting comment:", error);
-                    showToast("error", "Error deleting comment");
-                }
-            } else {
-                showToast("error", "Couldn't find comment to delete");
-            }
+        if (deleteResponse.ok) {
+            showToast("info", "Comment deleted successfully");
+            await getComments(); 
         } else {
-            showToast("error", "Failed to get comment details");
+            showToast("error", "Failed to delete comment");
         }
+                
     }
 
     let showOptions = false;
@@ -472,7 +444,6 @@
             });
 
             if (response.ok) {
-                console.log("Post deleted successfully");
                 window.location.href = "/";
             } else {
                 console.error("Failed to delete post:", await response.text());
