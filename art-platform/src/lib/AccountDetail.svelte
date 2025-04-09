@@ -16,7 +16,6 @@
 
         if (token) {
             try {
-                // 1. Get userID from token
                 const response = await fetch("http://localhost:8000/auth/tokenID", {
                     method: "POST",
                     headers: {
@@ -30,7 +29,6 @@
                     userID = data;
                     console.log("User ID:", userID);
 
-                    // 2. Fetch profile by userID
                     const profileRes = await fetch("http://localhost:8000/profile/getById", {
                         method: "POST",
                         headers: {
@@ -43,7 +41,6 @@
                         profile = await profileRes.json();
                         console.log("Profile Data:", profile);
 
-                        // Populate form fields with current profile data
                         email = profile?.email || '';
                         firstName = profile?.firstName || '';
                         lastName = profile?.lastName || '';
@@ -67,7 +64,6 @@
     const handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        // Send the updated data to the server
         const updatedProfile = {
             email,
             firstName,
