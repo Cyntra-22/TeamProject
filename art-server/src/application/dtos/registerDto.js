@@ -17,7 +17,7 @@ class RegisterDto {
     }
 
     if (password.length < 6) {
-      throw new Error('Password must be at least 7 characters long');
+      throw new Error('Password must be at least 6 characters long');
     }
 
     if (password !== confirmPassword) {
