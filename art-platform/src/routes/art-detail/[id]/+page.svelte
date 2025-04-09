@@ -2,9 +2,9 @@
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
 
-    export let data; // This receives data from +page.ts
+    export let data; 
 
-    // Edit post variables
+ 
     let postId: string;
     let postData: any = null;
     let isLoading = true;
@@ -17,7 +17,7 @@
     let liked = false;
     let likes = 0;
 
-    // Pop Up Form
+
     let showEditModal = false;
     let editTitle = "";
     let editDescription = "";
@@ -32,7 +32,7 @@
         editTaggedTopicString = (postData.taggedTopic || []).join(", ");
     }
 
-    // Helper function to convert file to base64
+  
     function fileToBase64(file: File): Promise<string> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -47,7 +47,7 @@
         try {
             let base64Image = null;
             
-            // Only convert file to base64 if it exists
+           
             if (file) {
                 base64Image = await fileToBase64(file);
             }
@@ -77,7 +77,7 @@
                 console.log("Post updated!");
                 showEditModal = false;
     
-                // Reload the current page to refresh all data
+               
                 window.location.reload();
             } else {
                 console.error("Update failed:", await res.text());
@@ -89,7 +89,7 @@
         }
     }
 
-    // Valid image formats (add more formats as needed)
+    
     const validImageFormats = ["image/jpeg", "image/png", "image/gif"];
 
     function handleFileUpload(event: Event) {
@@ -98,23 +98,21 @@
             const selectedFile = target.files[0];
             if (validImageFormats.includes(selectedFile.type)) {
                 file = selectedFile;
-                uploadError = false;  // Reset error state if file is valid
-
-                // Create a preview URL for the image
+                uploadError = false;  
                 const reader = new FileReader();
                 reader.onload = () => {
-                    imagePreview = reader.result as string;  // Store image preview
+                    imagePreview = reader.result as string;  
                 };
-                reader.readAsDataURL(selectedFile);  // Read the file as a data URL
+                reader.readAsDataURL(selectedFile);  
             } else {
-                uploadError = true;  // Set error state if file is invalid
-                file = null;  // Clear the file in case of error
-                imagePreview = null;  // Clear the preview
+                uploadError = true;  
+                file = null;  
+                imagePreview = null;  
             }
         }
     }
 
-    // Function to fetch profile data for a user
+   
     async function fetchProfileData(userId: string) {
         try {
             const profileRes = await fetch(
@@ -140,7 +138,7 @@
         }
     }
 
-    // Get current user ID from token
+   
     async function getCurrentUserId() {
         const token = localStorage.getItem("token");
         if (token) {
@@ -174,7 +172,7 @@
         }
     }
 
-    // Function to check if user has already liked the post
+    
     async function checkLikeStatus() {
         if (!currentUserId || !postId) return;
 
@@ -196,7 +194,7 @@
                 const likesList = await response.json();
                 console.log("Likes list:", likesList);
 
-                // Check if current user's ID is in the likes list
+               
                 liked = likesList.some(
                     (like: { userId: string; postId: string }) =>
                         like.userId === currentUserId
@@ -210,7 +208,7 @@
         }
     }
 
-    // Function to fetch comments for the post
+   
     async function fetchComments() {
         try {
             const response = await fetch(
@@ -241,17 +239,16 @@
     }
 
     onMount(async () => {
-        // Get the post ID from URL using window.location (without page store)
+        
         const pathParts = window.location.pathname.split("/");
         postId = pathParts[pathParts.length - 1];
         console.log("Post ID from URL:", postId);
 
-        // Get current user ID from token
         currentUserId = await getCurrentUserId();
 
         if (postId) {
             try {
-                // Fetch post details using the ID
+                
                 const response = await fetch(
                     `http://localhost:8000/post/getPostById`,
                     {
@@ -267,7 +264,7 @@
                     postData = await response.json();
                     console.log("Post data:", postData);
 
-                    // Check if current user is the post owner
+                   
                     if (postData.userId === currentUserId) {
                         isOwner = true;
                     } else {
@@ -277,7 +274,7 @@
                     console.log("Current user ID:", currentUserId);
                     console.log("Is owner:", isOwner);
 
-                    // Update the UI with fetched data
+                   
                     if (postData) {
                         selectedImage = {
                             src: postData.postImage,
@@ -286,7 +283,7 @@
 
                         likes = postData.likeAmount || 0;
 
-                        // Fetch profile data for the post's user
+                       
                         if (postData.userId) {
                             profileData = await fetchProfileData(
                                 postData.userId
@@ -299,15 +296,15 @@
                         }
                         comments = await fetchComments();
 
-                        // Create enhanced comment with profile data
+                       
                         const enhancedPosts = await Promise.all(
                             comments.map(async (comment) => {
-                                // Fetch profile for each comment
+                                
                                 const profileData = await fetchProfileData(
                                     comment.userId
                                 );
 
-                                // Merge comment and profile data
+                               
                                 return {
                                     ...comment,
                                     username: profileData
@@ -333,25 +330,25 @@
         }
     });
 
-    // Compute the username from profile data
+    
     $: username = profileData
         ? `${profileData.firstName} ${profileData.lastName}`
         : "Unknown User";
 
-    // Get profile image URL
+   
     $: profileImageUrl = profileData?.profileImage;
 
-    // Function to handle like/unlike action
+   
     const toggleLike = async () => {
         try {
-            // Check if user is logged in
+            
             if (!currentUserId) {
                 alert("Please log in to like posts");
                 return;
             }
 
             if (liked) {
-                // Unlike endpoint uses DELETE method
+               
                 const response = await fetch(
                     `http://localhost:8000/like/unlikePost`,
                     {
@@ -377,7 +374,7 @@
                     );
                 }
             } else {
-                // Like endpoint uses POST method
+                
                 const response = await fetch(
                     `http://localhost:8000/like/likePost`,
                     {
@@ -542,7 +539,7 @@
                         </div>
                     {/if}
 
-                    <!-- Only show options button if user is the post owner -->
+                   
                     {#if isOwner}
                         <span style="cursor: pointer;" on:click={toggleOptions}
                             >⋯</span

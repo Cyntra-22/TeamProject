@@ -2,13 +2,13 @@
     import { userInfo } from "$lib/loginUserInfo";
 
     function cancelLogout() {
-        // Go back to previous page or home page
+       
 
         history.back();
     }
 
     function handleLogout() {
-        // Clear token from localStorage
+      
         localStorage.removeItem("token");
         
         userInfo.set({

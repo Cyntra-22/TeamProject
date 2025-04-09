@@ -6,7 +6,7 @@
     import LogOut from "$lib/LogOut.svelte";
 
     let currentComponent = "AccountDetail";
-    let profileImage = "/logo.png"; // Default image
+    let profileImage = "/logo.png"; 
 
     function setComponent(component: string) {
         currentComponent = component;
@@ -14,15 +14,15 @@
 
     onMount(async () => {
         try {
-            // Get token from localStorage or your auth store
-            const token = localStorage.getItem('token'); // Adjust based on how you store the token
+            
+            const token = localStorage.getItem('token'); 
             
             if (!token) {
                 console.error("No token found");
                 return;
             }
 
-            // Step 1: Get user ID from token
+           
             const idResponse = await fetch("http://localhost:8000/auth/tokenID", {
                 method: "POST",
                 headers: {
@@ -37,7 +37,7 @@
 
             const userId = await idResponse.json();
 
-            // Step 2: Get profile using the user ID
+         
             const profileResponse = await fetch("http://localhost:8000/profile/getById", {
                 method: "POST",
                 headers: {
@@ -52,7 +52,7 @@
 
             const profileData = await profileResponse.json();
             
-            // Step 3: Update profile image with data from the server
+           
             if (profileData.profileImage && profileData.profileImage.trim() !== "") {
                 profileImage = profileData.profileImage;
             }
@@ -110,12 +110,12 @@
         padding: 0.2rem;
         margin-left: 3rem;
         margin-bottom: 1rem;
-        object-fit: cover; /* Ensures the image covers the area nicely */
+        object-fit: cover; 
     }
 </style>
 
 <div class="container">
-    <!-- Sidebar -->
+   
     <div class="sidebar">
         <img src={profileImage} alt="profile image" />
 
@@ -141,7 +141,7 @@
         </button>
     </div>
 
-    <!-- Dynamic Content -->
+ 
     <div class="content">
         {#if currentComponent === "AccountDetail"}
             <AccountDetail />

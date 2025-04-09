@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { page } from '$app/stores'; // Import page store for URL params
+    import { page } from '$app/stores'; 
     import ProfileRight from "$lib/ProfileRight.svelte";
     $: username = $page.params.username;
 
@@ -18,18 +18,18 @@
     let followerProfiles: any[] = [];
     let followingProfiles: any[] = [];
     let isFollowingUser: boolean = false;
-    let isArtist: boolean = false; // New variable to track if user is an artist
+    let isArtist: boolean = false; 
     let artistPosts: any[] = [];
     let rating: any | null = null;
     let reviewAmount: any | null = null;
 
     onMount(async () => {
         const token = localStorage.getItem("token");
-        const urlProfileId = $page.url.searchParams.get('id'); // Get profile ID from URL
+        const urlProfileId = $page.url.searchParams.get('id'); 
 
         if (token) {
             try {
-                // 1. Get current user ID from token
+               
                 const response = await fetch("http://localhost:8000/auth/tokenID", {
                     method: "POST",
                     headers: {
@@ -41,7 +41,7 @@
                 if (response.ok) {
                     const currentUserId = await response.json();
                     
-                    // Determine which profile to fetch
+                    
                     if (urlProfileId) {
                         userID = urlProfileId;
                         isOwnProfile = currentUserId === urlProfileId;
@@ -52,7 +52,7 @@
                     
                     console.log("Fetching profile for ID:", userID, "Is own profile:", isOwnProfile);
 
-                    // 2. Fetch profile by userID (either from URL or current user)
+                   
                     const profileRes = await fetch("http://localhost:8000/profile/getById", {
                         method: "POST",
                         headers: {
@@ -65,11 +65,11 @@
                         profile = await profileRes.json();
                         console.log("Profile Data:", profile);
                         
-                        // Check if user is an artist
-                        isArtist = profile.role === "artist"; // Assuming profile has a userType field
+                        
+                        isArtist = profile.role === "artist"; 
                         console.log("Is artist:", isArtist);
                         
-                        // 3. Fetch followers
+                        
                         const followersRes = await fetch("http://localhost:8000/follow/followers", {
                             method: "POST",
                             headers: {
@@ -82,13 +82,13 @@
                             followers = await followersRes.json();
                             console.log("Followers:", followers);
                             
-                            // Check if current user is following this profile
+                           
                             if (!isOwnProfile) {
                                 isFollowingUser = followers.some(follower => follower.followerId === currentUserId);
                                 console.log("Is current user following this profile:", isFollowingUser);
                             }
                             
-                            // Fetch profile details for each follower
+                           
                             followerProfiles = await Promise.all(
                                 followers.map(async (follower) => {
                                     try {
@@ -128,7 +128,7 @@
                             console.error("Failed to fetch followers", followersRes.status);
                         }
 
-                        // 4. Fetch following
+                       
                         const followingRes = await fetch("http://localhost:8000/follow/following", {
                             method: "POST",
                             headers: {
@@ -141,7 +141,7 @@
                             following = await followingRes.json();
                             console.log("Following:", following);
                             
-                            // Fetch profile details for each following
+                            
                             followingProfiles = await Promise.all(
                                 following.map(async (following) => {
                                     try {
@@ -181,7 +181,7 @@
                             console.error("Failed to fetch following", followingRes.status);
                         }
 
-                        // 5. Fetch artist posts if the user is an artist
+                       
                         if (isArtist) {
                             const artistPostsRes = await fetch("http://localhost:8000/post/getPostByUserId", {
                                 method: "POST",
@@ -193,7 +193,7 @@
 
                             if (artistPostsRes.ok) {
                                 artistPosts = await artistPostsRes.json();
-                                //console.log("Artist Posts:", artistPosts);
+                                
                             } else {
                                 console.error("Failed to fetch artist posts", artistPostsRes.status);
                             }
@@ -260,7 +260,7 @@
 
                 
                 if (!isFollowingUser) {
-                    // Follow user
+                    
                     const followRes = await fetch("http://localhost:8000/follow/follows", {
                         method: "POST",
                         headers: {
@@ -279,7 +279,7 @@
                         console.error("Failed to follow user", followRes.status);
                     }
                 } else {
-                    // Unfollow user
+                    
                     const unfollowRes = await fetch("http://localhost:8000/follow/unfollow", {
                         method: "PATCH",
                         headers: {
@@ -298,7 +298,7 @@
                     }
                 }
                 
-                // Refresh followers list after follow/unfollow
+               
                 const followersRes = await fetch("http://localhost:8000/follow/followers", {
                     method: "POST",
                     headers: {
@@ -310,7 +310,7 @@
                 if (followersRes.ok) {
                     followers = await followersRes.json();
                     
-                    // Refresh follower profiles
+                    
                     followerProfiles = await Promise.all(
                         followers.map(async (follower) => {
                             try {
@@ -584,11 +584,11 @@
 <div class="profile-container">
     <div class="leftside-container">
         <div class="right-above-container">
-            <!-- svelte-ignore a11y_img_redundant_alt -->
+           
             <img src="/cover.png" alt="cover image" />
             <div class="profile-right-container">
                 <div class="img-container">
-                    <!-- svelte-ignore a11y_img_redundant_alt -->
+                   
                     <img src={profile?.profileImage || "/logo.png"} alt="profile image" />
                     <h3>{profile?.firstName} {profile?.lastName}</h3>
                     <p>My work explores the relationship between critical theory and emotional memory.</p>
@@ -676,7 +676,7 @@
                         <div class="info-detail">{profile?.linkedin || "No LinkedIn profile"}</div>
                     </div>
                     
-                    <!-- Only show review section if the user is an artist -->
+                    
                     {#if isArtist}
                     {#if rating >= 0}
                     <div class="right-header">

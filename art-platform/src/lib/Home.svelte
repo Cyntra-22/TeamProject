@@ -5,10 +5,10 @@
     let posts: any[] = [];
     let isLoading = true;
 
-    // Fetch the ranked posts and their associated profiles
+    
     onMount(async () => {
         try {
-            // Fetch ranked posts
+           
             const response = await fetch("http://localhost:8000/post/getReccomended", {
                 method: "GET",
                 headers: {

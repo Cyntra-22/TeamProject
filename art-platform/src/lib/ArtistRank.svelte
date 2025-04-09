@@ -6,7 +6,6 @@
             margin: 1rem 1.5rem;
         }
 
-        
         .left-header{
             display: grid;
             grid-template-columns: 1fr 2fr;

@@ -14,7 +14,7 @@
     ];
 
     onMount(() => {
-        // Get user ID from URL parameter
+       
         userId = $page.url.searchParams.get('userId');
         console.log("User ID from URL:", userId);
         
@@ -35,7 +35,7 @@
         if (selectedInterests.length >= 2 && userId) {
             isProcessing = true;
             try {
-                // Only updating the interests field
+                
                 const updateData = {
                     _id: userId,
                     interests: selectedInterests
@@ -54,7 +54,7 @@
                     console.log("Interests updated successfully:", result);
                     alert(`Your interests have been updated: ${selectedInterests.join(", ")}`);
                     
-                    // Navigate to homepage after successful update
+                    
                     goto('/login');
                 } else {
                     const errorData = await response.json();

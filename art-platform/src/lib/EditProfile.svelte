@@ -34,7 +34,7 @@
         }
     });
     
-    // Valid image formats
+   
     const validImageFormats = ["image/jpeg", "image/png", "image/gif"];
     
     function handleFileUpload(event: Event) {
@@ -45,7 +45,7 @@
                 file = selectedFile;
                 uploadError = false;
     
-                // Create a preview URL for the image
+               
                 const reader = new FileReader();
                 reader.onload = () => {
                     imagePreview = reader.result as string;
@@ -67,7 +67,7 @@
                 file = droppedFile;
                 uploadError = false;
     
-                // Create a preview URL for the image
+                
                 const reader = new FileReader();
                 reader.onload = () => {
                     imagePreview = reader.result as string;
@@ -91,7 +91,7 @@
         }
     }
     
-    // Helper function to convert file to base64
+
     function fileToBase64(file: File): Promise<string> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -111,10 +111,9 @@
         errorMessage = "";
         
         try {
-            // Convert file to base64
-            const base64Image = await fileToBase64(file);
+       const base64Image = await fileToBase64(file);
     
-            // Create profile update data with only the profileImage field
+            
             const profileData = {
                 _id: userID,
                 profileImage: base64Image
@@ -122,7 +121,7 @@
             
             console.log("Updating profile picture");
     
-            // Send the PATCH request with JSON data to your endpoint
+            
             const response = await fetch("http://localhost:8000/profile/edit", {
                 method: "PATCH",
                 headers: {
@@ -136,7 +135,7 @@
                 const data = await response.json();
                 console.log("Profile picture updated successfully:", data);
                 
-                // Show success message
+                
                 alert("Profile picture updated successfully!");
             } else {
                 const errorData = await response.json();
@@ -151,7 +150,7 @@
         }
     }
     
-    // Function to reset the file input in case of error
+    
     function resetFileInput() {
         file = null;
         uploadError = false;
@@ -344,7 +343,7 @@
             {/if}
         </div>
         
-        <!-- Error Popup -->
+
         {#if uploadError}
             <div class="error-popup">
                 <div class="error-box">

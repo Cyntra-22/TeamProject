@@ -17,4 +17,3 @@
 <div class="gallery">
     <Home/>
 </div>
-<!--         <div class="header-container"> -->

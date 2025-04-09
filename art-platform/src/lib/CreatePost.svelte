@@ -4,8 +4,8 @@ let title = "";
 let description = "";
 let tags = "";
 let file: File | null = null;
-let uploadError = false;  // State to manage error status
-let imagePreview: string | null = null;  // State to store the image preview URL
+let uploadError = false; 
+let imagePreview: string | null = null;  
 let isLoading = false;
 let errorMessage = "";
 let userID: string | null = null;
@@ -38,7 +38,7 @@ onMount(async () => {
     }
 });
 
-// Valid image formats (add more formats as needed)
+
 const validImageFormats = ["image/jpeg", "image/png", "image/gif"];
 
 function handleFileUpload(event: Event) {
@@ -47,18 +47,18 @@ function handleFileUpload(event: Event) {
         const selectedFile = target.files[0];
         if (validImageFormats.includes(selectedFile.type)) {
             file = selectedFile;
-            uploadError = false;  // Reset error state if file is valid
+            uploadError = false;  
 
-            // Create a preview URL for the image
+           
             const reader = new FileReader();
             reader.onload = () => {
-                imagePreview = reader.result as string;  // Store image preview
+                imagePreview = reader.result as string;  
             };
-            reader.readAsDataURL(selectedFile);  // Read the file as a data URL
+            reader.readAsDataURL(selectedFile);  
         } else {
-            uploadError = true;  // Set error state if file is invalid
-            file = null;  // Clear the file in case of error
-            imagePreview = null;  // Clear the preview
+            uploadError = true;  
+            file = null;  
+            imagePreview = null;  
         }
     }
 }
@@ -115,15 +115,15 @@ async function publishPost() {
     errorMessage = "";
     
     try {
-        // Process tags - assuming they're entered as comma-separated values
+        
         const taggedTopic = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
         
-        // Convert file to base64
+       
         const base64Image = await fileToBase64(file);
 
         const userId = userID;
 
-        // Create post data object with base64 image
+      
         const postData = {
             title,
             description,
@@ -134,7 +134,7 @@ async function publishPost() {
         
         console.log("postData: ", postData);
 
-        // Send the POST request with JSON data
+       
         const response = await fetch("http://localhost:8000/post/create", {
             method: "POST",
             headers: {
@@ -147,17 +147,16 @@ async function publishPost() {
             const data = await response.json();
             console.log("Post created successfully:", data);
             
-            // Reset form after successful post
+           
             title = "";
             description = "";
             tags = "";
             file = null;
             imagePreview = null;
             
-            // Show success message or redirect
+            
             alert("Post created successfully!");
-            // Optionally redirect to the post or posts page
-            // window.location.href = "/posts";
+           
         } else {
             const errorData = await response.json();
             errorMessage = errorData.message || "Failed to create post";
@@ -171,11 +170,11 @@ async function publishPost() {
     }
 }
 
-// Function to reset the file input in case of error
+
 function resetFileInput() {
     file = null;
     uploadError = false;
-    imagePreview = null;  // Clear the image preview
+    imagePreview = null;  
 }
 
 
@@ -323,7 +322,7 @@ function resetFileInput() {
         <div><button class="publish-btn" on:click={publishPost}>Publish</button></div>
     </div>
     <div class="form-container">
-        <!-- File Upload Area -->
+        
         <div 
             class="upload-box" 
             on:drop={handleDrop} 
@@ -350,7 +349,7 @@ function resetFileInput() {
             />
         </div>
 
-        <!-- Post Details Form -->
+       
         <div class="form-fields">
             <label>
                 Title <br>
@@ -369,7 +368,7 @@ function resetFileInput() {
         </div>
     </div>
 
-    <!-- Error Popup -->
+   
     {#if uploadError}
         <div class="error-popup">
             <div class="error-box">

@@ -7,7 +7,7 @@ interface User {
     isLoggedIn: boolean;
 }
 
-// Create the store
+
 export const userInfo = writable<User>({
     id: null,
     name: "",
@@ -15,7 +15,7 @@ export const userInfo = writable<User>({
     isLoggedIn: false
 });
 
-// Optional: Add a function to get the current value synchronously
+
 export function getCurrentUser(): User {
     let currentUser: User;
     userInfo.subscribe(value => {

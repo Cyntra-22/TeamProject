@@ -320,7 +320,7 @@
     <input type="text" class="search" placeholder="Search for" on:focus={toggleSearchModal}/>
 
     <div class="nav-icons">
-        <!-- Rank Icon with Dropdown -->
+       
         <div style="position: relative;">
             <button 
                 class="dropdown-btn" 
@@ -340,7 +340,7 @@
             {/if}
         </div>
 
-        <!-- User Profile Icon -->
+       
         <a href="/profile">
             <img alt="Profile" src={routeId === "/profile" ? "/profile-active-icon.png" : "/user-profile.png"} />
         </a>

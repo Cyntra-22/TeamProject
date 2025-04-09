@@ -18,14 +18,14 @@
 
     onMount(async () => {
         try {
-            // First, get the current user's token ID
+            
             const token = localStorage.getItem('token') || sessionStorage.getItem('token');
             
             if (!token) {
                 throw new Error('No authentication token found');
             }
             
-            // Get user ID from token
+            
             const tokenResponse = await fetch("http://localhost:8000/auth/tokenID", {
                 method: "POST",
                 headers: {
@@ -40,7 +40,7 @@
             
             const tokenData = await tokenResponse.json();
             
-            // Now fetch artists
+           
             const response = await fetch('http://localhost:8000/profile/getArtist');
             
             if (!response.ok) {
@@ -49,15 +49,15 @@
             
             const data = await response.json();
             
-            // Filter out current user and ensure unique artists
+            
             const filteredArtists = Array.isArray(data) ? 
                 data.filter(artist => artist._id !== tokenData) : 
                 (data._id !== tokenData ? [data] : []);
                 
-            // Create a unique list of artists
+           
             const uniqueArtists = [...new Map(filteredArtists.map(item => [item._id, item])).values()];
             
-            // Limit to specified count
+           
             artists = uniqueArtists.slice(0, count).map(artist => ({
                 ...artist,
                 bio: artist.bio || "My work explores the relationship.",
@@ -133,19 +133,17 @@
         background-color: white;
         color: hsl(5, 85%, 63%);
         border: none;
-        padding: 0.4rem 1.5rem;  /* Increased horizontal padding */
+        padding: 0.4rem 1.5rem; 
         margin-top: 1rem;
         border-radius: 20px;
         cursor: pointer;
         border: 1px solid hsl(5, 85%, 63%);
         font-size: 0.8rem;
-        min-width: 150px;  /* Added a minimum width */
-        text-align: center; /* Center the text */
+        min-width: 150px;  
+        text-align: center; 
     }
 
-    .pbtn-2:hover {
-        background-color: hsl(5, 85%, 50%);
-    }
+   
 
     .pbtn-1:hover {
         color: hsl(5, 85%, 50%);

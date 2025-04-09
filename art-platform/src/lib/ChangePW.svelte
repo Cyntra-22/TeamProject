@@ -40,17 +40,17 @@
     let newPassword: string = "";
     let confirmNewPassword: string = "";
 
-    // Function to handle password change
+    
     const handleSubmit = async (event: Event) => {
         event.preventDefault();
 
-        // Check if new password and confirm password match
+       
         if (newPassword !== confirmNewPassword) {
             alert("New Password and Confirm New Password do not match.");
             return;
         }
 
-        // Prepare the payload
+       
         const payload = {
             userId,
             currentPassword,
@@ -73,8 +73,7 @@
                 console.log("Password changed successfully:", data);
                 alert("Password changed successfully");
                 goto("/profile");
-                // Redirect to profile or login page
-                // e.g., goto("/profile"); // Uncomment if you want to redirect after success
+                
             } else {
                 const errorData = await res.json();
                 console.error("Failed to change password:", errorData);

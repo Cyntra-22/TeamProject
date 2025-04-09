@@ -6,7 +6,7 @@
     let postsWithProfiles: any[] = [];
     let isLoading = true;
     
-    // Function to fetch profile data for a user
+    
     async function fetchProfileData(userId: string) {
         try {
             const profileRes = await fetch("http://localhost:8000/profile/getById", {
@@ -29,10 +29,10 @@
         }
     }
     
-    // Fetch the ranked posts and their associated profiles
+    
     onMount(async () => {
         try {
-            // Fetch ranked posts
+           
             const response = await fetch("http://localhost:8000/post/getRanking", {
                 method: "GET",
                 headers: {
@@ -44,13 +44,13 @@
                 rankedPosts = await response.json();
                 console.log("Ranked posts data:", rankedPosts);
                 
-                // Create enhanced posts with profile data
+                
                 const enhancedPosts = await Promise.all(
                     rankedPosts.map(async (post) => {
-                        // Fetch profile for each post
+                       
                         const profileData = await fetchProfileData(post.userId);
                         
-                        // Merge post and profile data
+                        
                         return {
                             ...post,
                             username: profileData ? `${profileData.firstName} ${profileData.lastName}` : "Unknown User",

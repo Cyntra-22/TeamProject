@@ -7,7 +7,7 @@
     let isProcessing: boolean = false;
 
     onMount(() => {
-        // Get user ID from URL parameter
+        
         userId = $page.url.searchParams.get('userId');
         console.log("User ID from URL:", userId);
     });
@@ -20,7 +20,7 @@
         if (selectedRole && userId) {
             isProcessing = true;
             try {
-                // Only updating the role field
+                
                 const updateData = {
                     _id: userId,
                     role: selectedRole

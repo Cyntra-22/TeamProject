@@ -23,8 +23,7 @@
             margin-bottom: 3rem;
             text-align: center;
         }
-     
-    
+
       
 
         .top-btn {

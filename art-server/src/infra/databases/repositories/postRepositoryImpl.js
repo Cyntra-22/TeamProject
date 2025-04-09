@@ -6,14 +6,14 @@ const mongoose = require("mongoose");
 class PostRepositoryImpl extends PostRepository {
     async upsertPost(data) {
         if (data._id) {
-            // Update existing post
+          
             return await Post.findByIdAndUpdate(
                 data._id,
                 { ...data, updatedWhen: Date.now() },
                 { new: true, runValidators: true }
             );
         } else {
-            // Create new post
+            
             const post = new Post(data);
             const savedPost = await post.save();
 
@@ -79,7 +79,7 @@ class PostRepositoryImpl extends PostRepository {
 
     async findPostByUserId(userId) {
         try {
-            // Convert string userId to ObjectId
+            
             const objectIdUserId = mongoose.Types.ObjectId.createFromHexString(userId);
             const postData = await Post.find({
                 userId: objectIdUserId,
