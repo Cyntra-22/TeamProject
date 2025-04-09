@@ -71,6 +71,7 @@ class PostRepositoryImpl extends PostRepository {
     }
 
     async deletePost(id) {
+        if (!id) return null;
         const postData = await Post.findByIdAndUpdate(id, { recStatus: 0 });
         if (!postData) return null;
 

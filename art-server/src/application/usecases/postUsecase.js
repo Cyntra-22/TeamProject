@@ -54,6 +54,7 @@ const getPostByRanking = async () => {
 };
 
 const deletePost = async (id) => {
+    if (!id) throw new Error("Post ID is required for deletion");
     const postEntity = await postRepo.deletePost(id);
     if (!postEntity) throw new Error("There are no posts yet");
     return postEntity;
