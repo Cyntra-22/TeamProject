@@ -23,6 +23,15 @@ class RegisterDto {
     if (password !== confirmPassword) {
       throw new Error('Passwords do not match');
     }
+
+    if (!birthdate) {
+      throw new Error('Birthdate is required');
+    }
+
+    if (!firstName || !lastName) {
+      throw new Error('First and last name are required');
+    }
+
     this.email = email;
     this.password = password;
     this.firstName = firstName;

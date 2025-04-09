@@ -29,7 +29,7 @@ const editComment = async (dto) => {
     throw Error("User doesn't exist")
   }
 
-  if (existingComment.userId !== dto.userId){
+  if (existingComment.userId != dto.userId){
     throw Error("No permisson for editing this post")
   }
 
@@ -49,7 +49,7 @@ const deleteComment = async (dto) => {
 
   const existingComment = await commentRepo.findCommentByCommentId(dto.commentId);
 
-  if (existingComment.userId !== dto.userId){
+  if (existingComment.userId != dto.userId){
     throw Error("No permisson for deleting this post")
   }
 
