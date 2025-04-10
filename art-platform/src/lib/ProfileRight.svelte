@@ -83,7 +83,10 @@
 
 <style>
     .more-profile-container {
-        margin-top: 2rem;
+        margin-top: 1rem;
+        max-height: 630px;
+        overflow-y: auto;
+        padding-right: 10px;
     }
     
     .loading {

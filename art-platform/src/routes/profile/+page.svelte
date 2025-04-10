@@ -361,6 +361,7 @@
         border: 1px solid hsl(5, 85%, 50%);
         border-radius: 1rem;
         padding: 1.5rem 1rem;
+        height: 650px;
     }
     .right-above-container{
         border-radius: 1rem;
