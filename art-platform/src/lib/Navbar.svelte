@@ -401,6 +401,7 @@
                 placeholder="Search" 
                 bind:value={searchQuery}
                 on:keydown={handleSearch} />
+                <button class="close-btn" on:click={toggleSearchModal}>X</button>
 			</div>
 			<div class="section">
 				<h4>For you</h4>
