@@ -1,3 +1,4 @@
+const AverageRating = require('../../domain/entities/averageRating');
 const reviewRepo = require('../../infra/databases/repositories/reviewRepositoryImpl');
 const userRepo = require('../../infra/databases/repositories/userRepositoryImpl');
 
@@ -27,4 +28,20 @@ const createReview = async (dto) => {
   return reviewEntity
 }
 
-module.exports = { getReviewsByRevieweeId, createReview};
+const getAllRatingByUserId = async (id) => {
+  const ratings = await reviewRepo.findAllReviewByUserId(id);
+  if (ratings){
+    let totalRating = 0;
+    const totalReview = ratings.length
+    ratings.forEach(rating => {
+      totalRating += rating.rating
+    });
+    var averageRating = totalRating/ totalReview
+    return new AverageRating({
+      userId : id,
+      totalRating : averageRating
+    });
+  }
+}
+
+module.exports = { getReviewsByRevieweeId, createReview, getAllRatingByUserId};

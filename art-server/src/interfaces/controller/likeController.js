@@ -30,4 +30,16 @@ const getLikesByPost = async (req, res) => {
     }
 }
 
-module.exports = { likePost, unlikePost, getLikesByPost };
+const getAllLikeByUserId = async (req, res) => {
+    try {
+        const { id } = req.body;
+        const likes = await likeUsecase.getAllLikeByUserId(id);
+        res.status(200).json(likes); 
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}
+
+
+
+module.exports = { likePost, unlikePost, getLikesByPost, getAllLikeByUserId };

@@ -1,4 +1,6 @@
+const TotalLike = require('../../domain/entities/totalLike');
 const likeRepo = require('../../infra/databases/repositories/likeRepositoryImpl');
+const postRepo = require('../../infra/databases/repositories/postRepositoryImpl')
 
 const likePost = async (dto) => {
     const userId = dto.userId;
@@ -20,4 +22,17 @@ const getLikesByPost = async (postId) => {
     return likes;
 };
 
-module.exports = { likePost, unlikePost, getLikesByPost };
+const getAllLikeByUserId = async (id) => {
+    const post = await postRepo.findPostByUserId(id);
+    let totalLike = 0;
+    if (!post) throw new Error("There are no post yet");
+    post.forEach(post => {
+        totalLike += post.likeAmount
+    });
+    return new TotalLike({
+        userId : id,
+        totalLike : totalLike
+    });
+}
+
+module.exports = { likePost, unlikePost, getLikesByPost, getAllLikeByUserId };

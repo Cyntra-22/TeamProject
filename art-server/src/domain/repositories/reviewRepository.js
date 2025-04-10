@@ -4,6 +4,8 @@ class ReviewRepository {
   async findReviewsByRevieweeId(id){}
 
   async findRevieweeReviewByReviewerId(reviewerId, revieweeId){}
+
+  async findAllReviewByUserId(id){}
 }
 
 module.exports = ReviewRepository;
