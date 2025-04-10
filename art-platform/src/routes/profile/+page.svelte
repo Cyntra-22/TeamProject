@@ -682,7 +682,6 @@
                     
                     
                     {#if isArtist}
-                    {#if rating >= 0}
                     <div class="right-header">
                         <div>
                             <h2>{Number(rating).toFixed(2)}</h2>
@@ -696,11 +695,6 @@
                             {/if} </p>
                         </div>
                     </div>
-                    {:else}
-                    <div class="right-header">
-                        No review yet
-                    </div>
-                    {/if}
                     {/if}
                 </div>
             </div>
