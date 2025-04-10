@@ -394,7 +394,7 @@
                 })
             );    
         } else {
-            showToast("error", "Failed to fetch comments");
+
         }
     }
 
@@ -605,21 +605,26 @@
     .modal-actions button:hover {
         opacity: 0.9;
     }
-	.container {
-		display: flex;
-		align-items: center;
-		padding: 2rem;
-		border: 1px solid #f0dcdc;
-		border-radius: 1.5rem;
-        margin: 2rem 10rem;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-		gap: 2rem;
-		position: relative;
-	}
 
-	.back {
+    .container {
+        display: flex;
+        align-items: center;
+        padding: 2rem;
+        border: 1px solid #f0dcdc;
+        border-radius: 1.5rem;
+        /* Replace fixed margins with auto horizontal margins for true centering */
+        margin: 2rem auto;
+        /* Set a max-width instead of fixed margins */
+        max-width: 900px;
+        width: 90%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        gap: 2rem;
+        position: relative;
+    }
+
+    .back {
 		position: absolute;
-		left: 11rem;
+		left: 25rem;
 		top: 8rem;
 		cursor: pointer;
 		font-size: 1.5rem;
@@ -664,6 +669,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+        width: 38rem;
 	}
 
 	input[type="text"] {
