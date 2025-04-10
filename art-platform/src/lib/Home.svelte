@@ -53,8 +53,48 @@
 </script>
 
 <style>
+    :global(body) {
+        margin: 0;
+        padding: 0;
+    }
+
+    .masonry {
+        column-count: 1;
+        column-gap: 1rem;
+        padding: 1rem;
+        width: 100vw;
+        box-sizing: border-box;
+        max-width: 1700px;
+    }
+
+    @media(min-width: 600px) {
+        .masonry {
+            column-count: 3;
+        }
+    }
+
+    @media(min-width: 900px) {
+        .masonry {
+            column-count: 3;
+        }
+    }
+
+    @media(min-width: 1200px) {
+        .masonry {
+            column-count: 4;
+        }
+    }
+
+    .masonry-item {
+        break-inside: avoid;
+        margin-bottom: 1rem;
+        display: block;
+        width: 100%;
+    }
+
     img {
         width: 100%;
+        height: auto;
         border-radius: 0.7rem;
         object-fit: cover;
         cursor: pointer;
@@ -71,12 +111,15 @@
     }
 </style>
 
-{#each posts as post, index (post.id)}
-    <a href ={`/art-detail/${post.id}`}>
-        <img 
-            src={post.postImage} 
-            alt={post.title} 
-            class="{index === 5 ? 'selected' : ''}" 
-        />
-    </a>
-{/each}
+
+<div class="masonry">
+    {#each posts as post, index (post.id)}
+        <a href={`/art-detail/${post.id}`} class="masonry-item">
+            <img 
+                src={post.postImage} 
+                alt={post.title} 
+                class="{index === 5 ? 'selected' : ''}" 
+            />
+        </a>
+    {/each}
+</div>
