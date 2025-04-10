@@ -685,10 +685,10 @@
                     {#if rating >= 0}
                     <div class="right-header">
                         <div>
-                            <h2>{rating}</h2>
+                            <h2>{Number(rating).toFixed(2)}</h2>
                         </div>
                         <div class="review-small-container">
-                            <p class="star">{"*".repeat(Math.floor(rating))}</p>
+                            <p class="star">{"★".repeat(Math.floor(rating))}</p>
                             <p>{reviewAmount} {#if userID}
                                 <a href={`/review/${userID}`}><span class="review-border">reviews</span></a>
                             {:else}
