@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { showToast } from '$lib/toast';
 
     export let count: number = 7; 
 
@@ -71,7 +72,7 @@
                 error = "An unknown error occurred";
             }
             isLoading = false;
-            console.error("Error fetching artists:", err);
+            showToast("error", "An error occurred while fetching artists. Please try again later.");
         }
     });
     

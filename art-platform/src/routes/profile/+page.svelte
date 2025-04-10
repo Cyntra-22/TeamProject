@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { page } from '$app/stores'; 
+    import { showToast } from '$lib/toast';
     import ProfileRight from "$lib/ProfileRight.svelte";
     $: username = $page.params.username;
 
@@ -49,9 +50,6 @@
                         userID = currentUserId;
                         isOwnProfile = true;
                     }
-                    
-                    // console.log("Fetching profile for ID:", userID, "Is own profile:", isOwnProfile);
-
                    
                     const profileRes = await fetch("http://localhost:8000/profile/getById", {
                         method: "POST",
@@ -63,12 +61,8 @@
 
                     if (profileRes.ok) {
                         profile = await profileRes.json();
-                        console.log("Profile Data:", profile);
-                        
                         
                         isArtist = profile.role === "artist"; 
-                        console.log("Is artist:", isArtist);
-                        
                         
                         const followersRes = await fetch("http://localhost:8000/follow/followers", {
                             method: "POST",
@@ -80,12 +74,9 @@
 
                         if (followersRes.ok) {
                             followers = await followersRes.json();
-                            console.log("Followers:", followers);
                             
-                           
                             if (!isOwnProfile) {
                                 isFollowingUser = followers.some(follower => follower.followerId === currentUserId);
-                                console.log("Is current user following this profile:", isFollowingUser);
                             }
                             
                            
@@ -114,7 +105,7 @@
                                             _id: follower.followerId
                                         };
                                     } catch (err) {
-                                        console.error("Error fetching follower profile:", err);
+                                        showToast("error", "Failed to fetch follower profile. Please try again.");
                                         return {
                                             firstName: "Unknown",
                                             lastName: "User",
@@ -125,7 +116,7 @@
                                 })
                             );
                         } else {
-                            console.error("Failed to fetch followers", followersRes.status);
+                            showToast("error", "Failed to fetch followers. Please try again.");
                         }
 
                        
@@ -139,8 +130,6 @@
 
                         if (followingRes.ok) {
                             following = await followingRes.json();
-                            // console.log("Following:", following);
-                            
                             
                             followingProfiles = await Promise.all(
                                 following.map(async (following) => {
@@ -167,7 +156,7 @@
                                             _id: following.userId
                                         };
                                     } catch (err) {
-                                        console.error("Error fetching following profile:", err);
+                                        showToast("error", "Failed to fetch following profile. Please try again.");
                                         return {
                                             firstName: "Unknown",
                                             lastName: "User",
@@ -178,7 +167,7 @@
                                 })
                             );
                         } else {
-                            console.error("Failed to fetch following", followingRes.status);
+                            showToast("error", "Failed to fetch following. Please try again.");
                         }
 
                        
@@ -195,7 +184,7 @@
                                 artistPosts = await artistPostsRes.json();
                                 
                             } else {
-                                console.error("Failed to fetch artist posts", artistPostsRes.status);
+                                showToast("error", "Failed to fetch artist posts. Please try again.");
                             }
                             
                             const res = await fetch("http://localhost:8000/review/getAllReviewsByRevieweeId", {
@@ -219,16 +208,16 @@
                             }
                         }
                     } else {
-                        console.error("Failed to fetch profile", profileRes.status);
+                        showToast("error", "Failed to fetch profile. Please try again.");
                     }
                 } else {
-                    console.error("Failed to fetch user ID", response.status);
+                    showToast("error", "Failed to fetch user ID. Please log in again.");
                 }
             } catch (err) {
-                console.error("Error:", err);
+                showToast("error", "An error occurred while fetching user ID. Please try again.");
             }
         } else {
-            console.warn("No token found in localStorage");
+            showToast("error", "No token found. Please log in again.");
         }
     });
 
@@ -238,7 +227,7 @@
         try {
             const token = localStorage.getItem("token");
             if (!token) {
-                console.warn("No token found, cannot follow/unfollow");
+                showToast("error", "No token found. Please log in again.");
                 return;
             }
 
@@ -273,10 +262,10 @@
                     });
                     
                     if (followRes.ok) {
-                        console.log("Successfully followed user");
+                        showToast("info", "Successfully followed user");
                         isFollowingUser = true;
                     } else {
-                        console.error("Failed to follow user", followRes.status);
+                        showToast("error", "Failed to follow user. Please try again.");
                     }
                 } else {
                     
@@ -291,10 +280,10 @@
                     });
                     
                     if (unfollowRes.ok) {
-                        console.log("Successfully unfollowed user");
+                        showToast("info", "Successfully unfollowed user");
                         isFollowingUser = false;
                     } else {
-                        console.error("Failed to unfollow user", unfollowRes.status);
+                        showToast("error", "Failed to unfollow user. Please try again.");
                     }
                 }
                 
@@ -336,7 +325,7 @@
                                     _id: follower.followerId
                                 };
                             } catch (err) {
-                                console.error("Error fetching follower profile:", err);
+                                showToast("error", "Failed to fetch follower profile. Please try again.");
                                 return {
                                     firstName: "Unknown",
                                     lastName: "User",
@@ -349,7 +338,7 @@
                 }
             }
         } catch (err) {
-            console.error("Error toggling follow:", err);
+            showToast("error", "An error occurred while toggling follow. Please try again.");
         }
     }
 

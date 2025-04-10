@@ -1,6 +1,8 @@
 <script lang="ts">
     import ArtistRank from "$lib/ArtistRank.svelte";
     import { onMount } from 'svelte';
+    import { showToast } from '$lib/toast';
+
     
     let count = 10;
     let artistList: any = [];
@@ -84,7 +86,7 @@
             
             loading = false;
         } catch (err) {
-            console.error("Error fetching artist data:", err);
+            showToast("error", "An error occurred while fetching artist data. Please try again later.");
             loading = false;
         }
     }

@@ -1,6 +1,7 @@
 <script lang="ts">
     import PostRank from "$lib/PostRank.svelte";
     import { onMount } from "svelte";
+    import { showToast } from '$lib/toast';
 
     let rankedPosts: any[] = [];
     let postsWithProfiles: any[] = [];
@@ -20,11 +21,11 @@
             if (profileRes.ok) {
                 return await profileRes.json();
             } else {
-                console.error("Failed to fetch profile for user", userId);
+                showToast("error", "Failed to fetch profile data. Please try again.");
                 return null;
             }
         } catch (error) {
-            console.error("Error fetching profile:", error);
+            showToast("error", "An error occurred while fetching profile data. Please try again.");
             return null;
         }
     }
@@ -42,8 +43,6 @@
             
             if (response.ok) {
                 rankedPosts = await response.json();
-                console.log("Ranked posts data:", rankedPosts);
-                
                 
                 const enhancedPosts = await Promise.all(
                     rankedPosts.map(async (post) => {
@@ -60,12 +59,11 @@
                 );
                 
                 postsWithProfiles = enhancedPosts;
-                console.log("Posts with profiles:", postsWithProfiles);
             } else {
-                console.error("Failed to fetch ranked posts");
+                showToast("error", "Failed to fetch ranked posts. Please try again.");
             }
         } catch (error) {
-            console.error("Error fetching ranked posts:", error);
+            showToast("error", "An error occurred while fetching ranked posts. Please try again.");
         } finally {
             isLoading = false;
         }

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
+    import { showToast } from '$lib/toast';
 
     let showPassword = {
         previous: false,
@@ -25,15 +26,14 @@
                 if (response.ok) {
                     const data = await response.json();
                     userId = data
-                    console.log("User ID:", userId);
                 } else {
-                    console.error("Failed to fetch user ID", response.status);
+                    showToast("error", "Failed to fetch user ID. Please log in again.");
                 }
             } catch (err) {
-                console.error("Error fetching user ID:", err);
+                showToast("error", "An error occurred while fetching user ID. Please try again.");
             }
         } else {
-            console.warn("No token found in localStorage");
+            showToast("error", "No token found. Please log in again.");
         }
     });
     let currentPassword: string = "";
@@ -46,7 +46,7 @@
 
        
         if (newPassword !== confirmNewPassword) {
-            alert("New Password and Confirm New Password do not match.");
+            showToast("warning", "New Password and Confirm New Password do not match.");
             return;
         }
 
@@ -66,22 +66,18 @@
                 },
                 body: JSON.stringify(payload)
             });
-            console.log(payload)
 
             if (res.ok) {
                 const data = await res.json();
-                console.log("Password changed successfully:", data);
-                alert("Password changed successfully");
+                showToast("info", "Password changed successfully.");
                 goto("/profile");
                 
             } else {
                 const errorData = await res.json();
-                console.error("Failed to change password:", errorData);
-                alert("Failed to change password. Please try again.");
+                showToast("error", "Failed to change password. Please try again.");
             }
         } catch (err) {
-            console.error("Error changing password:", err);
-            alert("Error occurred while changing password.");
+            showToast("error", "Error occurred while changing password.");
         }
     };
 </script>

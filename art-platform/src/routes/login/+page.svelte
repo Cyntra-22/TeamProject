@@ -2,6 +2,7 @@
 <script lang="ts">
     import { userInfo } from "$lib/loginUserInfo";
     import { goto } from '$app/navigation';
+    import { showToast } from '$lib/toast';
     interface LoginCredentials {
       email: string;
       password: string;
@@ -30,7 +31,6 @@
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("login data here ", data);
                 
                 userInfo.set({
                     id: data.id,
@@ -42,10 +42,10 @@
                 goto('/profile');
             } else {
                 const errorData = await response.json();
-                alert(errorData.detail);
+                showToast("error", "Login failed. Please try again.");
             }
         } catch (error) {
-            console.error("Unexpected error:", error);
+            showToast("error", "An unexpected error occurred. Please try again.");
         }
     }
   </script>

@@ -1,5 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { showToast } from '$lib/toast';
+
 let title = "";
 let description = "";
 let tags = "";
@@ -26,15 +28,14 @@ onMount(async () => {
             if (response.ok) {
                 const data = await response.json();
                 userID = data
-                console.log("User ID:", userID);
             } else {
-                console.error("Failed to fetch user ID", response.status);
+                showToast("error", "Failed to fetch user ID. Please log in again.");
             }
         } catch (err) {
-            console.error("Error fetching user ID:", err);
+            showToast("error", "An error occurred while fetching user ID. Please try again.");
         }
     } else {
-        console.warn("No token found in localStorage");
+        showToast("error", "No token found. Please log in again.");
     }
 });
 
@@ -107,12 +108,11 @@ function fileToBase64(file: File): Promise<string> {
 
 async function publishPost() {
     if (!title || !description || !file) {
-        alert("Please fill out all fields and upload an image");
+        showToast("warning", "Please fill out all fields and upload an image");
         return;
     }
     
     isLoading = true;
-    errorMessage = "";
     
     try {
         
@@ -131,9 +131,6 @@ async function publishPost() {
             postImage: base64Image,
             userId
         };
-        
-        console.log("postData: ", postData);
-
        
         const response = await fetch("http://localhost:8000/post/create", {
             method: "POST",
@@ -144,9 +141,6 @@ async function publishPost() {
         });
         
         if (response.ok) {
-            const data = await response.json();
-            console.log("Post created successfully:", data);
-            
            
             title = "";
             description = "";
@@ -154,17 +148,13 @@ async function publishPost() {
             file = null;
             imagePreview = null;
             
-            
-            alert("Post created successfully!");
+            showToast("info", "Post created successfully!");
            
         } else {
-            const errorData = await response.json();
-            errorMessage = errorData.message || "Failed to create post";
-            console.error("Error creating post:", errorData);
+            showToast("error", "Failed to create post. Please try again.");
         }
     } catch (error) {
-        console.error("Unexpected error:", error);
-        errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+        showToast("error", "An unexpected error occurred. Please try again.");
     } finally {
         isLoading = false;
     }

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { showToast } from '$lib/toast';
     import AccountDetail from "$lib/AccountDetail.svelte";
     import ChangePW from "$lib/ChangePW.svelte";
     import EditProfile from "$lib/EditProfile.svelte";
@@ -18,7 +19,7 @@
             const token = localStorage.getItem('token'); 
             
             if (!token) {
-                console.error("No token found");
+                showToast("error", "No token found. Please log in again.");
                 return;
             }
 
@@ -57,7 +58,7 @@
                 profileImage = profileData.profileImage;
             }
         } catch (error) {
-            console.error("Error fetching profile:", error);
+            showToast("error", "An error occurred while fetching profile data. Please try again.");
         }
     });
 </script>

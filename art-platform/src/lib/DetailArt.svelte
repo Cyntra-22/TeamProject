@@ -1,7 +1,6 @@
 <script>
 	export let image;
 	export let id;
-    console.log("Image:", image, id);
 </script>
 
 {#if image}
