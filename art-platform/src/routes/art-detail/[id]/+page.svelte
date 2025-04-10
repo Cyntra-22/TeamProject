@@ -5,22 +5,12 @@
     import { showToast } from '$lib/toast';
     import { get } from 'svelte/store';
 
-<<<<<<< HEAD
-    export let data; 
-
- 
-    let postId: string;
-    let postData: any = null;
-    let isLoading = true;
-    let selectedImage = { src: "", title: "" };
-=======
 	export let data; // This receives data from +page.ts
 
 	let postId: string;
 	let postData: any = null;
 	let isLoading = true;
 	let selectedImage = { src: '', title: '' };
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
     let profileData: any = null;
     let currentUserId: string | null = null;
     let isOwner = false;
@@ -30,108 +20,8 @@
     let commentIdToEdit: string = '';
     let userId: string;
 
-<<<<<<< HEAD
-    let liked = false;
-    let likes = 0;
-
-
-    let showEditModal = false;
-    let editTitle = "";
-    let editDescription = "";
-    let editTaggedTopicString = "";
-    let file: File | null = null;
-    let imagePreview: string | null = null;
-    let uploadError = false;
-
-    $: if (showEditModal && postData) {
-        editTitle = postData.title;
-        editDescription = postData.description;
-        editTaggedTopicString = (postData.taggedTopic || []).join(", ");
-    }
-
-  
-    function fileToBase64(file: File): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = error => reject(error);
-        });
-    }
-
-    async function submitEditForm() {
-        isLoading = true;
-        try {
-            let base64Image = null;
-            
-           
-            if (file) {
-                base64Image = await fileToBase64(file);
-            }
-
-            base64Image = base64Image || postData.postImage; // Use existing image if no new file
-
-            const updatedPost = {
-                _id: postId,
-                title: editTitle,
-                description: editDescription,
-                taggedTopic: editTaggedTopicString
-                    .split(",")
-                    .map((tag) => tag.trim()),
-                postImage: base64Image,
-                userId: currentUserId
-            };
-
-            const res = await fetch("http://localhost:8000/post/edit", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedPost),
-            });
-
-            if (res.ok) {
-                console.log("Post updated!");
-                showEditModal = false;
-    
-               
-                window.location.reload();
-            } else {
-                console.error("Update failed:", await res.text());
-            }
-        } catch (error) {
-            console.error("Error updating post:", error);
-        } finally {
-            isLoading = false;
-        }
-    }
-
-    
-    const validImageFormats = ["image/jpeg", "image/png", "image/gif"];
-
-    function handleFileUpload(event: Event) {
-        const target = event.target as HTMLInputElement;
-        if (target.files && target.files.length > 0) {
-            const selectedFile = target.files[0];
-            if (validImageFormats.includes(selectedFile.type)) {
-                file = selectedFile;
-                uploadError = false;  
-                const reader = new FileReader();
-                reader.onload = () => {
-                    imagePreview = reader.result as string;  
-                };
-                reader.readAsDataURL(selectedFile);  
-            } else {
-                uploadError = true;  
-                file = null;  
-                imagePreview = null;  
-            }
-        }
-    }
-=======
 	let liked = false;
 	let likes = 0;
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
 
    
     async function fetchProfileData(userId: string) {
@@ -171,7 +61,6 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("Current User ID:", data);
                     return data;
                 } else {
                     console.error("Failed to fetch user ID", response.status);
@@ -204,19 +93,11 @@
             
             if (response.ok) {
                 const likesList = await response.json();
-                console.log("Likes list:", likesList);
+                // console.log("Likes list:", likesList);
 
-<<<<<<< HEAD
-               
-                liked = likesList.some(
-                    (like: { userId: string; postId: string }) =>
-                        like.userId === currentUserId
-                );
-=======
                 // Check if current user's ID is in the likes list
                 liked = likesList.some((like: { userId: string; postId: string }) => like.userId === currentUserId);
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
-                console.log("User has liked this post:", liked);
+                // console.log("User has liked this post:", liked);
             } else {
                 console.error("Failed to check like status");
             }
@@ -225,59 +106,6 @@
         }
     }
 
-<<<<<<< HEAD
-   
-    async function fetchComments() {
-        try {
-            const response = await fetch(
-                `http://localhost:8000/comment/getByPostId`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        id: postId,
-                    }),
-                }
-            );
-
-            if (response.ok) {
-                const fetchedComments = await response.json();
-                console.log("Fetched comments:", fetchedComments);
-                return fetchedComments;
-            } else {
-                console.error("Failed to fetch comments");
-                return [];
-            }
-        } catch (error) {
-            console.error("Error fetching comments:", error);
-            return [];
-        }
-    }
-
-    onMount(async () => {
-        
-        const pathParts = window.location.pathname.split("/");
-        postId = pathParts[pathParts.length - 1];
-        console.log("Post ID from URL:", postId);
-
-        currentUserId = await getCurrentUserId();
-
-        if (postId) {
-            try {
-                
-                const response = await fetch(
-                    `http://localhost:8000/post/getPostById`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ _id: postId }),
-                    }
-                );
-=======
 	onMount(async () => {
 		const pathParts = window.location.pathname.split('/');
 		postId = pathParts[pathParts.length - 1];
@@ -294,44 +122,20 @@
 					},
 					body: JSON.stringify({ _id: postId })
 				});
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
 
 				if (response.ok) {
 					postData = await response.json();
-					console.log("Post data:", postData);
+					// console.log("Post data:", postData);
 
-<<<<<<< HEAD
-                   
-=======
 					// Check if current user is the post owner
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
                     if (postData.userId === currentUserId) {
                         isOwner = true;
                     } else {
                         isOwner = false;
                     }
 
-                    console.log("Current user ID:", currentUserId);
-                    console.log("Is owner:", isOwner);
-<<<<<<< HEAD
-
-                   
-                    if (postData) {
-                        selectedImage = {
-                            src: postData.postImage,
-                            title: postData.title,
-                        };
-
-                        likes = postData.likeAmount || 0;
-
-                       
-                        if (postData.userId) {
-                            profileData = await fetchProfileData(
-                                postData.userId
-                            );
-                            console.log("Profile data:", profileData);
-                        }
-=======
+                    // console.log("Current user ID:", currentUserId);
+                    // console.log("Is owner:", isOwner);
                     
 					// Update the UI with fetched data
 					if (postData) {
@@ -345,60 +149,13 @@
                         // Fetch profile data for the post's user
 						if (postData.userId) {
 							profileData = await fetchProfileData(postData.userId);
-							console.log("Profile data:", profileData);
+							// console.log("Profile data:", profileData);
 						}
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
 
                         if (currentUserId) {
                             await checkLikeStatus();
                         }
 
-<<<<<<< HEAD
-                       
-                        const enhancedPosts = await Promise.all(
-                            comments.map(async (comment) => {
-                                
-                                const profileData = await fetchProfileData(
-                                    comment.userId
-                                );
-
-                               
-                                return {
-                                    ...comment,
-                                    username: profileData
-                                        ? `${profileData.firstName} ${profileData.lastName}`
-                                        : "Unknown User",
-                                    profileUrl:
-                                        profileData?.profileImage ||
-                                        "/default-profile.png",
-                                };
-                            })
-                        );
-                        comments = enhancedPosts;
-                        console.log("Comments with profiles:", comments);
-                    }
-                } else {
-                    console.error("Failed to fetch post details");
-                }
-            } catch (error) {
-                console.error("Error fetching post details:", error);
-            } finally {
-                isLoading = false;
-            }
-        }
-    });
-
-    
-    $: username = profileData
-        ? `${profileData.firstName} ${profileData.lastName}`
-        : "Unknown User";
-
-   
-    $: profileImageUrl = profileData?.profileImage;
-
-   
-    const toggleLike = async () => {
-=======
 					}
 				} else {
 					console.error("Failed to fetch post details");
@@ -422,7 +179,6 @@
 
     // Function to handle like/unlike action
 	const toggleLike = async () => {
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
         try {
             
             if (!currentUserId) {
@@ -431,22 +187,6 @@
             }
 
             if (liked) {
-<<<<<<< HEAD
-               
-                const response = await fetch(
-                    `http://localhost:8000/like/unlikePost`,
-                    {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            postId: postId,
-                            userId: currentUserId,
-                        }),
-                    }
-                );
-=======
                 // Unlike endpoint uses DELETE method
                 const response = await fetch(`http://localhost:8000/like/unlikePost`, {
                     method: "DELETE",
@@ -458,32 +198,15 @@
                         userId: currentUserId 
                     })
                 });
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
 
                 if (response.ok) {
                     liked = false;
                     likes -= 1;
-                    console.log("Post unliked successfully");
+                    // console.log("Post unliked successfully");
                 } else {
                     console.error("Failed to unlike post:", await response.text());
                 }
             } else {
-<<<<<<< HEAD
-                
-                const response = await fetch(
-                    `http://localhost:8000/like/likePost`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            postId: postId,
-                            userId: currentUserId,
-                        }),
-                    }
-                );
-=======
                 // Like endpoint uses POST method
                 const response = await fetch(`http://localhost:8000/like/likePost`, {
                     method: "POST",
@@ -495,12 +218,11 @@
                         userId: currentUserId 
                     })
                 });
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
 
                 if (response.ok) {
                     liked = true;
                     likes += 1;
-                    console.log("Post liked successfully");
+                    // console.log("Post liked successfully");
                 } else {
                     console.error("Failed to like post:", await response.text());
                 }
@@ -655,7 +377,7 @@
                         commentTopicId: null
                     })
                 });
-                console.log(await response.json())
+                // console.log(await response.json())
                 if (response.ok) {
                     showToast("info", "Comment updated successfully");
                     await getComments();
@@ -733,202 +455,6 @@
     }
 </script>
 
-<<<<<<< HEAD
-<span class="back" on:click={back}>←</span>
-
-{#if isLoading}
-    <div class="loading-container">
-        <p>Loading post details...</p>
-    </div>
-{:else if !postData}
-    <div class="loading-container">
-        <p>Post not found or error loading post.</p>
-    </div>
-{:else}
-    <div class="container">
-        <img class="image" src={selectedImage.src} alt={selectedImage.title} />
-
-        <div class="details">
-            <div class="profile">
-                <img src={profileImageUrl} alt="profile" />
-                <span>{username}</span>
-
-                <div class="icons unselectable" style="position: relative;">
-                    <span on:click={toggleLike} style="cursor: pointer;">
-                        {liked ? "❤️" : "🤍"}
-                        {likes}
-                    </span>
-                    <span>💬 {comments.length}</span>
-                    <span style="cursor: pointer;" on:click={toggleShare}
-                        >📤</span
-                    >
-
-                    {#if showShareOptions}
-                        <div class="overlay" on:click={toggleShare}>
-                            <div class="share-popup" on:click|stopPropagation>
-                                <button on:click={() => shareTo("link")}
-                                    ><img src="/link.jpg" alt="Link" /></button
-                                >
-                                <button on:click={() => shareTo("facebook")}
-                                    ><img
-                                        src="/facebook.jpg"
-                                        alt="Facebook"
-                                    /></button
-                                >
-                                <button on:click={() => shareTo("instagram")}
-                                    ><img
-                                        src="/instagram.jpg"
-                                        alt="Instagram"
-                                    /></button
-                                >
-                                <button on:click={() => shareTo("whatsapp")}
-                                    ><img
-                                        src="/whatsapp.png"
-                                        alt="WhatsApp"
-                                    /></button
-                                >
-                            </div>
-                        </div>
-                    {/if}
-
-                   
-                    {#if isOwner}
-                        <span style="cursor: pointer;" on:click={toggleOptions}
-                            >⋯</span
-                        >
-
-                        {#if showOptions}
-                            <div class="tooltip-menu">
-                                <button on:click={confirmDelete}
-                                    >Remove Post</button
-                                >
-                                <button on:click={() => (showEditModal = true)}
-                                    >Edit Post</button
-                                >
-                            </div>
-                        {/if}
-                        {#if showEditModal}
-                            <div class="modal-overlay">
-                                <div class="modal-content">
-                                    <button
-                                        class="modal-close"
-                                        on:click={() => (showEditModal = false)}
-                                        >✖</button
-                                    >
-                                    <h2>Edit Post</h2>
-
-                                    <form
-                                        on:submit|preventDefault={submitEditForm}
-                                        class="modal-form"
-                                        enctype="multipart/form-data"
-                                    >
-                                        <label>
-                                            Title:
-                                            <input
-                                                type="text"
-                                                bind:value={editTitle}
-                                                required
-                                            />
-                                        </label>
-
-                                        <label>
-                                            Description:
-                                            <textarea
-                                                bind:value={editDescription}
-                                                rows="4"
-                                            ></textarea>
-                                        </label>
-
-                                        <label>
-                                            Tagged Topics:
-                                            <input
-                                                type="text"
-                                                bind:value={
-                                                    editTaggedTopicString
-                                                }
-                                                placeholder="e.g. tech, nature"
-                                            />
-                                        </label>
-
-                                        <label>
-                                            Current Image:
-                                            {#if postData?.postImage}
-                                                <img
-                                                    src={postData.postImage}
-                                                    alt="Current"
-                                                    class="image"
-                                                />
-                                            {:else}
-                                                <p>No image available.</p>
-                                            {/if}
-                                        </label>
-
-                                        <label>
-                                            Upload New Image:
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                on:change={handleFileUpload}
-                                            />
-                                        </label>
-
-                                        <button type="submit"
-                                            >Save Changes</button
-                                        >
-                                    </form>
-                                </div>
-                            </div>
-                        {/if}
-
-                        {#if showConfirmDelete}
-                            <div class="confirm-box">
-                                <p>
-                                    Are you sure you want to delete this post?
-                                </p>
-                                <button
-                                    on:click={() => (showConfirmDelete = false)}
-                                    class="pbtn-1">Cancel</button
-                                >
-                                <button on:click={deletePost} class="pbtn-2"
-                                    >Confirm</button
-                                >
-                            </div>
-                        {/if}
-                    {/if}
-                </div>
-            </div>
-
-            <div class="scroll-area">
-                <h3>{selectedImage.title}</h3>
-                <p style="color: gray;">
-                    {postData.taggedTopic
-                        ? postData.taggedTopic.join(", ")
-                        : "No tags"}
-                </p>
-
-                <h4>
-                    {comments.length} Comment{comments.length > 1 ? "s" : ""}
-                </h4>
-                {#each comments as comment}
-                    <p><i>{comment.username}</i> - {comment.description}</p>
-                {/each}
-            </div>
-
-            <div class="comment-box">
-                <strong>What do you think ?</strong>
-                <input
-                    type="text"
-                    placeholder="Add a comment"
-                    bind:value={newComment}
-                    on:keydown={(e) => e.key === "Enter" && addComment()}
-                />
-            </div>
-        </div>
-    </div>
-{/if}
-
-=======
->>>>>>> d9326bacedcd09a7ce78fb84b1e4df994411f54a
 <style>
     .modal-overlay {
         position: fixed;
@@ -1228,8 +754,16 @@
 
 		<div class="details">
 			<div class="profile">
-				<img src={profileImageUrl} alt="profile" />
-                <span>{username}</span>
+                <img 
+                    src={profileImageUrl} 
+                    alt="profile" 
+                    on:click={() => goto(`/profile?id=${postData.userId}`)}
+                    style="cursor: pointer;" 
+                />
+                <span 
+                    on:click={() => goto(`/profile?id=${postData.userId}`)}
+                    style="cursor: pointer;"
+                >{username}</span>
 
 				<div class="icons unselectable" style="position: relative;">
 					<span on:click={toggleLike} style="cursor: pointer;">

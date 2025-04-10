@@ -10,7 +10,7 @@ const getReviewsByRevieweeId = async (id) => {
 const createReview = async (dto) => {
   const user = await userRepo.findUserById(dto.userId);
   if (!user) {throw new Error('User does not exist')} 
-  if (dto.userId === dto.revieweeId) {throw new Error('User cannot review thyself')}
+  if (dto.userId === dto.revieweeId) {throw new Error('User cannot review themself')}
   const existingReview = await reviewRepo.findRevieweeReviewByReviewerId(dto.userId, dto.revieweeId);
   if (existingReview) throw new Error('You already left a review!');
 

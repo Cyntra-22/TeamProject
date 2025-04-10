@@ -9,7 +9,6 @@
     onMount(() => {
         
         userId = $page.url.searchParams.get('userId');
-        console.log("User ID from URL:", userId);
     });
 
     function selectRole(role: string) {

@@ -1,17 +1,66 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import { onMount } from "svelte";
+    import { goto } from "$app/navigation";
 
     let showDropdown = false;
     let userID: string | null = null;
     let isArtist: boolean = false;
-
-    $: routeId = $page.route.id ?? "";
-
+    let userInterests: string[] = [];
     
+    let searchQuery = '';
+
+    // Define all available art interest topics with images
+    const allArtTopics = [
+        { title: 'Concept Art', img: '/ConceptArt.jpg' },
+        { title: 'Digital Portraits', img: '/DigitalPort.png' },
+        { title: '3D', img: '/3D.jpg' },
+        { title: 'CGI in films', img: '/CGIart.jpg' },
+        { title: 'Pixel Art', img: '/PixelArt.jpg' },
+        { title: 'Web Art', img: '/WebArt.jpg' },
+        { title: 'Motion Graphics', img: '/MotionGraphic.jpg' },
+        { title: 'Illustrations', img: '/IllustrationArt.jpg' },
+        { title: 'Logos', img: '/LogoArt.jpg' },
+        { title: 'Generative Art', img: '/GenerativeArt.jpg' },
+        { title: 'NFT art', img: '/NFTArt.jpg' },
+        { title: 'Glitch Art', img: '/GlitchArt.jpg' }
+    ];
+    
+    $: routeId = $page.route.id ?? "";
+    
+    $: forYouItems = userInterests.map(interest => {
+        const matchingTopic = allArtTopics.find(topic => topic.title === interest);
+        return {
+            title: interest,
+            img: matchingTopic ? matchingTopic.img : '/NFTArt.jpg'
+        };
+    }).slice(0, 3);
+        
+    $: popularItems = allArtTopics.filter(item => 
+        !forYouItems.some(forYouItem => forYouItem.title === item.title)
+    );
+
     function toggleDropdown() {
         showDropdown = !showDropdown;
     }
+    
+
+    async  function handleSearch(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        showSearchModal = false;
+        const url = `/?title=${encodeURIComponent(searchQuery)}`;
+        await goto(url);
+        location.reload();
+        }
+    }
+
+    async function handleTopicClick(topicTitle: string) {
+        const url = `/?taggedTopic=${encodeURIComponent(topicTitle)}`;
+        await goto(url);
+        location.reload();
+    }
+
     let showSearchModal = false;
 
     function toggleSearchModal() {
@@ -44,8 +93,11 @@
                     if (userProfile.ok) {
                         const userData = await userProfile.json();
                         isArtist = userData.role === "artist";
-
-                    } else {
+                        if (userData.interests && Array.isArray(userData.interests)) {
+                            userInterests = userData.interests;
+                        }
+                    } 
+                    else {
                         console.error("Failed to fetch user profile", userProfile.status);
                     }
 
@@ -59,21 +111,6 @@
             console.warn("No token found in localStorage");
         }
     });
-
-    const forYouItems = [
-        { title: 'Digital Artwork', img: '/B1.jpeg' },
-        { title: 'Concept Art', img: '/B1.jpeg' },
-        { title: 'Concept Art', img: '/B1.jpeg' }
-    ];
-
-    const popularItems = [
-        { title: 'Digital Artwork', img: '/B1.jpeg' },
-        { title: 'CGI in films', img: '/B1.jpeg' },
-        { title: '3D Rendering', img: '/B1.jpeg' },
-        { title: 'Fantasy Art', img: '/B1.jpeg' },
-        { title: 'Sci-Fi Designs', img: '/B1.jpeg' },
-        { title: 'Character Design', img: '/B1.jpeg' }
-    ];
 </script>
 
 <style>
@@ -149,9 +186,9 @@
         height: 50px;
     }
 
-    input {
-        margin: 0 0.5rem;
-    }
+        input {
+            margin: 0 0.5rem;
+        }
 
 
     .dropdown {
@@ -310,14 +347,22 @@
     <div class="nav-left">
         <div class="logo"><img alt=" " src="/logo.png" /></div>
         <div class="nav-links">
-            <a href="/" class:active={routeId === "/"}>Home</a>
+            <a href="/" on:click|preventDefault={() => window.location.href = '/'} class:active={routeId === "/"}>Home</a>
             {#if isArtist}
                 <a href="/create" class:active={routeId === "/create"}>Create</a>
             {/if}
         </div>
     </div>
 
-    <input type="text" class="search" placeholder="Search for" on:focus={toggleSearchModal}/>
+    <input 
+    type="text" 
+    class="search" 
+    placeholder="Search for" 
+    bind:value={searchQuery}
+    on:keydown={handleSearch}
+    on:focus={() => {
+        if (!showSearchModal) toggleSearchModal();
+    }}/>
 
     <div class="nav-icons">
        
@@ -325,7 +370,6 @@
             <button 
                 class="dropdown-btn" 
                 on:click={toggleDropdown} 
-                
                 aria-haspopup="true" 
                 aria-expanded={showDropdown} 
             >
@@ -351,44 +395,42 @@
 	<div class="search-modal">
 		<div class="search-container">
 			<div class="search-header">
-				<input type="text" class="modal-search-bar" placeholder="Search" />
-				<button class="close-btn" on:click={toggleSearchModal}>✕</button>
+                <input 
+                type="text" 
+                class="modal-search-bar" 
+                placeholder="Search" 
+                bind:value={searchQuery}
+                on:keydown={handleSearch} />
 			</div>
-
-			<div class="recent-history">
-				<h4>Recent Search History</h4>
-				<div class="tags">
-					<span class="tag">Concept Art </span>
-					<span class="tag">Digital Portraits </span>
-					<span class="tag">CGI in films </span>
-				</div>
-			</div>
-
 			<div class="section">
 				<h4>For you</h4>
 				<div class="grid">
-					{#each forYouItems as item}
-						<a href={`/?query=${encodeURIComponent(item.title)}`} class="card-link">
-							<div class="card">
-								<img src={item.img} alt={item.title} />
-								<span>{item.title}</span>
-							</div>
-						</a>
-					{/each}
+					{#if forYouItems.length > 0}
+                        {#each forYouItems as item}
+                            <div class="card-link" on:click={() => handleTopicClick(item.title)}>
+                                <div class="card">
+                                    <img src={item.img} alt={item.title} />
+                                    <span>{item.title}</span>
+                                </div>
+                            </div>
+                        {/each}
+					{:else}
+						<p>Loading your interests...</p>
+					{/if}
 				</div>
 			</div>
 
 			<div class="section">
 				<h4>Popular</h4>
 				<div class="grid">
-					{#each popularItems as item}
-						<a href={`/?query=${encodeURIComponent(item.title)}`} class="card-link">
-							<div class="card">
-								<img src={item.img} alt={item.title} />
-								<span>{item.title}</span>
-							</div>
-						</a>
-					{/each}
+                    {#each popularItems as item}
+                        <div class="card-link" on:click={() => handleTopicClick(item.title)}>
+                            <div class="card">
+                                <img src={item.img} alt={item.title} />
+                                <span>{item.title}</span>
+                            </div>
+                        </div>
+                    {/each}
 				</div>
 			</div>
 		</div>

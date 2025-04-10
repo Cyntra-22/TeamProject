@@ -1,25 +1,48 @@
 <script lang="ts">
     import {images} from './images.js';
     import {onMount} from 'svelte';
+    import { page } from "$app/stores";
 
     let posts: any[] = [];
     let isLoading = true;
 
-    
     onMount(async () => {
         try {
-           
-            const response = await fetch("http://localhost:8000/post/getReccomended", {
-                method: "GET",
+            const urlParams = $page.url.searchParams;
+            const searchTitle = urlParams.get('title');
+            const searchTopic = urlParams.get('taggedTopic');
+            
+            let endpoint = "http://localhost:8000/post/getReccomended";
+            let method = "GET";
+            let body = null;
+            
+            // If there's a search query (title or topic or both), use the search endpoint
+            if (searchTitle || searchTopic) {
+                endpoint = "http://localhost:8000/post/getPostByNameAndTag";
+                method = "POST";
+                body = JSON.stringify({
+                    title: searchTitle || "",
+                    taggedTopic: searchTopic || ""
+                });
+            }
+            
+            const options: RequestInit = {
+                method,
                 headers: {
                     "Content-Type": "application/json",
-                }
-            });
+                },
+                body: body ?? undefined
+            };
+            
+            if (body) {
+                options.body = body;
+            }
+            
+            const response = await fetch(endpoint, options);
             
             if (response.ok) {
                 posts = await response.json();
-                console.log("Posts Home data:", posts);
-                return posts;
+                // console.log("Posts data:", posts);
             }
         } catch (error) {
             console.error("Error fetching posts:", error);
