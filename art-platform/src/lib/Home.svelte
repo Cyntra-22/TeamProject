@@ -2,6 +2,7 @@
     import {images} from './images.js';
     import {onMount} from 'svelte';
     import { page } from "$app/stores";
+    import { showToast } from "$lib/toast";
 
     let posts: any[] = [];
     let isLoading = true;
@@ -42,10 +43,9 @@
             
             if (response.ok) {
                 posts = await response.json();
-                // console.log("Posts data:", posts);
             }
         } catch (error) {
-            console.error("Error fetching posts:", error);
+            showToast("error", "An error occurred while fetching posts. Please try again.");
         } finally {
             isLoading = false;
         }

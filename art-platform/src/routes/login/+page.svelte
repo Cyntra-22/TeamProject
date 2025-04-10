@@ -31,7 +31,6 @@
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("login data here ", data);
                 
                 userInfo.set({
                     id: data.id,
@@ -43,11 +42,10 @@
                 goto('/profile');
             } else {
                 const errorData = await response.json();
-                console.error("Login error:", errorData);
                 showToast("error", "Login failed. Please try again.");
             }
         } catch (error) {
-            console.error("Unexpected error:", error);
+            showToast("error", "An unexpected error occurred. Please try again.");
         }
     }
   </script>

@@ -26,15 +26,14 @@
                 if (response.ok) {
                     const data = await response.json();
                     userId = data
-                    console.log("User ID:", userId);
                 } else {
-                    console.error("Failed to fetch user ID", response.status);
+                    showToast("error", "Failed to fetch user ID. Please log in again.");
                 }
             } catch (err) {
-                console.error("Error fetching user ID:", err);
+                showToast("error", "An error occurred while fetching user ID. Please try again.");
             }
         } else {
-            console.warn("No token found in localStorage");
+            showToast("error", "No token found. Please log in again.");
         }
     });
     let currentPassword: string = "";
@@ -67,21 +66,17 @@
                 },
                 body: JSON.stringify(payload)
             });
-            console.log(payload)
 
             if (res.ok) {
                 const data = await res.json();
-                console.log("Password changed successfully:", data);
                 showToast("info", "Password changed successfully.");
                 goto("/profile");
                 
             } else {
                 const errorData = await res.json();
-                console.error("Failed to change password:", errorData);
                 showToast("error", "Failed to change password. Please try again.");
             }
         } catch (err) {
-            console.error("Error changing password:", err);
             showToast("error", "Error occurred while changing password.");
         }
     };

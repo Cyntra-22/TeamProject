@@ -35,18 +35,13 @@
                 });
 
                 if (response.ok) {
-                    const result = await response.json();
-                    console.log("Role updated successfully:", result);
 
                     showToast("info", `Your role has been set to: ${selectedRole}`);
                     window.location.href = `/user-interest?userId=${userId}`;
                 } else {
-                    const errorData = await response.json();
-                    console.error("Error updating role:", errorData);
                     showToast("error", `Therese was an error updating your role. Please try again`);
                 }
             } catch (error) {
-                console.error("Unexpected error:", error);
                 showToast("error", "Unexpected error while updating role. Please try again.");
             } finally {
                 isProcessing = false;

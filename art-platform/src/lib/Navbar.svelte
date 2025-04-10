@@ -2,6 +2,7 @@
     import { page } from "$app/stores";
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
+    import { showToast } from "$lib/toast";
 
     let showDropdown = false;
     let userID: string | null = null;
@@ -98,17 +99,17 @@
                         }
                     } 
                     else {
-                        console.error("Failed to fetch user profile", userProfile.status);
+                        showToast("error", "Failed to fetch user profile. Please try again.");
                     }
 
                 } else {
-                    console.error("Failed to fetch user ID", response.status);
+                    showToast("error", "Failed to fetch user ID. Please log in again.");
                 }
             } catch (err) {
-                console.error("Error fetching user ID:", err);
+                showToast("error", "An error occurred while fetching user ID. Please try again.");
             }
         } else {
-            console.warn("No token found in localStorage");
+            showToast("error", "No token found. Please log in again.");
         }
     });
 </script>

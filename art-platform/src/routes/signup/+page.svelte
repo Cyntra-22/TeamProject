@@ -42,7 +42,6 @@ function handleSubmit(event: Event) {
         lastName: lastname,
         birthdate: birthdate
     };
-    console.log(user)
     registerUser(user);
 }
 
@@ -58,16 +57,12 @@ async function registerUser(user: User) {
         
         if (response.ok) {
             const data = await response.json();
-            console.log("User created:", data);
             showToast("info", "Sign-up successful! Welcome to Art World.");
             window.location.href = `/category?userId=${data.id}`;
         } else {
-            const errorData = await response.json();
-            console.error("Error creating user:", errorData.detail);
             showToast("error", `There was an error creating your account. Please try again.`);
         }
     } catch (error) {
-        console.error("Unexpected error:", error);
         showToast("error", "Unexpected error. Please try again.");
     }
 }

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
+    import { showToast } from '$lib/toast';
 
     let userID: string | null = null;
     let profile: any = null;
@@ -27,7 +28,6 @@
                 if (response.ok) {
                     const data = await response.json();
                     userID = data;
-                    console.log("User ID:", userID);
 
                     const profileRes = await fetch("http://localhost:8000/profile/getById", {
                         method: "POST",
@@ -39,7 +39,6 @@
 
                     if (profileRes.ok) {
                         profile = await profileRes.json();
-                        console.log("Profile Data:", profile);
 
                         email = profile?.email || '';
                         firstName = profile?.firstName || '';
@@ -48,16 +47,16 @@
                         linkedin = profile?.linkedin || '';
                         birthdate = profile?.birthdate ? new Date(profile?.birthdate).toISOString().split('T')[0] : '';
                     } else {
-                        console.error("Failed to fetch profile", profileRes.status);
+                        showToast("error", "Failed to fetch profile. Please try again.");
                     }
                 } else {
-                    console.error("Failed to fetch user ID", response.status);
+                    showToast("error", "Failed to fetch user ID. Please log in again.");
                 }
             } catch (err) {
-                console.error("Error:", err);
+                showToast("error", "An error occurred while fetching user ID. Please try again.");
             }
         } else {
-            console.warn("No token found in localStorage");
+            showToast("error", "No token found. Please log in again.");
         }
     });
 
@@ -83,14 +82,13 @@
             });
 
             if (res.ok) {
-                const data = await res.json();
-                console.log("Profile updated:", data);
+                showToast("info", "Profile updated successfully.");
                 goto("/profile");
             } else {
-                console.error("Failed to update profile", res.status);
+                showToast("error", "Failed to update profile. Please try again.");
             }
         } catch (err) {
-            console.error("Error updating profile:", err);
+            showToast("error", "An error occurred while updating profile. Please try again.");
         }
     };
 </script>

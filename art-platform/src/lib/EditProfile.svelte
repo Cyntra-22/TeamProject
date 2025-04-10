@@ -23,15 +23,14 @@
                 if (response.ok) {
                     const data = await response.json();
                     userID = data;
-                    console.log("User ID:", userID);
                 } else {
-                    console.error("Failed to fetch user ID", response.status);
+                    showToast("error", "Failed to fetch user ID. Please log in again.");
                 }
             } catch (err) {
-                console.error("Error fetching user ID:", err);
+                showToast("error", "An error occurred while fetching user ID. Please try again.");
             }
         } else {
-            console.warn("No token found in localStorage");
+            showToast("error", "No token found. Please log in again.");
         }
     });
     
@@ -114,14 +113,10 @@
         try {
        const base64Image = await fileToBase64(file);
     
-            
             const profileData = {
                 _id: userID,
                 profileImage: base64Image
             };
-            
-            console.log("Updating profile picture");
-    
             
             const response = await fetch("http://localhost:8000/profile/edit", {
                 method: "PATCH",
@@ -133,18 +128,12 @@
             });
             
             if (response.ok) {
-                const data = await response.json();
-                console.log("Profile picture updated successfully:", data);
-                
                 showToast("info", "Profile picture updated successfully!");
             } else {
-                const errorData = await response.json();
-                errorMessage = errorData.message || "Failed to update profile picture";
-                console.error("Error updating profile picture:", errorData);
+                showToast("error", "Failed to update profile picture. Please try again.");
             }
         } catch (error) {
-            console.error("Unexpected error:", error);
-            errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+            showToast("error", "Unexpected error while updating profile picture. Please try again.");
         } finally {
             isLoading = false;
         }

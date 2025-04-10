@@ -79,16 +79,16 @@
             });
 
             if (res.ok) {
-                console.log("Post updated!");
+                showToast("info", "Post updated successfully!");
                 showEditModal = false;
     
                 // Reload the current page to refresh all data
                 window.location.reload();
             } else {
-                console.error("Update failed:", await res.text());
+                showToast("error", "Failed to update post. Please try again.");
             }
         } catch (error) {
-            console.error("Error updating post:", error);
+            showToast("error", "Failed to update post. Please try again.");
         } finally {
             isLoading = false;
         }
@@ -133,11 +133,11 @@
             if (profileRes.ok) {
                 return await profileRes.json();
             } else {
-                console.error("Failed to fetch profile for user", userId);
+                showToast("error", "Failed to fetch profile data. Please try again.");
                 return null;
             }
         } catch (error) {
-            console.error("Error fetching profile:", error);
+            showToast("error", "Failed to fetch profile data. Please try again.");
             return null;
         }
     }
@@ -159,15 +159,15 @@
                     const data = await response.json();
                     return data;
                 } else {
-                    console.error("Failed to fetch user ID", response.status);
+                    showToast("error", "Failed to fetch user ID. Please log in again.");
                     return null;
                 }
             } catch (err) {
-                console.error("Error fetching user ID:", err);
+                showToast("error", "An error occurred while fetching user ID. Please try again.");
                 return null;
             }
         } else {
-            console.warn("No token found in localStorage");
+            showToast("error", "No token found. Please log in again.");
             return null;
         }
     }
@@ -189,16 +189,13 @@
             
             if (response.ok) {
                 const likesList = await response.json();
-                // console.log("Likes list:", likesList);
-
                 // Check if current user's ID is in the likes list
                 liked = likesList.some((like: { userId: string; postId: string }) => like.userId === currentUserId);
-                // console.log("User has liked this post:", liked);
             } else {
-                console.error("Failed to check like status");
+                showToast("error", "Failed to check like status. Please try again.");
             }
         } catch (error) {
-            console.error("Error checking like status:", error);
+            showToast("error", "Error checking like status. Please try again.");
         }
     }
 
@@ -221,7 +218,6 @@
 
 				if (response.ok) {
 					postData = await response.json();
-					// console.log("Post data:", postData);
 
 					// Check if current user is the post owner
                     if (postData.userId === currentUserId) {
@@ -229,9 +225,6 @@
                     } else {
                         isOwner = false;
                     }
-
-                    // console.log("Current user ID:", currentUserId);
-                    // console.log("Is owner:", isOwner);
                     
 					// Update the UI with fetched data
 					if (postData) {
@@ -246,7 +239,6 @@
                         // Fetch profile data for the post's user
 						if (postData.userId) {
 							profileData = await fetchProfileData(postData.userId);
-							// console.log("Profile data:", profileData);
 						}
 
                         if (currentUserId) {
@@ -255,10 +247,10 @@
 
 					}
 				} else {
-					console.error("Failed to fetch post details");
+                    showToast("error", "Failed to fetch post details. Please try again.");
 				}
 			} catch (error) {
-				console.error("Error fetching post details:", error);
+                showToast("error", "Failed to fetch post details. Please try again.");
 			} finally {
 				isLoading = false;
                 getComments()
@@ -299,9 +291,8 @@
                 if (response.ok) {
                     liked = false;
                     likes -= 1;
-                    // console.log("Post unliked successfully");
                 } else {
-                    console.error("Failed to unlike post:", await response.text());
+                    showToast("error", "Failed to unlike post");
                 }
             } else {
                 // Like endpoint uses POST method
@@ -319,13 +310,12 @@
                 if (response.ok) {
                     liked = true;
                     likes += 1;
-                    // console.log("Post liked successfully");
                 } else {
-                    console.error("Failed to like post:", await response.text());
+                    showToast("error", "Failed to like post");
                 }
             }
         } catch (error) {
-            console.error("Error toggling like:", error);
+            showToast("error", "An error occurred while liking/unliking the post");
         }
     };
 
@@ -474,7 +464,6 @@
                         commentTopicId: null
                     })
                 });
-                // console.log(await response.json())
                 if (response.ok) {
                     showToast("info", "Comment updated successfully");
                     await getComments();
@@ -483,7 +472,6 @@
                     showToast("error", "Failed to update comment");
                 }
             } catch (error) {
-                console.error("Error updating comment:", error);
                 showToast("error", "Error updating comment");
             }
         }
@@ -542,10 +530,10 @@
             if (response.ok) {
                 window.location.href = "/";
             } else {
-                console.error("Failed to delete post:", await response.text());
+                showToast("error", "Failed to delete post. Please try again.");
             }
         } catch (error) {
-            console.error("Error deleting post:", error);
+            showToast("error", "Error deleting post. Please try again.");
         } finally {
             showConfirmDelete = false;
         }
