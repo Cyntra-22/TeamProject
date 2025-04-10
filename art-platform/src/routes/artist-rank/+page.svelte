@@ -72,7 +72,9 @@
                     formattedLikes: formatNumber(likeData.totalLike || 0),
                     formattedEngagement: formatNumber(engagementPoints),
                     rating: Number(reviewData.totalRating).toFixed(2) || 0,
-                    totalReviews: reviewData.totalReview || 0
+                    totalReviews: reviewData.totalReview || 0,
+                    userId: artist._id,
+                    userProfile: artist.profileImage
                 });
             }
             
@@ -85,38 +87,6 @@
             console.error("Error fetching artist data:", err);
             loading = false;
         }
-    }
-    
-    function updateTopArtistList(newArtist : any) {
-        const engagementPoints = calculateEngagement(
-            newArtist.totalLikes || 0,
-            newArtist.totalRating || 0,
-            newArtist.totalReviews || 0
-        );
-        
-        const formattedArtist = {
-            ...newArtist,
-            engagementPoints,
-            formattedLikes: formatNumber(newArtist.totalLikes || 0),
-            formattedEngagement: formatNumber(engagementPoints),
-            rating: newArtist.totalRating || 0,
-            totalReviews: newArtist.totalReviews || 0
-        };
-        
-        if (artistList.length < count)
-        {
-            artistList = [...artistList, formattedArtist];
-            
-        } 
-        else if (engagementPoints > artistList[artistList.length - 1].engagementPoints) 
-        {
-            artistList = [...artistList.slice(0, -1), formattedArtist];
-        } else 
-        {
-            return;
-        }
-        artistList.sort((a:any, b:any) => b.engagementPoints - a.engagementPoints);
-        
     }
     
     onMount(() => {
@@ -190,6 +160,8 @@
                     totalReviews={artist.totalReviews}
                     likes={artist.formattedLikes}
                     engagementPoints={artist.formattedEngagement}
+                    userId={artist.userId}
+                    userProfile={artist.profileImage}
                 />
             {/each}
         {/if}

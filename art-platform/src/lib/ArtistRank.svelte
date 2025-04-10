@@ -4,6 +4,8 @@
     export let totalReviews = 0;
     export let likes = 0;
     export let engagementPoints = 0;
+    export let userId = "";
+    export let userProfile = "";
 
     $: stars = "★".repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? "★" : "");
 </script>
@@ -76,14 +78,25 @@
     .like-count{
         display: flex;
     }
+    .image-preview {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .image-preview img {
+        width: 30pt;
+        height: 30pt;
+        object-fit: cover;
+        border-radius: 8px;
+    }
 </style>
 
 <div class="review-container">
     <div class="ranking-container">
         <div class="review-content-flex">      
             <div class="left-header">
-                <div>
-                    <img src="/logo.png" alt="profile" />
+                <div class="image-preview">
+                    <img src="{userProfile}" alt="profile" />
                 </div>
            
                 <div>
@@ -96,7 +109,7 @@
                 </div>
                 <div>
                     <p class="star">{stars}</p>
-                    <p>{totalReviews} <a href="/review"><span class="review-border">reviews</span></a></p>
+                    <p>{totalReviews} <a href="/review/{userId}"><span class="review-border">reviews</span></a></p>
                 </div>
             </div>
         </div>      
