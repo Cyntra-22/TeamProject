@@ -39,7 +39,8 @@ const getAllRatingByUserId = async (id) => {
     var averageRating = totalRating/ totalReview
     return new AverageRating({
       userId : id,
-      totalRating : averageRating
+      totalRating : averageRating,
+      totalReview : totalReview
     });
   }
 }
