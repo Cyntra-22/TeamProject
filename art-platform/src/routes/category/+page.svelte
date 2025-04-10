@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { page } from '$app/stores';
+    import { showToast } from '$lib/toast';
     
     let selectedRole: string | null = null;
     let userId: string | null = null;
@@ -36,21 +37,22 @@
                 if (response.ok) {
                     const result = await response.json();
                     console.log("Role updated successfully:", result);
-                    alert(`Your role has been set to: ${selectedRole}`);
+
+                    showToast("info", `Your role has been set to: ${selectedRole}`);
                     window.location.href = `/user-interest?userId=${userId}`;
                 } else {
                     const errorData = await response.json();
                     console.error("Error updating role:", errorData);
-                    alert(`Error updating role: ${errorData.detail || 'Unknown error'}`);
+                    showToast("error", `Therese was an error updating your role. Please try again`);
                 }
             } catch (error) {
                 console.error("Unexpected error:", error);
-                alert("Unexpected error while updating role. Please try again.");
+                showToast("error", "Unexpected error while updating role. Please try again.");
             } finally {
                 isProcessing = false;
             }
         } else if (!userId) {
-            alert("User ID not found. Please sign up again.");
+            showToast("error", "User ID not found. Please sign up again.");
             window.location.href = "/signup";
         }
     }

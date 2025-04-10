@@ -1,6 +1,7 @@
 <script lang="ts">
 
 import {onMount} from "svelte";
+import { showToast } from '$lib/toast';
 
 interface User {
     email: string;
@@ -23,13 +24,13 @@ function handleSubmit(event: Event) {
     const birthdate = (form.elements.namedItem("birthday") as HTMLInputElement).value;
 
     // Validation
-    if (password.length < 8) {
-        alert("Password must be at least 8 characters long.");
+    if (password.length < 6) {
+        showToast("warning", "Password must be at least 6 characters long.");
         return;
     }
 
     if (password !== confirmPassword) {
-        alert("Passwords do not match.");
+        showToast("warning", "Passwords do not match.");
         return;
     }
 
@@ -58,16 +59,16 @@ async function registerUser(user: User) {
         if (response.ok) {
             const data = await response.json();
             console.log("User created:", data);
-            alert("Sign-up successful! Welcome to Art World.");
+            showToast("info", "Sign-up successful! Welcome to Art World.");
             window.location.href = `/category?userId=${data.id}`;
         } else {
             const errorData = await response.json();
             console.error("Error creating user:", errorData.detail);
-            alert(`Error: ${errorData.detail}`);
+            showToast("error", `There was an error creating your account. Please try again.`);
         }
     } catch (error) {
         console.error("Unexpected error:", error);
-        alert("Unexpected error. Please try again.");
+        showToast("error", "Unexpected error. Please try again.");
     }
 }
 

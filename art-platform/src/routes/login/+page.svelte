@@ -2,6 +2,7 @@
 <script lang="ts">
     import { userInfo } from "$lib/loginUserInfo";
     import { goto } from '$app/navigation';
+    import { showToast } from '$lib/toast';
     interface LoginCredentials {
       email: string;
       password: string;
@@ -42,7 +43,8 @@
                 goto('/profile');
             } else {
                 const errorData = await response.json();
-                alert(errorData.detail);
+                console.error("Login error:", errorData);
+                showToast("error", "Login failed. Please try again.");
             }
         } catch (error) {
             console.error("Unexpected error:", error);

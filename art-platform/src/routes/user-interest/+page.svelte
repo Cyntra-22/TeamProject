@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { page } from '$app/stores';
     import { goto } from '$app/navigation';
+    import { showToast } from '$lib/toast';
 
     let selectedInterests: string[] = [];
     let userId: string | null = null;
@@ -52,23 +53,23 @@
                 if (response.ok) {
                     const result = await response.json();
                     console.log("Interests updated successfully:", result);
-                    alert(`Your interests have been updated: ${selectedInterests.join(", ")}`);
+                    showToast("info", `Your interests have been updated: ${selectedInterests.join(", ")}`);
                     
                     
                     goto('/login');
                 } else {
                     const errorData = await response.json();
                     console.error("Error updating interests:", errorData);
-                    alert(`Error updating interests: ${errorData.detail || 'Unknown error'}`);
+                    showToast("error", `There was an error updating your interests. Please try again.`);
                 }
             } catch (error) {
                 console.error("Unexpected error:", error);
-                alert("Unexpected error while updating interests. Please try again.");
+                showToast("error", "Unexpected error while updating interests. Please try again.");
             } finally {
                 isProcessing = false;
             }
         } else if (!userId) {
-            alert("User ID not found. Please sign up again.");
+            showToast("error", "User ID not found. Please sign up again.");
             goto('/signup');
         }
     }

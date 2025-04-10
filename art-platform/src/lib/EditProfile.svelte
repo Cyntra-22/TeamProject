@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { showToast } from '$lib/toast';
     let file: File | null = null;
     let uploadError = false;
     let imagePreview: string | null = null;
@@ -103,7 +104,7 @@
     
     async function uploadProfilePicture() {
         if (!file) {
-            alert("Please select a profile image");
+            showToast("warning", "Please select a profile image");
             return;
         }
         
@@ -135,8 +136,7 @@
                 const data = await response.json();
                 console.log("Profile picture updated successfully:", data);
                 
-                
-                alert("Profile picture updated successfully!");
+                showToast("info", "Profile picture updated successfully!");
             } else {
                 const errorData = await response.json();
                 errorMessage = errorData.message || "Failed to update profile picture";

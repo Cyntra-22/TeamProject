@@ -279,7 +279,7 @@
         try {
             
             if (!currentUserId) {
-                alert("Please log in to like posts");
+                showToast("error", "Please log in to like posts");
                 return;
             }
 

@@ -1,5 +1,7 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import { showToast } from '$lib/toast';
+
 let title = "";
 let description = "";
 let tags = "";
@@ -107,7 +109,7 @@ function fileToBase64(file: File): Promise<string> {
 
 async function publishPost() {
     if (!title || !description || !file) {
-        alert("Please fill out all fields and upload an image");
+        showToast("warning", "Please fill out all fields and upload an image");
         return;
     }
     
@@ -155,7 +157,7 @@ async function publishPost() {
             imagePreview = null;
             
             
-            alert("Post created successfully!");
+            showToast("info", "Post created successfully!");
            
         } else {
             const errorData = await response.json();

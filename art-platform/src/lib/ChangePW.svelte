@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
+    import { showToast } from '$lib/toast';
 
     let showPassword = {
         previous: false,
@@ -46,7 +47,7 @@
 
        
         if (newPassword !== confirmNewPassword) {
-            alert("New Password and Confirm New Password do not match.");
+            showToast("warning", "New Password and Confirm New Password do not match.");
             return;
         }
 
@@ -71,17 +72,17 @@
             if (res.ok) {
                 const data = await res.json();
                 console.log("Password changed successfully:", data);
-                alert("Password changed successfully");
+                showToast("info", "Password changed successfully.");
                 goto("/profile");
                 
             } else {
                 const errorData = await res.json();
                 console.error("Failed to change password:", errorData);
-                alert("Failed to change password. Please try again.");
+                showToast("error", "Failed to change password. Please try again.");
             }
         } catch (err) {
             console.error("Error changing password:", err);
-            alert("Error occurred while changing password.");
+            showToast("error", "Error occurred while changing password.");
         }
     };
 </script>
