@@ -10,7 +10,7 @@
 	let postId: string;
 	let postData: any = null;
 	let isLoading = true;
-	let selectedImage = { src: '', title: '' };
+	let selectedImage = { src: '', title: '' , description:''};
     let profileData: any = null;
     let currentUserId: string | null = null;
     let isOwner = false;
@@ -237,7 +237,8 @@
 					if (postData) {
 						selectedImage = {
 							src: postData.postImage,
-							title: postData.title
+							title: postData.title,
+                            description: postData.description
 						};
 						
 						likes = postData.likeAmount || 0;
@@ -939,7 +940,6 @@
 						</div>
 					{/if}
 
-					<!-- Only show options button if user is the post owner -->
                     {#if isOwner}
                         <span style="cursor: pointer;" on:click={toggleOptions}
                             >⋯</span
@@ -1041,6 +1041,7 @@
 
 			<div class="scroll-area">
 				<h3>{selectedImage.title}</h3>
+                <p>{selectedImage.description}</p>
 				<p style="color: gray;">
 					{postData.taggedTopic ? postData.taggedTopic.join(', ') : 'aesthetic, apple, airpods pro, airpods max, iphone, iphone pro'}
 				</p>
