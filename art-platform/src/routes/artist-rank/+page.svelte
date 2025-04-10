@@ -185,7 +185,7 @@
         {:else}
             {#each artistList as artist, i}
                 <ArtistRank 
-                    artistName={artist.name || artist.username || "Unknown Artist"}
+                    artistName={`${artist.firstName} - ${artist.lastName}`}
                     rating={artist.rating}
                     totalReviews={artist.totalReviews}
                     likes={artist.formattedLikes}
