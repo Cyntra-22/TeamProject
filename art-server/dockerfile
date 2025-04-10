@@ -1,14 +1,15 @@
-FROM node:18
+FROM node:16
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y build-essential
-
 COPY package*.json ./
-RUN npm install
+
+# Clean install dependencies
+RUN npm ci
+
+# This ensures bcrypt is built for the container environment
+RUN npm rebuild bcrypt --build-from-source
 
 COPY . .
-
-EXPOSE 8000
 
 CMD ["npm", "start"]
