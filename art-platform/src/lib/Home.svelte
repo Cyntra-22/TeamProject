@@ -98,17 +98,14 @@
         border-radius: 0.7rem;
         object-fit: cover;
         cursor: pointer;
-        transition: transform 0.2s ease-in-out;
+        transition: transform 0.2s;
     }
 
     img:hover {
         transform: scale(1.05);
+        border-radius: 0.7rem; 
     }
 
-    .selected {
-        border: 2px solid hsl(5, 85%, 63%);
-        border-radius: 0.5rem;
-    }
 </style>
 
 
