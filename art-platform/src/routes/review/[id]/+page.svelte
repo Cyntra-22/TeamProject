@@ -13,6 +13,7 @@
         date: string;
         stars: number;
         content: string;
+        profileImg: string;
     };
 
     let reviews: Review[] = [];
@@ -110,7 +111,8 @@
               author: userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "Unknown User",
               date: review.createdWhen,
               stars: review.rating,
-              content: review.description
+              content: review.description,
+              profileImg: userProfile.profileImage
             };
           })
         );    
@@ -286,6 +288,7 @@
             date={review.date}
             stars={review.stars}
             content={review.content}
+            userProfile={review.profileImg}
         />
     {/each}
   </div>

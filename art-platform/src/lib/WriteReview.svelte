@@ -3,6 +3,7 @@
     export let date: string;
     export let stars: number;
     export let content: string;
+    export let userProfile;
 </script>
 <style>
     .review-container{
@@ -35,14 +36,25 @@
         h4{
             margin: 0.4rem 0; 
         }
+        .image-preview {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .image-preview img {
+            width: 30pt;
+            height: 30pt;
+            object-fit: cover;
+            border-radius: 8px;
+        }
 </style>
 
 <div class="review-container">
     <div >
         <div class="review-content-flex">      
             <div class="review-content-header">
-                <div>
-                    <img src="/logo.png" alt="profile" />
+                <div class="image-preview">
+                    <img src="{userProfile}" alt="profile" />
                 </div>
            
                 <div>
