@@ -58,6 +58,7 @@
           if (res.ok)
           {
             showToast("info", "Review added!");
+            await fetchReviews();
           }
           else
           {
@@ -80,47 +81,47 @@
         selectedStars = n;
     }
 
+    async function fetchReviews() {
+      const res = await fetch("http://localhost:8000/review/getAllReviewsByRevieweeId", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({id: $page.params.id})
+      });
+
+      if (res.ok) {
+        showToast("info", "Fetched all reviews successfully!");
+        const reviewData = await res.json();
+
+        reviews = await Promise.all(
+          reviewData.map(async (review: any) => {
+            const profileRes = await fetch("http://localhost:8000/profile/getById", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ _id: review.userId })
+            });
+
+            const userProfile = profileRes.ok ? await profileRes.json() : null;
+            
+            return {
+              author: userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "Unknown User",
+              date: review.createdWhen,
+              stars: review.rating,
+              content: review.description
+            };
+          })
+        );    
+      } else {
+        showToast("error", "Failed to fetch reviews");
+      }
+    }
+
     onMount(async () => {
-  const res = await fetch("http://localhost:8000/review/getAllReviewsByRevieweeId", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({id: $page.params.id})
-  });
-
-  if (res.ok) {
-    showToast("info", "Fetched all reviews successfully!");
-    const reviewData = await res.json();
-
-    reviews = await Promise.all(
-      reviewData.map(async (review: any) => {
-        const profileRes = await fetch("http://localhost:8000/profile/getById", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ _id: review.userId })
-        });
-
-        const userProfile = profileRes.ok ? await profileRes.json() : null;
-        
-        return {
-          author: userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "Unknown User",
-          date: review.createdWhen,
-          stars: review.rating,
-          content: review.description
-        };
-      })
-    );    
-  } else {
-    showToast("error", "Failed to fetch reviews");
-  }
-});
-
-
-    
-
+      await fetchReviews();
+    });
   </script>
   
   <style>

@@ -71,7 +71,7 @@
                     engagementPoints,
                     formattedLikes: formatNumber(likeData.totalLike || 0),
                     formattedEngagement: formatNumber(engagementPoints),
-                    rating: reviewData.totalRating || 0,
+                    rating: Number(reviewData.totalRating).toFixed(2) || 0,
                     totalReviews: reviewData.totalReview || 0
                 });
             }
@@ -185,7 +185,7 @@
         {:else}
             {#each artistList as artist, i}
                 <ArtistRank 
-                    artistName={`${artist.firstName} - ${artist.lastName}`}
+                    artistName={`${artist.firstName} ${artist.lastName}`}
                     rating={artist.rating}
                     totalReviews={artist.totalReviews}
                     likes={artist.formattedLikes}
