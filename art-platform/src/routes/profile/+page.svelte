@@ -50,7 +50,7 @@
                         isOwnProfile = true;
                     }
                     
-                    console.log("Fetching profile for ID:", userID, "Is own profile:", isOwnProfile);
+                    // console.log("Fetching profile for ID:", userID, "Is own profile:", isOwnProfile);
 
                    
                     const profileRes = await fetch("http://localhost:8000/profile/getById", {
@@ -139,7 +139,7 @@
 
                         if (followingRes.ok) {
                             following = await followingRes.json();
-                            console.log("Following:", following);
+                            // console.log("Following:", following);
                             
                             
                             followingProfiles = await Promise.all(
@@ -590,7 +590,11 @@
                 <div class="img-container">
                    
                     <img src={profile?.profileImage || "/logo.png"} alt="profile image" />
-                    <h3>{profile?.firstName} {profile?.lastName}</h3>
+                    <h3>{profile?.firstName} {profile?.lastName}
+                        {#if isArtist}
+                        <span class="artist-icon" title="Artist Profile">🎨</span>
+                        {/if}
+                    </h3>
                     <p>My work explores the relationship between critical theory and emotional memory.</p>
                     
                     {#if isOwnProfile}
