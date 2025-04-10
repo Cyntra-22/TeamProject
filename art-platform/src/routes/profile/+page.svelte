@@ -184,7 +184,7 @@
                                 artistPosts = await artistPostsRes.json();
                                 
                             } else {
-                                showToast("error", "Failed to fetch artist posts. Please try again.");
+
                             }
                             
                             const res = await fetch("http://localhost:8000/review/getAllReviewsByRevieweeId", {

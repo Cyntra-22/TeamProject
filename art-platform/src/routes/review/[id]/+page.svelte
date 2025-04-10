@@ -117,7 +117,7 @@
           })
         );    
       } else {
-        showToast("error", "Failed to fetch reviews");
+
       }
     }
 

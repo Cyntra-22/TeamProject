@@ -394,7 +394,7 @@
                 })
             );    
         } else {
-            showToast("error", "Failed to fetch comments");
+
         }
     }
 
