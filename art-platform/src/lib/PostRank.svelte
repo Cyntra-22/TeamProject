@@ -64,9 +64,11 @@
         
        }
        .bit-img img{
-        width: 150px;
-        height: 200px;
-        border: 1px solid hsl(5, 85%, 63%);
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        max-width: 11rem;
+        max-height: 11rem;
         border-radius: 1rem;
        }
        .right-container{
