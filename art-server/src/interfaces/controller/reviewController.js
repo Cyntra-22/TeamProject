@@ -21,4 +21,14 @@ const getAllReviewsByRevieweeId = async (req, res) => {
   }
 }
 
-module.exports = { createReviewPost, getAllReviewsByRevieweeId };
+const getAllRatingByUserId = async (req, res) => {
+  try{
+    const { id } = req.body;
+    const ratings = await reviewUsecase.getAllRatingByUserId(id);
+    res.status(200).json(ratings)
+  } catch(err){
+    res.status(400).json({ message: err.message });
+  }
+}
+
+module.exports = { createReviewPost, getAllReviewsByRevieweeId, getAllRatingByUserId };
