@@ -53,7 +53,7 @@
                         return {
                             ...post,
                             username: profileData ? `${profileData.firstName} ${profileData.lastName}` : "Unknown User",
-                            profileUrl: profileData?.profileImage || "/default-profile.png"
+                            profileUrl: profileData?.profileImage || "logo.png"
                         };
                     })
                 );

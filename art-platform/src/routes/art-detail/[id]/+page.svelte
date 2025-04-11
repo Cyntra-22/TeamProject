@@ -498,10 +498,10 @@
         
         if (deleteResponse.ok) {
             showToast("info", "Comment deleted successfully");
-            await getComments(); 
         } else {
             showToast("error", "Failed to delete comment");
         }
+        await getComments(); 
                 
     }
 
@@ -530,7 +530,7 @@
 
             if (response.ok) {
                 window.location.href = "/";
-                alert("Post deleted successfully!");
+                showToast("info", "Delete Successfully.");
                 goto('/');
             } else {
                 showToast("error", "Failed to delete post. Please try again.");
@@ -1049,7 +1049,7 @@
                 <p>
                     <i>{comment.name}</i> - {comment.text}
                     {#if comment.access}
-                    <button on:click={() => editComment(comment)}>Edit</button>
+                    <button  on:click={() => editComment(comment)}>Edit</button>
                     <button on:click={() => deleteComment(comment)}>Delete</button>
                     {/if}
                 </p>

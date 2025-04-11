@@ -109,7 +109,7 @@
                 showToast("error", "An error occurred while fetching user ID. Please try again.");
             }
         } else {
-            showToast("error", "No token found. Please log in again.");
+            // showToast("error", "No token found. Please log in again.");
         }
     });
 </script>
@@ -362,8 +362,8 @@
             </button>
             {#if showDropdown}
                 <div class="dropdown">
-                    <a class="link" href="/post-rank">Post Ranking</a>
-                    <a class="link" href="/artist-rank">Artist Ranking</a>
+                    <a class="link" href="/post-rank" on:click={() => showDropdown = false}>Post Ranking</a>
+                    <a class="link" href="/artist-rank" on:click={() => showDropdown = false}>Artist Ranking</a>
                     
                 </div>
             {/if}

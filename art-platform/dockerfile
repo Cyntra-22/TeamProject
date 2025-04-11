@@ -9,5 +9,4 @@ COPY . .
 
 EXPOSE 5173
 
-# Make sure we're using the right command
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
