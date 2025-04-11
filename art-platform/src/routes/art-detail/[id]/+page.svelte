@@ -515,6 +515,7 @@
     function confirmDelete() {
         showOptions = false;
         showConfirmDelete = true;
+
     }
 
     const deletePost = async () =>{
@@ -529,6 +530,8 @@
 
             if (response.ok) {
                 window.location.href = "/";
+                alert("Post deleted successfully!");
+                goto('/');
             } else {
                 showToast("error", "Failed to delete post. Please try again.");
             }

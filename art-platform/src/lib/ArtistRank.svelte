@@ -8,14 +8,23 @@
     export let userProfile = "";
 
     $: stars = "★".repeat(Math.floor(rating)) + (rating % 1 >= 0.5 ? "★" : "");
+    let liked = false;
+	 // or your initial like count
+
+	function toggleLike() {
+		liked = !liked;
+		likes += liked ? 1 : -1;
+	}
 </script>
 
 <style>
     .review-container{
-        border: 1px solid grey;
+        border: 2px solid hsl(5, 85%, 63%);
         border-radius: 1rem;
         padding: 1rem 2rem;
         margin: 1rem 1.5rem;
+        box-shadow:1cap 0 20px rgba(75, 33, 33, 0.1);
+        background-color: white;
     }
     
     .left-header{
@@ -89,6 +98,14 @@
         object-fit: cover;
         border-radius: 8px;
     }
+    span {
+		transition: transform 0.2s;
+		user-select: none;
+	}
+
+	span:hover {
+		transform: scale(1.1);
+	}
 </style>
 
 <div class="review-container">
@@ -117,11 +134,13 @@
     
     <div class="review-content-flex">
         <div class="like-count">
-            <div><img class="small-img" src="/heart-blank.png" alt="heart-blank" /></div>
-            <div class="bold-text">{likes}</div>
+            <div><span on:click={toggleLike} style="cursor: pointer; font-size: 1.5rem; font-weight: bold; color: hsl(5, 85%, 63%);">
+                {liked ? '❤️' : '🤍'}{likes}
+            </span></div>
+            
         </div>
         <div>
-            EngagementPt:<span class="bold-text"> {engagementPoints}</span>
+            EngagementPt: <span class="bold-text"> {engagementPoints}</span>
         </div>
     </div>
 </div>

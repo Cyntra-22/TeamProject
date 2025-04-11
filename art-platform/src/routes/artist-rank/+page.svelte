@@ -104,7 +104,8 @@
     .create-post-container {
         padding: 0;
         background: white;
-        width: 100%;
+        width: 70%;
+        margin: 0 auto;
     }
     
     .header {

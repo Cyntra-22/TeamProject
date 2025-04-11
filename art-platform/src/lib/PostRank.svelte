@@ -6,19 +6,36 @@
     export let imageUrl = "/logo.png";
     export let profileUrl = "/logo.png";
     export let trophy = "/gold.png";
+
+    let liked = false;
+	 // or your initial like count
+
+	function toggleLike() {
+		liked = !liked;
+		likes += liked ? 1 : -1;
+	}
 </script>
 <style>
     .review-container{
-            border: 1px solid grey;
+            border: 2px solid hsl(5, 85%, 63%);
             border-radius: 1rem;
             padding: 1rem 2rem;
             margin: 1rem 1.5rem;
             display: grid;
             grid-template-columns: 1fr 2fr;
+           box-shadow:1cap 0 20px rgba(80, 38, 38, 0.1);
+           background-color: white; 
         }
 
         .left-header{
             display: flex;
+        }
+        .left-header img{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid hsl(5, 85%, 63%);
+            padding: 0.1rem;
         }
 
         p{
@@ -35,7 +52,7 @@
 
         .header-container{
             display: grid;
-            grid-template-columns: 6fr 2fr;
+            grid-template-columns: 7fr 2fr;
         }
 
       
@@ -49,15 +66,7 @@
             
         }
        
-       .review-content-flex .small-img{
       
-        width: 20px;
-        height: 20px;
-       }
-       
-       .bold-text{
-            font-weight: bold;
-       }
        .like-count{
             display: flex;
             padding-right: 0.5rem;
@@ -70,14 +79,23 @@
         max-width: 11rem;
         max-height: 11rem;
         border-radius: 1rem;
+        
        }
        .right-container{
         margin-left: 0.2rem;
        }
        .trophy-img img{
-        width: 70px;
-        height: 70px;
+        width: 90px;
+        height: 90px;
        }
+       span {
+		transition: transform 0.2s;
+		user-select: none;
+	}
+
+	span:hover {
+		transform: scale(1.1);
+	}
       
 </style>
 
@@ -97,7 +115,12 @@
                     <div class="trophy-img">
                         <img src={trophy} alt={trophy} />
                     </div>
+                    {:else}
+                    <div class="trophy-img">
+                        <img src="/default_tropy.png" alt="Default Trophy" />
+                    </div>
                 {/if}
+                    
             </div>
             <div>
                 <h4>{title}</h4>
@@ -106,8 +129,10 @@
         </div>
         <div class="review-content-flex">
             <div class="like-count">
-                <div><img class="small-img" src="/heart-blank.png" alt="heart-blank" /></div>
-                <div class="bold-text">{likes}</div>
+                <div><span on:click={toggleLike} style="cursor: pointer; font-size: 1.5rem; font-weight: bold; color: hsl(5, 85%, 63%);">
+                    {liked ? '❤️' : '🤍'}{likes}
+                </span></div>
+                
             </div>
         </div>
     </div>

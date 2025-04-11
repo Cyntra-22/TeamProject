@@ -282,24 +282,7 @@
         margin-left: 0.5rem;
     }
 
-    .recent-history h4 {
-        margin-bottom: 0.5rem;
-    }
-
-    .tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.7rem;
-    }
-
-    .tag {
-        background-color: #f0f0f0;
-        padding: 0.5rem 1.3rem;
-        border-radius: 9999px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        white-space: nowrap;
-    }
+   
 
     .section h4 {
         margin-bottom: 0.5rem;
@@ -342,6 +325,7 @@
         font-weight: 500;
         font-size: 0.9rem;
     }
+  
 </style>
 
 <nav>
@@ -380,7 +364,7 @@
                 <div class="dropdown">
                     <a class="link" href="/post-rank">Post Ranking</a>
                     <a class="link" href="/artist-rank">Artist Ranking</a>
-                    <a href="/review">Write Review</a>
+                    
                 </div>
             {/if}
         </div>

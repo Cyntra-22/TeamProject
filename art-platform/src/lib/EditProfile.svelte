@@ -154,9 +154,9 @@
     
     <style>
         .upload-container {
-            width: 50%;
+           
             margin: 0 auto;
-            padding: 2rem;
+            padding: 3rem;
             background: white;
             border-radius: 1rem;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -168,7 +168,7 @@
     
         .upload-box {
             width: 250px;
-            height: 250px;
+            height: 300px;
             border: 2px dashed #ccc;
             border-radius: 10px;
             display: flex;
@@ -316,6 +316,7 @@
                     accept="image/*"
                     aria-hidden="true"
                 />
+                
             </div>
             
             <div class="button-container">

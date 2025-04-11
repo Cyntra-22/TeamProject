@@ -130,7 +130,11 @@
     .create-post-container {
       padding: 2rem;
       background: white;
-      width: 100%;
+      width: 60%;
+      margin: 3rem auto;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      
     }
   
     .header {

@@ -79,7 +79,8 @@
         .create-post-container {
             padding: 0;
             background: white;
-            width: 100%;
+            width: 80%;
+            margin:0 auto;
         }
     
         .header {
@@ -111,8 +112,7 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); 
-            
+            grid-template-columns: repeat(2, 1fr);   
            
         }
             

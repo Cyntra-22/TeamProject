@@ -7,10 +7,11 @@
 </script>
 <style>
     .review-container{
-            border: 1px solid grey;
+            border: 2px solid hsl(5, 85%, 63%);
             border-radius: 1rem;
             padding: 1rem 2rem;
-            margin: 1rem 3rem;
+            margin: 1rem auto;
+            width: 80%;
         }
 
         

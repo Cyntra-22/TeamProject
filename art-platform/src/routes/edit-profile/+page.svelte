@@ -70,6 +70,9 @@
         padding-top: 1rem;
         margin-left: 5rem;
         margin-right: 5rem;
+        width: 70%;
+        margin: 0 auto;
+        margin-top: 1.5rem;
     }
 
     .sidebar {

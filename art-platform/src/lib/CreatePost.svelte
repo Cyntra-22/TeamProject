@@ -173,9 +173,12 @@ function resetFileInput() {
 
 <style>
     .create-post-container {
-        padding: 2rem;
+        padding: 3rem;
         background: white;
-        width: 100%;
+        width: 70%;
+        margin: 0 auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-top: 3.5rem;
     }
 
     .header {
