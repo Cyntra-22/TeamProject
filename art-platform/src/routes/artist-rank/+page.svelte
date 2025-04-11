@@ -164,7 +164,7 @@
                     likes={artist.formattedLikes}
                     engagementPoints={artist.formattedEngagement}
                     userId={artist.userId}
-                    userProfile={artist.profileImage}
+                    userProfile={artist.profileImage? artist.profileImage: "logo.png"}
                 />
             {/each}
         {/if}
