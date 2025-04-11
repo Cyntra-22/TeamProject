@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
     import { showToast } from '$lib/toast';
     let file: File | null = null;
     let uploadError = false;
@@ -7,6 +7,8 @@
     let isLoading = false;
     let errorMessage = "";
     let userID: string | null = null;
+    const dispatch = createEventDispatcher();
+
     
     onMount(async () => {
         const token = localStorage.getItem("token");
@@ -129,6 +131,7 @@
             
             if (response.ok) {
                 showToast("info", "Profile picture updated successfully!");
+                dispatch("updated", true)
             } else {
                 showToast("error", "Failed to update profile picture. Please try again.");
             }

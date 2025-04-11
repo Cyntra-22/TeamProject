@@ -13,7 +13,14 @@
         currentComponent = component;
     }
 
-    onMount(async () => {
+    async function updateUI(event:any){
+        const updateProfile = event.detail;
+        if (updateProfile){
+            await getProfile()
+        }
+    }
+
+    async function getProfile(){
         try {
             
             const token = localStorage.getItem('token'); 
@@ -60,7 +67,13 @@
         } catch (error) {
             showToast("error", "An error occurred while fetching profile data. Please try again.");
         }
+    }
+
+    onMount(async () => {
+        await getProfile()
     });
+
+
 </script>
 
 <style>
@@ -152,7 +165,7 @@
         {:else if currentComponent === "ChangePassword"}
             <ChangePW />
         {:else if currentComponent === "EditProfile"}
-            <EditProfile />
+            <EditProfile on:updated={updateUI}/>
         {:else if currentComponent === "LogOut"}
             <LogOut />
         {/if}

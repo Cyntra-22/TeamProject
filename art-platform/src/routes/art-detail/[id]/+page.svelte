@@ -530,7 +530,7 @@
 
             if (response.ok) {
                 window.location.href = "/";
-                alert("Post deleted successfully!");
+                showToast("info", "Delete Successfully.");
                 goto('/');
             } else {
                 showToast("error", "Failed to delete post. Please try again.");
