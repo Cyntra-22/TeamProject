@@ -5,6 +5,7 @@
     import ChangePW from "$lib/ChangePW.svelte";
     import EditProfile from "$lib/EditProfile.svelte";
     import LogOut from "$lib/LogOut.svelte";
+    import { goto } from '$app/navigation';
 
     let currentComponent = "AccountDetail";
     let profileImage = "/logo.png"; 
@@ -61,6 +62,9 @@
             showToast("error", "An error occurred while fetching profile data. Please try again.");
         }
     });
+    function back() {
+        goto('/profile');
+    }
 </script>
 
 <style>
@@ -70,7 +74,7 @@
         padding-top: 1rem;
         margin-left: 5rem;
         margin-right: 5rem;
-        width: 70%;
+        width: 50%;
         margin: 0 auto;
         margin-top: 1.5rem;
     }
@@ -116,9 +120,17 @@
         margin-bottom: 1rem;
         object-fit: cover; 
     }
+    .back {
+		position: absolute;
+		left: 20rem;
+		top: 8rem;
+		cursor: pointer;
+		font-size: 1.5rem;
+	}
 </style>
 
 <div class="container">
+    <span class="back" on:click={back}>←</span>
    
     <div class="sidebar">
         <img src={profileImage} alt="profile image" />

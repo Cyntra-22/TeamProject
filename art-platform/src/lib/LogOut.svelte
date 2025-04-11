@@ -25,6 +25,8 @@
 <div class="logout-container">
     <div class="logout-box">
         <h2>Are you sure want to log out?</h2>
+
+
         <form>
             <button class="pbtn-2" onclick={cancelLogout}>Cancel</button>
             <button class="pbtn-1" onclick={handleLogout}>Log Out</button>
@@ -35,9 +37,14 @@
 <style>
     .logout-container {
         padding-top: 5rem;
+        padding-left: 0;
+    }
+    h2{
+        border-bottom: 1px solid hsl(5, 85%, 63%);
+        padding-bottom: 0.5rem;
     }
     .logout-box {
-        width: 50%;
+        width: 60%;
         margin: 0 auto;
         padding: 2rem;
         background: white;
@@ -54,6 +61,7 @@
         border-radius: 20px;
         cursor: pointer;
         font-size: 0.8rem;
+        margin-right: 0.5rem;
     }
 
     .pbtn-2:hover {

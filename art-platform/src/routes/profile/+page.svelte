@@ -360,8 +360,9 @@
     .more-profile-container{
         border: 1px solid hsl(5, 85%, 50%);
         border-radius: 1rem;
-        padding: 1.5rem 1rem;
-        height: 650px;
+        padding: 1.5rem 1.5rem;
+        height: 850px;
+        
     }
     .right-above-container{
         border-radius: 1rem;
@@ -482,7 +483,7 @@
 
     .review-small-container{
         padding-top: 1.9rem;
-        margin-left: -4rem;
+        margin-left: -5rem;
     }
     h2{
         font-size: 2rem;
@@ -491,9 +492,13 @@
 
     .follow-stats {
         font-size: 0.8rem;
-        margin-top: 0.5rem;
+        margin-top: 1rem;
         cursor: pointer;
         color: #333;
+    }
+    .follow-stats span {
+        margin-right: 1rem;
+        font-weight: bold;
     }
 
     .follow-stats span:hover {

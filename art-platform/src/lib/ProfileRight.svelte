@@ -84,7 +84,7 @@
 <style>
     .more-profile-container {
         margin-top: 1rem;
-        max-height: 630px;
+        max-height: 830px;
         overflow-y: auto;
         padding-right: 10px;
     }
@@ -122,28 +122,19 @@
         object-fit: cover;
     }
 
-    .pbtn-2 {
+    
+
+    .pbtn-1 {
         background-color: hsl(5, 85%, 63%);
         color: white;
         border: none;
-        padding: 0.4rem 1.5rem;
-        margin-top: 1rem;
-        border-radius: 20px;
-        cursor: pointer;
-        font-size: 0.8rem;
-    }
-
-    .pbtn-1 {
-        background-color: white;
-        color: hsl(5, 85%, 63%);
-        border: none;
         padding: 0.4rem 1.5rem; 
-        margin-top: 1rem;
+        margin-top: -1rem;
         border-radius: 20px;
         cursor: pointer;
         border: 1px solid hsl(5, 85%, 63%);
         font-size: 0.8rem;
-        min-width: 150px;  
+          
         text-align: center; 
     }
 
@@ -152,6 +143,7 @@
     .pbtn-1:hover {
         color: hsl(5, 85%, 50%);
         border: 1px solid hsl(5, 85%, 50%);
+        background-color: white;
     }
 
     p {
@@ -164,6 +156,13 @@
     h3 {
         margin: 0;
         padding: 0;
+    }
+    .more-profile-content {
+        
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
     }
 </style>
 
@@ -180,10 +179,16 @@
                 <div>
                     <img src={artist.profileImage || "/logo.png"} alt="profile" />
                 </div>
-                <div>
-                    <h3>{artist.firstName} {artist.lastName}</h3>
-                    <p>{artist.bio}</p>
-                    <button class="pbtn-1" on:click={() => navigateAndReload(artist._id)}>View Profile</button>
+                <div class="more-profile-content">
+                    <div>
+                        <h3>{artist.firstName} {artist.lastName}</h3>
+                        <p>{artist.bio}</p>
+                    </div>
+                    <div >
+                        <button class="pbtn-1" on:click={() => navigateAndReload(artist._id)}>View Profile</button>
+                    </div>
+                    
+                    
                 </div>
             </div>
         {/each}

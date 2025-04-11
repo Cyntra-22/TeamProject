@@ -774,15 +774,16 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background: white;
-        padding: 1rem 2rem;
+        padding: 2rem 2rem;
         border: 1px solid #ccc;
         z-index: 200;
         border: 0.5rem;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 1rem;
     }
     .confirm-box p {
         border-bottom: 1px solid #ccc;
-        padding-bottom: 1rem;
+        padding-bottom: 1.5rem;
     }
 
     .pbtn-2{

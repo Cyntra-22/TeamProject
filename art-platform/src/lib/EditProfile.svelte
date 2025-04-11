@@ -160,6 +160,7 @@
             background: white;
             border-radius: 1rem;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 75%;
         }
         
         .content-container {
@@ -285,13 +286,22 @@
             font-size: 1.2rem;
             font-weight: bold;
             margin-bottom: 1.5rem;
+            text-align: center;
         }
+        .left-header {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 1rem;
+        }
+        
     </style>
     
     <div class="upload-container">
         <div class="content-container">
             <div class="title">Update Profile Picture</div>
-            
+            <div class="left-header">
+                
             <div 
                 class="upload-box" 
                 on:drop={handleDrop} 
@@ -318,20 +328,30 @@
                 />
                 
             </div>
-            
-            <div class="button-container">
-                <button type="button" class="pbtn-1" on:click={cancelUpload}>Cancel</button>
-                <button type="button" class="pbtn-2" on:click={uploadProfilePicture} disabled={isLoading || !file}>
-                    {isLoading ? 'Uploading...' : 'Save'}
-                </button>
+            <div>
+                <div class="button-container">
+                    <button type="button" class="pbtn-1" on:click={cancelUpload}>Cancel</button>
+                    <button type="button" class="pbtn-2" on:click={uploadProfilePicture} disabled={isLoading || !file}>
+                        {isLoading ? 'Uploading...' : 'Save'}
+                    </button>
+                </div>
+                
+                <div class="text">Accepted file types: .jpg, .jpeg, .png, .gif</div>
             </div>
             
-            <div class="text">Accepted file types: .jpg, .jpeg, .png, .gif</div>
+            
             
             {#if errorMessage}
                 <div class="text" style="color: hsl(5, 85%, 50%);">{errorMessage}</div>
             {/if}
         </div>
+        </div>
+        
+        {#if isLoading}
+            <div class="loading-overlay">
+                <div class="loading-spinner"></div>
+            </div>
+        {/if}
         
 
         {#if uploadError}
