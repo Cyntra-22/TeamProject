@@ -427,6 +427,7 @@
     .img-container img{
         width: 110px;
         height: 110px;
+        object-fit: cover;
         border: 1px solid rgb(234, 201, 201);
         border-radius: 50%;
         padding: 0.3rem;

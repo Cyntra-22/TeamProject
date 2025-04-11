@@ -13,7 +13,6 @@
 
 	function toggleLike() {
 		liked = !liked;
-		likes += liked ? 1 : -1;
 	}
 </script>
 

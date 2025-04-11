@@ -544,6 +544,22 @@
 </script>
 
 <style>
+
+    .pbtn-2{
+            background-color: hsl(5, 85%, 63%);
+            color: white;
+            border: none;
+            padding: 0.3rem 1.5rem;
+            margin-top: 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+    .pbtn-2:hover{
+        background-color: hsl(5, 85%, 50%);
+        
+    }
     .modal-overlay {
         position: fixed;
         top: 0;
@@ -1074,8 +1090,8 @@
                 <p>
                     <i>{comment.name}</i> - {comment.text}
                     {#if comment.access}
-                    <button  on:click={() => editComment(comment)}>Edit</button>
-                    <button on:click={() => deleteComment(comment)}>Delete</button>
+                    <button class="pbtn-2" on:click={() => editComment(comment)}>Edit</button>
+                    <button class="pbtn-2" on:click={() => deleteComment(comment)}>Delete</button>
                     {/if}
                 </p>
                 {/each}
