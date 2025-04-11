@@ -379,10 +379,21 @@
         text-align: center;
     }
     .collection{
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 0.3rem;
-        padding: 0.5rem;
+        column-count: 3;
+        column-gap: 1rem;
+        padding: 1rem;
+        width: 100vw;
+        box-sizing: border-box;
+        max-width: 1200px;
+    }
+
+    .masonry {
+        column-count: 1;
+        column-gap: 1rem;
+        padding: 1rem;
+        width: 100vw;
+        box-sizing: border-box;
+        max-width: 1700px;
     }
 
     .collection img {
@@ -699,7 +710,7 @@
         {#if isArtist}
             <div class="right-below-container">
                 <h3>Explore My Collections</h3>
-                <div class="collection">
+                <div class="collection"> 
                     {#each artistPosts as post, index (post.id)}
                         <a href ={`/art-detail/${post.id}`}>
                             <img 

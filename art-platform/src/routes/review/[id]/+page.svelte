@@ -13,7 +13,7 @@
         date: string;
         stars: number;
         content: string;
-        profileImg: string;
+        profileImg: string | null;
     };
 
     let reviews: Review[] = [];
@@ -292,7 +292,7 @@
             date={review.date}
             stars={review.stars}
             content={review.content}
-            userProfile={review.profileImg}
+            userProfile={review.profileImg? review.profileImg: "/logo.png"}
         />
     {/each}
   </div>
