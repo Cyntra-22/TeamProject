@@ -654,9 +654,10 @@
 	}
 
 	.profile img {
-		width: 35px;
-		height: 35px;
-		border-radius: 50%;
+		width: 100px;
+		height: 100px;
+		border-radius: 1rem;
+        
 	}
 
 	.icons {
@@ -891,13 +892,42 @@
     .modal-form button:hover {
         background-color: #15803d;
     }
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            width: 100vw;
+        }
+
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #555;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .modal-content input,textarea{
+            
+            margin-top: 0.5rem;
+        }
+       
+
+
 </style>
+
 
 <span class="back" on:click={back}>←</span>
 
 {#if isLoading}
 	<div class="loading-container">
-		<p>Loading post details...</p>
+		<div class="spinner"></div>
 	</div>
 {:else if !postData}
 	<div class="loading-container">
@@ -998,16 +1028,17 @@
 
                                         <label>
                                             Current Image:
-                                            {#if postData?.postImage}
+                                            
+                                        </label>
+                                        {#if postData?.postImage}
                                                 <img
                                                     src={postData.postImage}
                                                     alt="Current"
-                                                    class="image"
+                                                    class="current-image"
                                                 />
                                             {:else}
                                                 <p>No image available.</p>
                                             {/if}
-                                        </label>
 
                                         <label>
                                             Upload New Image:
@@ -1018,7 +1049,7 @@
                                             />
                                         </label>
 
-                                        <button type="submit"
+                                        <button type="submit" class="pbtn-2"
                                             >Save Changes</button
                                         >
                                     </form>

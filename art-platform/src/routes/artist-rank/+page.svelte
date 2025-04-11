@@ -143,8 +143,35 @@
         padding: 2rem;
         grid-column: span 2;
     }
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        width: 100vw;
+    }
+
+    .spinner {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #555;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
 </style>
 
+{#if loading}
+    <div class="loading-container">
+        <div class="spinner"></div>
+    </div>
+{:else}
 <div class="create-post-container">
     <div class="header">
         <h2>Top Ranking Artists Here!</h2>
@@ -174,3 +201,4 @@
         <img src="/topButton.png" alt="top button">
     </button>
 </div>
+{/if}
