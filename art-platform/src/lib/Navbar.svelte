@@ -370,7 +370,7 @@
         </div>
 
        
-        <a href="/profile">
+        <a href="/profile" on:click={async () => {await goto("/profile"); window.location.reload()}}>
             <img alt="Profile" src={routeId === "/profile" ? "/profile-active-icon.png" : "/user-profile.png"} />
         </a>
     </div>
