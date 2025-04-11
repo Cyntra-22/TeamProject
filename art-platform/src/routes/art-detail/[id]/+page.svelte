@@ -1048,7 +1048,7 @@
                 <p>
                     <i>{comment.name}</i> - {comment.text}
                     {#if comment.access}
-                    <button on:click={() => editComment(comment)}>Edit</button>
+                    <button  on:click={() => editComment(comment)}>Edit</button>
                     <button on:click={() => deleteComment(comment)}>Delete</button>
                     {/if}
                 </p>

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
     import { page } from '$app/stores'; 
     import { showToast } from '$lib/toast';
@@ -217,6 +218,7 @@
                 showToast("error", "An error occurred while fetching user ID. Please try again.");
             }
         } else {
+            goto('/login')
             showToast("error", "No token found. Please log in again.");
         }
     });
