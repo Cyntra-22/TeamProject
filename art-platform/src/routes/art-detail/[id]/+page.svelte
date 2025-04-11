@@ -654,8 +654,8 @@
 	}
 
 	.profile img {
-		width: 100px;
-		height: 100px;
+		width: 45px;
+		height: 45px;
 		border-radius: 1rem;
         
 	}
@@ -791,8 +791,8 @@
         background-color: hsl(5, 85%, 63%);
         color: white;
         border: none;
-        padding: 0.4rem 1.5rem;
-        border-radius: 20px;
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.5rem;
         cursor: pointer;
         font-size: 0.8rem;
     }
@@ -879,19 +879,7 @@
         border-radius: 6px;
     }
 
-    .modal-form button {
-        background-color: hsl(5, 85%, 63%);
-        color: white;
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        align-self: flex-end;
-    }
-
-    .modal-form button:hover {
-        background-color: #15803d;
-    }
+  
         .loading-container {
             display: flex;
             justify-content: center;
@@ -916,6 +904,12 @@
         .modal-content input,textarea{
             
             margin-top: 0.5rem;
+        }
+        .modal-content img{
+            width: 100px;
+            height: 100px;
+            border-radius: 1rem;
+            
         }
        
 
