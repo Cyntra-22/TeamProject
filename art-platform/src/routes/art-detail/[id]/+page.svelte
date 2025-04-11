@@ -498,10 +498,10 @@
         
         if (deleteResponse.ok) {
             showToast("info", "Comment deleted successfully");
-            await getComments(); 
         } else {
             showToast("error", "Failed to delete comment");
         }
+        await getComments(); 
                 
     }
 
